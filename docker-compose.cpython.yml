@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  rustpy-cpython:
+    build:
+      context: .
+      args:
+        - IMAGE_NAME=${CPYTHON_IMAGE_NAME}
+        - IMAGE_VERSION=${CPYTHON_IMAGE_VERSION}
+    image: lycantropos/rustpy-cpython:0.0.0
+    volumes:
+      - ./Cargo.toml:/opt/rustpy/Cargo.toml
+      - ./pyproject.toml:/opt/rustpy/pyproject.toml
+      - ./pytest.ini:/opt/rustpy/pytest.ini
+      - ./README.md:/opt/rustpy/README.md
+      - ./requirements-tests.txt:/opt/rustpy/requirements-tests.txt
+      - ./rust-toolchain.toml:/opt/rustpy/rust-toolchain.toml
+      - ./rustpy:/opt/rustpy/rustpy
+      - ./setup.py:/opt/rustpy/setup.py
+      - ./src:/opt/rustpy/src
+      - ./tests:/opt/rustpy/tests
+    entrypoint: pytest

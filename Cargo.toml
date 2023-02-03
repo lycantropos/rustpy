@@ -1,0 +1,17 @@
+[package]
+name = "rustpy"
+description = "Bindings of Rust programming language primitives."
+license = "MIT"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+name = "rustpy"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies.pyo3]
+version = "^0.18"
+features = ["extension-module"]
+
+[build-dependencies]
+pyo3-build-config = "^0.18"
