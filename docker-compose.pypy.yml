@@ -11,7 +11,6 @@ services:
     volumes:
       - ./pytest.ini:/opt/rustpy/pytest.ini
       - ./README.md:/opt/rustpy/README.md
-      - ./requirements-tests.txt:/opt/rustpy/requirements-tests.txt
       - ./rustpy:/opt/rustpy/rustpy
       - ./setup.py:/opt/rustpy/setup.py
       - ./tests:/opt/rustpy/tests

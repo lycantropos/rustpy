@@ -10,9 +10,6 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 
 WORKDIR /opt/rustpy
 
-COPY requirements-tests.txt .
-RUN pip install -r requirements-tests.txt
-
 COPY rust-toolchain.toml .
 COPY pyproject.toml .
 COPY README.md .
@@ -23,4 +20,4 @@ COPY rustpy rustpy
 COPY src src
 COPY tests tests
 
-RUN pip install -e .
+RUN pip install -e .[tests]

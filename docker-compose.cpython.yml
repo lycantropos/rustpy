@@ -13,7 +13,6 @@ services:
       - ./pyproject.toml:/opt/rustpy/pyproject.toml
       - ./pytest.ini:/opt/rustpy/pytest.ini
       - ./README.md:/opt/rustpy/README.md
-      - ./requirements-tests.txt:/opt/rustpy/requirements-tests.txt
       - ./rust-toolchain.toml:/opt/rustpy/rust-toolchain.toml
       - ./rustpy:/opt/rustpy/rustpy
       - ./setup.py:/opt/rustpy/setup.py
