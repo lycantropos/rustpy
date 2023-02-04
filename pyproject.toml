@@ -1,10 +1,9 @@
 [project]
 name = "rustpy"
 readme = "README.md"
-dynamic = ["description", "version"]
+dynamic = ["version"]
 
 [tool.setuptools.dynamic]
-description = { file = "README.md" }
 version = { attr = "rustpy.__version__" }
 
 [project.optional-dependencies]
