@@ -35,7 +35,7 @@ parameters = dict(
 if platform.python_implementation() == 'CPython':
     from setuptools_rust import RustExtension
 
-    parameters.update(rust_extensions=[RustExtension(f'rustpy._rustpy')],
+    parameters.update(rust_extensions=[RustExtension(f'rustpy._crustpy')],
                       include_package_data=True,
                       zip_safe=False)
 setup(**parameters)
