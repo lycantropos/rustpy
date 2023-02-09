@@ -1,8 +1,730 @@
-use pyo3::prelude::{pymodule, PyModule, PyResult, Python};
+use std::ffi::c_double;
+
+use pyo3::basic::CompareOp;
+use pyo3::exceptions::{PyOverflowError, PyTypeError, PyValueError};
+use pyo3::prelude::{pyclass, pymethods, pymodule, IntoPy, PyModule, PyObject, PyResult, Python};
+use pyo3::types::{PyFloat, PyTuple};
+use pyo3::{PyAny, PyRef};
 
 #[pymodule]
 fn _crustpy(_py: Python, module: &PyModule) -> PyResult<()> {
     module.setattr("__version__", env!("CARGO_PKG_VERSION"))?;
     module.setattr("__doc__", env!("CARGO_PKG_DESCRIPTION"))?;
+    module.add_class::<Bool>()?;
+    module.add_class::<Err_>()?;
+    module.add_class::<F32>()?;
+    module.add_class::<F64>()?;
+    module.add_class::<I8>()?;
+    module.add_class::<I16>()?;
+    module.add_class::<I32>()?;
+    module.add_class::<I64>()?;
+    module.add_class::<I128>()?;
+    module.add_class::<ISize>()?;
+    module.add_class::<None_>()?;
+    module.add_class::<Ok_>()?;
+    module.add_class::<Some_>()?;
+    module.add_class::<U8>()?;
+    module.add_class::<U16>()?;
+    module.add_class::<U32>()?;
+    module.add_class::<U64>()?;
+    module.add_class::<U128>()?;
+    module.add_class::<USize>()?;
     Ok(())
+}
+
+#[pyclass(module = "rustpy.primitive", name = "bool_")]
+#[derive(Clone)]
+struct Bool(bool);
+const TRUE: Bool = Bool(true);
+const FALSE: Bool = Bool(false);
+
+#[pymethods]
+impl Bool {
+    #[new]
+    fn new(value: bool) -> Self {
+        Self(value)
+    }
+
+    fn __bool__(&self) -> bool {
+        self.0
+    }
+
+    fn __repr__(&self) -> String {
+        format!("bool_({})", if self.0 { "True" } else { "False" })
+    }
+
+    fn __richcmp__(&self, other: &PyAny, op: CompareOp) -> PyResult<PyObject> {
+        let py = other.py();
+        match other.extract::<Bool>() {
+            Ok(other) => Ok(Bool(compare(&self.0, &other.0, op)).into_py(py)),
+            Err(_) => Ok(py.NotImplemented()),
+        }
+    }
+
+    fn __str__(&self) -> String {
+        format!("{}", self.0)
+    }
+}
+
+#[pyclass(module = "rustpy.primitive", name = "f32")]
+#[derive(Clone)]
+struct F32(f32);
+
+#[pymethods]
+impl F32 {
+    #[new]
+    fn new(value: f32) -> Self {
+        Self(value)
+    }
+
+    fn __bool__(&self) -> PyResult<()> {
+        Err(PyTypeError::new_err("Expected `bool_`, found `f32`."))
+    }
+
+    fn __repr__(&self, py: Python) -> PyResult<String> {
+        Ok(format!(
+            "f32({})",
+            PyFloat::new(py, self.0 as c_double).repr()?
+        ))
+    }
+
+    fn __richcmp__(&self, other: &PyAny, op: CompareOp) -> PyResult<PyObject> {
+        let py = other.py();
+        match other.extract::<F32>() {
+            Ok(other) => Ok(Bool(compare(&self.0, &other.0, op)).into_py(py)),
+            Err(_) => Ok(py.NotImplemented()),
+        }
+    }
+
+    fn __str__(&self) -> String {
+        format!("{}f32", self.0)
+    }
+}
+
+#[pyclass(module = "rustpy.primitive", name = "f64")]
+#[derive(Clone)]
+struct F64(f64);
+
+#[pymethods]
+impl F64 {
+    #[new]
+    fn new(value: f64) -> Self {
+        Self(value)
+    }
+
+    fn __bool__(&self) -> PyResult<()> {
+        Err(PyTypeError::new_err("Expected `bool_`, found `f32`."))
+    }
+
+    fn __repr__(&self, py: Python) -> PyResult<String> {
+        Ok(format!("f64({})", PyFloat::new(py, self.0).repr()?))
+    }
+
+    fn __richcmp__(&self, other: &PyAny, op: CompareOp) -> PyResult<PyObject> {
+        let py = other.py();
+        match other.extract::<F64>() {
+            Ok(other) => Ok(Bool(compare(&self.0, &other.0, op)).into_py(py)),
+            Err(_) => Ok(py.NotImplemented()),
+        }
+    }
+
+    fn __str__(&self) -> String {
+        format!("{}f64", self.0)
+    }
+}
+
+#[pyclass(module = "rustpy.result", name = "Err")]
+#[derive(Clone)]
+struct Err_(PyObject);
+
+#[pymethods]
+impl Err_ {
+    #[new]
+    fn new(_value: PyObject) -> Self {
+        Self(_value)
+    }
+
+    fn and_<'a>(slf: PyRef<'a, Self>, _value: &PyAny) -> PyRef<'a, Self> {
+        slf
+    }
+
+    fn and_then<'a>(slf: PyRef<'a, Self>, _function: &PyAny) -> PyRef<'a, Self> {
+        slf
+    }
+
+    fn expect(&self, message: String, py: Python) -> PyResult<PyObject> {
+        Err(PyValueError::new_err(format!(
+            "{}: {}",
+            message,
+            self.0.as_ref(py).repr()?
+        )))
+    }
+
+    fn is_err(&self) -> Bool {
+        TRUE
+    }
+
+    fn is_ok(&self) -> Bool {
+        FALSE
+    }
+
+    fn map<'a>(slf: PyRef<'a, Self>, _function: &PyAny) -> PyRef<'a, Self> {
+        slf
+    }
+
+    fn map_err(&self, function: &PyAny, py: Python) -> PyResult<Self> {
+        function
+            .call1(PyTuple::new(py, [self.0.as_ref(py)]))
+            .map(|result| Self(result.into_py(py)))
+    }
+
+    fn map_or(&self, default: PyObject, _function: &PyAny) -> PyObject {
+        default
+    }
+
+    fn map_or_else<'a>(
+        &self,
+        default: &'a PyAny,
+        _function: &PyAny,
+        py: Python,
+    ) -> PyResult<&'a PyAny> {
+        default.call1(PyTuple::new(py, [self.0.as_ref(py)]))
+    }
+
+    fn or_(&self, value: &PyAny, py: Python) -> PyResult<PyObject> {
+        extract_result_value(value, py).ok_or_else(|| {
+            value
+                .repr()
+                .map(|result_repr| {
+                    PyTypeError::new_err(format!(
+                        "`Err` or `Ok` expected, but got {}.",
+                        result_repr
+                    ))
+                })
+                .unwrap_or_else(|err| err)
+        })
+    }
+
+    fn or_else(&self, function: &PyAny, py: Python) -> PyResult<PyObject> {
+        let result = function.call1(PyTuple::new(py, [self.0.as_ref(py)]))?;
+        extract_result_value(result, py).ok_or_else(|| {
+            result
+                .repr()
+                .map(|result_repr| {
+                    PyTypeError::new_err(format!(
+                        "Function should return either `None_` or `Some` instance, but got {}.",
+                        result_repr
+                    ))
+                })
+                .unwrap_or_else(|err| err)
+        })
+    }
+
+    fn unwrap(&self, py: Python) -> PyResult<PyObject> {
+        Err(PyValueError::new_err(format!(
+            "Called `unwrap` on an `Err` value: {}.",
+            self.0.as_ref(py).repr()?
+        )))
+    }
+
+    fn unwrap_or(&self, default: PyObject) -> PyObject {
+        default
+    }
+
+    fn unwrap_or_else<'a>(&self, function: &'a PyAny, py: Python) -> PyResult<&'a PyAny> {
+        function.call1(PyTuple::new(py, [self.0.as_ref(py)]))
+    }
+
+    fn __bool__(&self) -> PyResult<()> {
+        Err(PyTypeError::new_err("Expected `bool_`, found `Err`."))
+    }
+
+    fn __repr__(&self, py: Python) -> PyResult<String> {
+        self.0
+            .as_ref(py)
+            .repr()
+            .map(|value_repr| format!("Err({})", value_repr))
+    }
+}
+
+#[pyclass(module = "rustpy.result", name = "Ok")]
+#[derive(Clone)]
+struct Ok_(PyObject);
+
+#[pymethods]
+impl Ok_ {
+    #[new]
+    fn new(_value: PyObject) -> Self {
+        Self(_value)
+    }
+
+    fn and_(&self, value: &PyAny, py: Python) -> PyResult<PyObject> {
+        extract_result_value(value, py).ok_or_else(|| {
+            value
+                .repr()
+                .map(|result_repr| {
+                    PyTypeError::new_err(format!(
+                        "`Err` or `Ok` expected, but got {}.",
+                        result_repr
+                    ))
+                })
+                .unwrap_or_else(|err| err)
+        })
+    }
+
+    fn and_then(&self, function: &PyAny, py: Python) -> PyResult<PyObject> {
+        let result = function.call1(PyTuple::new(py, [self.0.as_ref(py)]))?;
+        extract_result_value(result, py).ok_or_else(|| {
+            result
+                .repr()
+                .map(|result_repr| {
+                    PyTypeError::new_err(format!(
+                        "Function should return either `None_` or `Some` instance, but got {}.",
+                        result_repr
+                    ))
+                })
+                .unwrap_or_else(|err| err)
+        })
+    }
+
+    fn expect(&self, _message: String) -> PyObject {
+        self.0.clone()
+    }
+
+    fn is_err(&self) -> Bool {
+        FALSE
+    }
+
+    fn is_ok(&self) -> Bool {
+        TRUE
+    }
+
+    fn map(&self, function: &PyAny, py: Python) -> PyResult<Self> {
+        function
+            .call1(PyTuple::new(py, [self.0.as_ref(py)]))
+            .map(|result| Self(result.into_py(py)))
+    }
+
+    fn map_err<'a>(slf: PyRef<'a, Self>, _function: &PyAny) -> PyRef<'a, Self> {
+        slf
+    }
+
+    fn map_or<'a>(
+        &self,
+        _default: PyObject,
+        function: &'a PyAny,
+        py: Python,
+    ) -> PyResult<&'a PyAny> {
+        function.call1(PyTuple::new(py, [self.0.as_ref(py)]))
+    }
+
+    fn map_or_else<'a>(
+        &self,
+        _default: &PyAny,
+        function: &'a PyAny,
+        py: Python,
+    ) -> PyResult<&'a PyAny> {
+        function.call1(PyTuple::new(py, [self.0.as_ref(py)]))
+    }
+
+    fn or_<'a>(slf: PyRef<'a, Self>, _value: &PyAny) -> PyRef<'a, Self> {
+        slf
+    }
+
+    fn or_else<'a>(slf: PyRef<'a, Self>, _function: &PyAny) -> PyRef<'a, Self> {
+        slf
+    }
+
+    fn unwrap(&self) -> PyObject {
+        self.0.clone()
+    }
+
+    fn unwrap_or(&self, _default: PyObject) -> PyObject {
+        self.0.clone()
+    }
+
+    fn unwrap_or_else<'a>(&self, _function: &'a PyAny, py: Python) -> PyResult<&'a PyAny> {
+        _function.call1(PyTuple::new(py, [self.0.as_ref(py)]))
+    }
+
+    fn __bool__(&self) -> PyResult<()> {
+        Err(PyTypeError::new_err("Expected `bool_`, found `Ok`."))
+    }
+
+    fn __repr__(&self, py: Python) -> PyResult<String> {
+        self.0
+            .as_ref(py)
+            .repr()
+            .map(|value_repr| format!("Ok({})", value_repr))
+    }
+}
+
+#[pyclass(module = "rustpy.option", name = "None_")]
+#[derive(Clone)]
+struct None_();
+
+#[pymethods]
+impl None_ {
+    #[new]
+    fn new() -> Self {
+        None_()
+    }
+
+    fn and_<'a>(slf: PyRef<'a, Self>, _value: &PyAny) -> PyRef<'a, Self> {
+        slf
+    }
+
+    fn and_then<'a>(slf: PyRef<'a, Self>, _function: &PyAny) -> PyRef<'a, Self> {
+        slf
+    }
+
+    fn expect(&self, message: String) -> PyResult<PyObject> {
+        Err(PyValueError::new_err(message))
+    }
+
+    fn is_none(&self) -> Bool {
+        TRUE
+    }
+
+    fn is_some(&self) -> Bool {
+        FALSE
+    }
+
+    fn map<'a>(slf: PyRef<'a, Self>, _function: &PyAny) -> PyResult<PyRef<'a, Self>> {
+        Ok(slf)
+    }
+
+    fn map_or(&self, default: PyObject, _function: &PyAny) -> PyObject {
+        default
+    }
+
+    fn map_or_else<'a>(&self, default: &'a PyAny, _function: &PyAny) -> PyResult<&'a PyAny> {
+        default.call0()
+    }
+
+    fn or_(&self, value: &PyAny, py: Python) -> PyResult<PyObject> {
+        extract_option_value(value, py).ok_or_else(|| {
+            value
+                .repr()
+                .map(|result_repr| {
+                    PyTypeError::new_err(format!(
+                        "`None` or `Some` expected, but got {}.",
+                        result_repr
+                    ))
+                })
+                .unwrap_or_else(|err| err)
+        })
+    }
+
+    fn or_else(&self, function: &PyAny, py: Python) -> PyResult<PyObject> {
+        let result = function.call0()?;
+        extract_option_value(result, py).ok_or_else(|| {
+            result
+                .repr()
+                .map(|result_repr| {
+                    PyTypeError::new_err(format!(
+                        "Function should return either `None_` or `Some` instance, but got {}.",
+                        result_repr
+                    ))
+                })
+                .unwrap_or_else(|err| err)
+        })
+    }
+
+    fn unwrap(&self) -> PyResult<PyObject> {
+        Err(PyValueError::new_err(
+            "Called `unwrap()` on a `None` value.",
+        ))
+    }
+
+    fn unwrap_or(&self, default: PyObject) -> PyObject {
+        default
+    }
+
+    fn unwrap_or_else<'a>(&self, function: &'a PyAny) -> PyResult<&'a PyAny> {
+        function.call0()
+    }
+
+    fn __bool__(&self) -> PyResult<()> {
+        Err(PyTypeError::new_err("Expected `bool_`, found `None_`."))
+    }
+
+    fn __repr__(&self) -> &str {
+        "None()"
+    }
+}
+
+#[pyclass(module = "rustpy.option", name = "Some")]
+#[derive(Clone)]
+struct Some_(PyObject);
+
+#[pymethods]
+impl Some_ {
+    #[new]
+    fn new(_value: PyObject) -> Self {
+        Self(_value)
+    }
+
+    fn and_(&self, value: &PyAny, py: Python) -> PyResult<PyObject> {
+        extract_option_value(value, py).ok_or_else(|| {
+            value
+                .repr()
+                .map(|result_repr| {
+                    PyTypeError::new_err(format!(
+                        "`None` or `Some` expected, but got {}.",
+                        result_repr
+                    ))
+                })
+                .unwrap_or_else(|err| err)
+        })
+    }
+
+    fn and_then(&self, function: &PyAny, py: Python) -> PyResult<PyObject> {
+        let result = function.call1(PyTuple::new(py, [self.0.as_ref(py)]))?;
+        extract_option_value(result, py).ok_or_else(|| {
+            result
+                .repr()
+                .map(|result_repr| {
+                    PyTypeError::new_err(format!(
+                        "Function should return either `None_` or `Some` instance, but got {}.",
+                        result_repr
+                    ))
+                })
+                .unwrap_or_else(|err| err)
+        })
+    }
+
+    fn expect(&self, _message: String) -> PyObject {
+        self.0.clone()
+    }
+
+    fn is_none(&self) -> Bool {
+        FALSE
+    }
+
+    fn is_some(&self) -> Bool {
+        TRUE
+    }
+
+    fn map(&self, function: &PyAny, py: Python) -> PyResult<Self> {
+        function
+            .call1(PyTuple::new(py, [self.0.as_ref(py)]))
+            .map(|result| Self(result.into_py(py)))
+    }
+
+    fn map_or<'a>(
+        &self,
+        _default: PyObject,
+        function: &'a PyAny,
+        py: Python,
+    ) -> PyResult<&'a PyAny> {
+        function.call1(PyTuple::new(py, [self.0.as_ref(py)]))
+    }
+
+    fn map_or_else<'a>(
+        &self,
+        _default: &PyAny,
+        function: &'a PyAny,
+        py: Python,
+    ) -> PyResult<&'a PyAny> {
+        function.call1(PyTuple::new(py, [self.0.as_ref(py)]))
+    }
+
+    fn or_<'a>(slf: PyRef<'a, Self>, _value: &PyAny) -> PyRef<'a, Self> {
+        slf
+    }
+
+    fn or_else<'a>(slf: PyRef<'a, Self>, _function: &PyAny) -> PyRef<'a, Self> {
+        slf
+    }
+
+    fn unwrap(&self) -> PyObject {
+        self.0.clone()
+    }
+
+    fn unwrap_or(&self, _default: PyObject) -> PyObject {
+        self.0.clone()
+    }
+
+    fn unwrap_or_else(&self, _function: &PyAny) -> PyResult<PyObject> {
+        Ok(self.0.clone())
+    }
+
+    fn __bool__(&self) -> PyResult<()> {
+        Err(PyTypeError::new_err("Expected `bool_`, found `Some`."))
+    }
+
+    fn __repr__(&self, py: Python) -> PyResult<String> {
+        self.0
+            .as_ref(py)
+            .repr()
+            .map(|value_repr| format!("Some({})", value_repr))
+    }
+}
+
+fn extract_option_value(value: &PyAny, py: Python) -> Option<PyObject> {
+    if let Ok(value) = value.extract::<Some_>() {
+        Some(value.into_py(py))
+    } else if let Ok(value) = value.extract::<None_>() {
+        Some(value.into_py(py))
+    } else {
+        None
+    }
+}
+
+fn extract_result_value(value: &PyAny, py: Python) -> Option<PyObject> {
+    if let Ok(value) = value.extract::<Ok_>() {
+        Some(value.into_py(py))
+    } else if let Ok(value) = value.extract::<Err_>() {
+        Some(value.into_py(py))
+    } else {
+        None
+    }
+}
+
+macro_rules! define_signed_integer_python_binding {
+    ($integer:ident => ($name:literal, $wrapper:ident)) => {
+        const _: () = assert!(are_strings_equal($name, stringify!($integer)));
+
+        #[pyclass(module = "rustpy.primitive", name = $name)]
+        #[derive(Clone)]
+        struct $wrapper($integer);
+
+        #[pymethods]
+        impl $wrapper {
+            #[classattr]
+            const BITS: U32 = U32(<$integer>::BITS);
+            #[classattr]
+            const MAX: Self = Self(<$integer>::MAX);
+            #[classattr]
+            const MIN: Self = Self(<$integer>::MIN);
+
+            #[new]
+            fn new(value: $integer) -> Self {
+                Self(value)
+            }
+
+            fn __bool__(&self) -> PyResult<()> {
+                Err(PyTypeError::new_err(format!(
+                    "Expected `bool_`, found `{}`.",
+                    $name
+                )))
+            }
+
+            fn __invert__(&self) -> Self {
+                Self(!self.0)
+            }
+
+            fn __neg__(&self) -> PyResult<Self> {
+                self.0.checked_neg().map(Self).ok_or_else(|| {
+                    PyOverflowError::new_err(format!("{} cannot be negated.", self.__repr__()))
+                })
+            }
+
+            fn __repr__(&self) -> String {
+                format!("{}({})", $name, self.0)
+            }
+
+            fn __richcmp__(&self, other: &PyAny, op: CompareOp) -> PyResult<PyObject> {
+                let py = other.py();
+                match other.extract::<$wrapper>() {
+                    Ok(other) => Ok(Bool(compare(&self.0, &other.0, op)).into_py(py)),
+                    Err(_) => Ok(py.NotImplemented()),
+                }
+            }
+
+            fn __str__(&self) -> String {
+                format!("{}{}", self.0, $name)
+            }
+        }
+    };
+}
+
+define_signed_integer_python_binding!(i8 => ("i8", I8));
+define_signed_integer_python_binding!(i16 => ("i16", I16));
+define_signed_integer_python_binding!(i32 => ("i32", I32));
+define_signed_integer_python_binding!(i64 => ("i64", I64));
+define_signed_integer_python_binding!(i128 => ("i128", I128));
+define_signed_integer_python_binding!(isize => ("isize", ISize));
+
+macro_rules! define_unsigned_integer_python_binding {
+    ($integer:ident => ($name:literal, $wrapper:ident)) => {
+        const _: () = assert!(are_strings_equal($name, stringify!($integer)));
+
+        #[pyclass(module = "rustpy.primitive", name = $name)]
+        #[derive(Clone)]
+        struct $wrapper($integer);
+
+        #[pymethods]
+        impl $wrapper {
+            #[classattr]
+            const BITS: U32 = U32(<$integer>::BITS);
+            #[classattr]
+            const MAX: Self = Self(<$integer>::MAX);
+            #[classattr]
+            const MIN: Self = Self(<$integer>::MIN);
+
+            #[new]
+            fn new(value: $integer) -> Self {
+                Self(value)
+            }
+
+            fn __bool__(&self) -> PyResult<()> {
+                Err(PyTypeError::new_err(format!(
+                    "Expected `bool_`, found `{}`.",
+                    $name
+                )))
+            }
+
+            fn __repr__(&self) -> String {
+                format!("{}({})", $name, self.0)
+            }
+
+            fn __richcmp__(&self, other: &PyAny, op: CompareOp) -> PyResult<PyObject> {
+                let py = other.py();
+                match other.extract::<$wrapper>() {
+                    Ok(other) => Ok(Bool(compare(&self.0, &other.0, op)).into_py(py)),
+                    Err(_) => Ok(py.NotImplemented()),
+                }
+            }
+
+            fn __str__(&self) -> String {
+                format!("{}{}", self.0, $name)
+            }
+        }
+    };
+}
+
+define_unsigned_integer_python_binding!(u8 => ("u8", U8));
+define_unsigned_integer_python_binding!(u16 => ("u16", U16));
+define_unsigned_integer_python_binding!(u32 => ("u32", U32));
+define_unsigned_integer_python_binding!(u64 => ("u64", U64));
+define_unsigned_integer_python_binding!(u128 => ("u128", U128));
+define_unsigned_integer_python_binding!(usize => ("usize", USize));
+
+const fn are_strings_equal(first: &str, second: &str) -> bool {
+    if first.len() != second.len() {
+        false
+    } else {
+        let mut index = 0;
+        let (first, second) = (first.as_bytes(), second.as_bytes());
+        while index < first.len() {
+            if first[index] != second[index] {
+                return false;
+            }
+            index += 1;
+        }
+        true
+    }
+}
+
+fn compare<T: PartialOrd<U>, U>(left: &T, right: &U, op: CompareOp) -> bool {
+    match op {
+        CompareOp::Eq => left == right,
+        CompareOp::Ge => left >= right,
+        CompareOp::Gt => left > right,
+        CompareOp::Le => left <= right,
+        CompareOp::Lt => left < right,
+        CompareOp::Ne => left != right,
+    }
 }
