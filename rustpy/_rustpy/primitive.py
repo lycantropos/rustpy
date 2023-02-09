@@ -12,9 +12,9 @@ from rustpy._rustpy.utils import (floor_division_quotient,
                                   floor_division_remainder,
                                   trunc_division_quotient,
                                   trunc_division_remainder)
-from rustpy.option import (None_,
-                           Option,
-                           Some)
+
+if _t.TYPE_CHECKING:
+    from rustpy.option import Option
 
 SIZE_BITS = (sys.maxsize + 1).bit_length() - 1
 assert ((1 << SIZE_BITS) - 1) == sys.maxsize
@@ -148,6 +148,9 @@ class _BaseInteger(ABC):
     MIN: _t.ClassVar[_te.Self]
 
     def checked_sub(self, other: _te.Self) -> Option[_te.Self]:
+        from rustpy.option import (None_,
+                                   Some)
+
         if not isinstance(other, type(self)):
             raise TypeError(type(other))
         try:
