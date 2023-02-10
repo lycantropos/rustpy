@@ -33,3 +33,55 @@ class bool_:
         return (bool_(self._value is other._value)
                 if isinstance(other, bool_)
                 else NotImplemented)
+
+    @_t.overload
+    def __ge__(self, other: _te.Self) -> bool:
+        ...
+
+    @_t.overload
+    def __ge__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __ge__(self, other: _t.Any) -> _t.Any:
+        return (bool_(self._value >= other._value)
+                if isinstance(other, bool_)
+                else NotImplemented)
+
+    @_t.overload
+    def __gt__(self, other: _te.Self) -> bool:
+        ...
+
+    @_t.overload
+    def __gt__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __gt__(self, other: _t.Any) -> _t.Any:
+        return (bool_(self._value > other._value)
+                if isinstance(other, bool_)
+                else NotImplemented)
+
+    @_t.overload
+    def __le__(self, other: _te.Self) -> bool:
+        ...
+
+    @_t.overload
+    def __le__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __le__(self, other: _t.Any) -> _t.Any:
+        return (bool_(self._value <= other._value)
+                if isinstance(other, bool_)
+                else NotImplemented)
+
+    @_t.overload
+    def __lt__(self, other: _te.Self) -> bool:
+        ...
+
+    @_t.overload
+    def __lt__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __lt__(self, other: _t.Any) -> _t.Any:
+        return (bool_(self._value < other._value)
+                if isinstance(other, bool_)
+                else NotImplemented)
