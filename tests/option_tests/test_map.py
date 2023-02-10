@@ -8,14 +8,14 @@ from rustpy.option import (None_,
 from . import strategies
 
 
-@given(strategies.nones, strategies.maps)
+@given(strategies.nones, strategies.equatable_pure_maps)
 def test_none(none: None_, map_: Callable[[Any], Any]) -> None:
     result = none.map(map_)
 
     assert result is none
 
 
-@given(strategies.somes, strategies.maps)
+@given(strategies.somes, strategies.equatable_pure_maps)
 def test_some(some: Some, map_: Callable[[Any], Any]) -> None:
     result = some.map(map_)
 

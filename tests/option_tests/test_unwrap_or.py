@@ -7,14 +7,14 @@ from rustpy.option import (None_,
 from . import strategies
 
 
-@given(strategies.nones, strategies.values)
+@given(strategies.nones, strategies.equatable_values)
 def test_none(none: None_, value: Any) -> None:
     result = none.unwrap_or(value)
 
     assert result is value
 
 
-@given(strategies.somes, strategies.values)
+@given(strategies.somes, strategies.equatable_values)
 def test_some(some: Some, value: Any) -> None:
     result = some.unwrap_or(value)
 

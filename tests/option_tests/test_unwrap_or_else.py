@@ -8,7 +8,7 @@ from rustpy.option import (None_,
 from . import strategies
 
 
-@given(strategies.nones, strategies.values)
+@given(strategies.nones, strategies.equatable_values)
 def test_none(none: None_, value: Any) -> None:
     result = none.unwrap_or_else(lambda: value)
 
