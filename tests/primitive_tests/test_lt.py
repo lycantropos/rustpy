@@ -2,7 +2,7 @@ from typing import Tuple
 
 from hypothesis import given
 
-from rustpy.primitive.bool_ import bool_
+from rustpy.primitive import bool_
 from tests.utils import (Primitive,
                          equivalence,
                          implication)
