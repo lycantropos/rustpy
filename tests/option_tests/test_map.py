@@ -21,3 +21,4 @@ def test_some(some: Some, map_: Callable[[Any], Any]) -> None:
 
     assert isinstance(result, Some)
     assert result is not some
+    assert result.unwrap() == map_(some.unwrap())
