@@ -1,0 +1,38 @@
+from typing import Tuple
+
+from hypothesis import given
+
+from tests.utils import (Primitive,
+                         equivalence,
+                         implication)
+from . import strategies
+
+
+@given(strategies.finite_primitives)
+def test_reflexivity(primitive: Primitive) -> None:
+    assert primitive <= primitive
+
+
+@given(strategies.finite_primitives_pairs)
+def test_antisymmetry(pair: Tuple[Primitive, Primitive]) -> None:
+    first, second = pair
+
+    assert equivalence(first <= second <= first, first == second)
+
+
+@given(strategies.finite_primitives_triplets)
+def test_transitivity(triplet: Tuple[Primitive, Primitive, Primitive]) -> None:
+    first, second, third = triplet
+
+    assert implication(first <= second <= third, first <= third)
+
+
+@given(strategies.finite_primitives_pairs)
+def test_equivalents(pair: Tuple[Primitive, Primitive]) -> None:
+    first, second = pair
+
+    result = first <= second
+
+    assert equivalence(result, second >= first)
+    assert equivalence(result, first < second or first == second)
+    assert equivalence(result, second > first or first == second)
