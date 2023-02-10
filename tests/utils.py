@@ -1,4 +1,7 @@
 import typing as _t
+from contextlib import contextmanager
+
+import pytest
 
 from rustpy import primitive
 
@@ -18,3 +21,13 @@ def equivalence(first: _AnyBool, second: _AnyBool) -> bool:
 
 def implication(antecedent: _AnyBool, consequent: _AnyBool) -> bool:
     return not antecedent or bool(consequent)
+
+
+@contextmanager
+def not_raises(
+        *exceptions: _t.Type[BaseException]
+) -> _t.Generator[None, None, None]:
+    try:
+        yield
+    except exceptions:
+        raise pytest.fail('DID RAISE {}'.format(exceptions))
