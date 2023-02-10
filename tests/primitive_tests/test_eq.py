@@ -27,7 +27,7 @@ def test_reflexivity(primitive: Primitive) -> None:
 def test_symmetry(pair: Tuple[Primitive, Primitive]) -> None:
     first, second = pair
 
-    assert equivalence(bool(first == second), bool(second == first))
+    assert equivalence(first == second, second == first)
 
 
 @given(strategies.finite_primitives_triplets)
@@ -41,4 +41,4 @@ def test_transitivity(triplet: Tuple[Primitive, Primitive, Primitive]) -> None:
 def test_connection_with_inequality(pair: Tuple[Primitive, Primitive]) -> None:
     first, second = pair
 
-    assert equivalence(not first == second, bool(first != second))
+    assert equivalence(not first == second, first != second)

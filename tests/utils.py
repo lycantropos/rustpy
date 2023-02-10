@@ -1,6 +1,8 @@
-from typing import TypeVar
+import typing as _t
 
 from rustpy.primitive.bool_ import bool_
+from rustpy.primitive.f32 import f32
+from rustpy.primitive.f64 import f64
 from rustpy.primitive.i128 import i128
 from rustpy.primitive.i16 import i16
 from rustpy.primitive.i32 import i32
@@ -14,13 +16,15 @@ from rustpy.primitive.u64 import u64
 from rustpy.primitive.u8 import u8
 from rustpy.primitive.usize import usize
 
-Primitive = TypeVar('Primitive', bool_, i128, i16, i32, i64, i8, isize, u128,
-                    u16, u32, u64, u8, usize)
+Primitive = _t.TypeVar('Primitive', bool_, f32, f64, i128, i16, i32, i64, i8,
+                       isize, u128, u16, u32, u64, u8, usize)
+
+_AnyBool = _t.Union[bool, bool_]
 
 
-def equivalence(first: bool, second: bool) -> bool:
-    return first is second
+def equivalence(first: _AnyBool, second: _AnyBool) -> bool:
+    return bool(first) is bool(second)
 
 
-def implication(antecedent: bool, consequent: bool) -> bool:
-    return not antecedent or consequent
+def implication(antecedent: _AnyBool, consequent: _AnyBool) -> bool:
+    return not antecedent or bool(consequent)
