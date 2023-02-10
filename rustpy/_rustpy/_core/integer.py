@@ -1,64 +1,66 @@
 from __future__ import annotations
 
-import sys
+import abc as _abc
+import sys as _sys
 import typing as _t
-from abc import (ABC,
-                 abstractmethod)
 
 import typing_extensions as _te
 
-from rustpy.option import (None_,
-                           Option,
-                           Some)
-from .bool_ import bool_
-from .utils import (floor_division_quotient,
-                    floor_division_remainder,
-                    trunc_division_quotient,
-                    trunc_division_remainder)
+from rustpy.option import (None_ as _None,
+                           Option as _Option,
+                           Some as _Some)
+from .bool_ import bool_ as _bool
+from .ordered import OrderedWrapper as _OrderedWrapper
+from .utils import (floor_division_quotient as _floor_division_quotient,
+                    floor_division_remainder as _floor_division_remainder,
+                    trunc_division_quotient as _trunc_division_quotient,
+                    trunc_division_remainder as _trunc_division_remainder)
 
 if _t.TYPE_CHECKING:
     from rustpy._rustpy.primitive import u32
 
-SIZE_BITS = (sys.maxsize + 1).bit_length() - 1
-assert ((1 << SIZE_BITS) - 1) == sys.maxsize
+SIZE_BITS = (_sys.maxsize + 1).bit_length() - 1
+assert ((1 << SIZE_BITS) - 1) == _sys.maxsize
 
 
 def _u32_to_int(value: u32) -> int:
     return value._value
 
 
-class _BaseInteger(ABC):
+class _BaseInteger(_abc.ABC, _OrderedWrapper[int]):
     BITS: _t.ClassVar[u32]
     MAX: _t.ClassVar[_te.Self]
     MIN: _t.ClassVar[_te.Self]
 
-    def checked_sub(self, other: _te.Self) -> Option[_te.Self]:
+    def checked_sub(self, other: _te.Self) -> _Option[_te.Self]:
         if not isinstance(other, type(self)):
             raise TypeError(type(other))
         try:
-            return Some(type(self)(self._value - other._value))
+            return _Some(type(self)(self._value - other._value))
         except OverflowError:
-            return None_()
+            return _None()
 
     def div(self, divisor: _te.Self) -> _te.Self:
         if not isinstance(divisor, type(self)):
             raise TypeError(type(divisor))
-        return type(self)(trunc_division_quotient(self._value, divisor._value))
+        return type(self)(
+                _trunc_division_quotient(self._value, divisor._value))
 
     def div_euclid(self, divisor: _te.Self) -> _te.Self:
         if not isinstance(divisor, type(self)):
             raise TypeError(type(divisor))
-        return type(self)(floor_division_quotient(self._value, divisor._value))
+        return type(self)(
+                _floor_division_quotient(self._value, divisor._value))
 
-    @abstractmethod
+    @_abc.abstractmethod
     def rem(self, divisor: _te.Self) -> _te.Self:
         ...
 
     def rem_euclid(self, divisor: _te.Self) -> _te.Self:
         if not isinstance(divisor, type(self)):
             raise TypeError(type(self))
-        return type(self)(floor_division_remainder(self._value,
-                                                   divisor._value))
+        return type(self)(_floor_division_remainder(self._value,
+                                                    divisor._value))
 
     _value: int
 
@@ -102,64 +104,12 @@ class _BaseInteger(ABC):
                 else NotImplemented)
 
     def __bool__(self) -> bool:
-        raise TypeError(f'Expected `{bool_.__qualname__}`, '
+        raise TypeError(f'Expected `{_bool.__qualname__}`, '
                         f'found `{type(self).__qualname__}`.')
 
-    @_t.overload
-    def __eq__(self, other: _te.Self) -> bool:
-        ...
-
-    @_t.overload
-    def __eq__(self, other: _t.Any) -> _t.Any:
-        ...
-
-    def __eq__(self, other: _t.Any) -> _t.Any:
-        return (bool_(self._value == other._value)
-                if isinstance(other, type(self))
-                else NotImplemented)
-
-    @_t.overload
-    def __ge__(self, other: _te.Self) -> bool:
-        ...
-
-    @_t.overload
-    def __ge__(self, other: _t.Any) -> _t.Any:
-        ...
-
-    def __ge__(self, other: _t.Any) -> _t.Any:
-        return (bool_(self._value >= other._value)
-                if isinstance(other, type(self))
-                else NotImplemented)
-
-    @_t.overload
-    def __gt__(self, other: _te.Self) -> bool:
-        ...
-
-    @_t.overload
-    def __gt__(self, other: _t.Any) -> _t.Any:
-        ...
-
-    def __gt__(self, other: _t.Any) -> _t.Any:
-        return (bool_(self._value > other._value)
-                if isinstance(other, type(self))
-                else NotImplemented)
-
-    @abstractmethod
+    @_abc.abstractmethod
     def __invert__(self) -> _te.Self:
         ...
-
-    @_t.overload
-    def __le__(self, other: _te.Self) -> bool:
-        ...
-
-    @_t.overload
-    def __le__(self, other: _t.Any) -> _t.Any:
-        ...
-
-    def __le__(self, other: _t.Any) -> _t.Any:
-        return (bool_(self._value <= other._value)
-                if isinstance(other, type(self))
-                else NotImplemented)
 
     @_t.overload
     def __lshift__(self, other: u32) -> _te.Self:
@@ -175,19 +125,6 @@ class _BaseInteger(ABC):
                 else NotImplemented)
 
     @_t.overload
-    def __lt__(self, other: _te.Self) -> bool:
-        ...
-
-    @_t.overload
-    def __lt__(self, other: _t.Any) -> _t.Any:
-        ...
-
-    def __lt__(self, other: _t.Any) -> _t.Any:
-        return (bool_(self._value < other._value)
-                if isinstance(other, type(self))
-                else NotImplemented)
-
-    @_t.overload
     def __mod__(self, other: _te.Self) -> _te.Self:
         ...
 
@@ -196,9 +133,10 @@ class _BaseInteger(ABC):
         ...
 
     def __mod__(self, other: _t.Any) -> _t.Any:
-        return (type(self)(trunc_division_remainder(self._value, other._value))
-                if isinstance(other, type(self))
-                else NotImplemented)
+        return (
+            type(self)(_trunc_division_remainder(self._value, other._value))
+            if isinstance(other, type(self))
+            else NotImplemented)
 
     @_t.overload
     def __mul__(self, other: _te.Self) -> _te.Self:
@@ -254,7 +192,7 @@ class _BaseInteger(ABC):
         ...
 
     def __truediv__(self, other: _t.Any) -> _t.Any:
-        return (type(self)(trunc_division_quotient(self._value, other._value))
+        return (type(self)(_trunc_division_quotient(self._value, other._value))
                 if isinstance(other, type(self))
                 else NotImplemented)
 

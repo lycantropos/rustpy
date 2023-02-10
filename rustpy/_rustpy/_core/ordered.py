@@ -4,8 +4,8 @@ import typing as _t
 
 import typing_extensions as _te
 
-from .bool_ import bool_
-from .wrapper import _Wrapper
+from .bool_ import bool_ as _bool
+from .wrapper import Wrapper as _Wrapper
 
 
 class _Ordered(_te.Protocol):
@@ -58,7 +58,7 @@ _OrderedT = _t.TypeVar('_OrderedT',
                        bound=_Ordered)
 
 
-class _OrderedWrapper(_Wrapper[_OrderedT]):
+class OrderedWrapper(_Wrapper[_OrderedT]):
     @_t.overload
     def __ge__(self, other: _te.Self) -> bool:
         ...
@@ -68,7 +68,7 @@ class _OrderedWrapper(_Wrapper[_OrderedT]):
         ...
 
     def __ge__(self, other: _t.Any) -> _t.Any:
-        return (bool_(self._value >= other._value)
+        return (_bool(self._value >= other._value)
                 if isinstance(other, type(self))
                 else NotImplemented)
 
@@ -81,7 +81,7 @@ class _OrderedWrapper(_Wrapper[_OrderedT]):
         ...
 
     def __gt__(self, other: _t.Any) -> _t.Any:
-        return (bool_(self._value > other._value)
+        return (_bool(self._value > other._value)
                 if isinstance(other, type(self))
                 else NotImplemented)
 
@@ -94,7 +94,7 @@ class _OrderedWrapper(_Wrapper[_OrderedT]):
         ...
 
     def __le__(self, other: _t.Any) -> _t.Any:
-        return (bool_(self._value <= other._value)
+        return (_bool(self._value <= other._value)
                 if isinstance(other, type(self))
                 else NotImplemented)
 
@@ -107,6 +107,6 @@ class _OrderedWrapper(_Wrapper[_OrderedT]):
         ...
 
     def __lt__(self, other: _t.Any) -> _t.Any:
-        return (bool_(self._value < other._value)
+        return (_bool(self._value < other._value)
                 if isinstance(other, type(self))
                 else NotImplemented)
