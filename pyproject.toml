@@ -1,6 +1,9 @@
 [project]
 name = "rustpy"
 readme = "README.md"
+dependencies = [
+    "typing_extensions>=4.4.0,<5.0"
+]
 dynamic = ["version"]
 
 [tool.setuptools.dynamic]
