@@ -17,7 +17,7 @@ from .utils import (floor_division_quotient,
                     trunc_division_remainder)
 
 if _t.TYPE_CHECKING:
-    from rustpy._rustpy.primitive.u32 import u32
+    from rustpy._rustpy.primitive import u32
 
 SIZE_BITS = (sys.maxsize + 1).bit_length() - 1
 assert ((1 << SIZE_BITS) - 1) == sys.maxsize
@@ -300,3 +300,9 @@ def unsigned_cls_to_max_value(
         cls: _t.Type[_UnsignedInteger]
 ) -> _UnsignedInteger:
     return cls((1 << _u32_to_int(cls.BITS)) - 1)
+
+
+def unsigned_cls_to_min_value(
+        cls: _t.Type[_UnsignedInteger]
+) -> _UnsignedInteger:
+    return cls(0)
