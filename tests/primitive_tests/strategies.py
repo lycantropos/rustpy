@@ -59,7 +59,6 @@ signed_integers_values = i128s, i16s, i32s, i64s, i8s, isizes
 unsigned_integers_values = u128s, u16s, u32s, u64s, u8s, usizes
 integers_values = (*signed_integers_values, *unsigned_integers_values)
 finite_primitives_values = (bools, *integers_values, *finite_floats_values)
-ordered_finite_primitives_values = (*integers_values, *finite_floats_values)
 finite_primitives = bools | _st.one_of(integers_values)
 finite_primitives_pairs = _st.one_of([_st.tuples(values, values)
                                       for values in finite_primitives_values])
