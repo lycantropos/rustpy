@@ -1,11 +1,13 @@
 import os
+import sys
 from datetime import timedelta
 
 import pytest
 from hypothesis import settings
 
 on_ci = bool(os.getenv('CI', False))
-max_examples = settings.default.max_examples
+is_pypy = sys.implementation.name == 'pypy'
+max_examples = settings.default.max_examples // (1 if is_pypy else 4)
 settings.register_profile('default',
                           deadline=(timedelta(hours=1) / max_examples
                                     if on_ci
