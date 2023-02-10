@@ -8,14 +8,14 @@ from rustpy.option import (None_,
 from . import strategies
 
 
-@given(strategies.nones, strategies.equatable_values)
-def test_none(none: None_, value: Any) -> None:
-    result = none.unwrap_or_else(lambda: value)
+@given(strategies.nones, strategies.equatable_empty_factories)
+def test_none(none: None_, factory: Callable[[], Any]) -> None:
+    result = none.unwrap_or_else(factory)
 
-    assert result is value
+    assert result == factory()
 
 
-@given(strategies.somes, strategies.empty_factories)
+@given(strategies.somes, strategies.equatable_empty_factories)
 def test_some(some: Some, factory: Callable[[], Any]) -> None:
     result = some.unwrap_or_else(factory)
 
