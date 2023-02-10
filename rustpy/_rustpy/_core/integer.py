@@ -43,14 +43,14 @@ class _BaseInteger(_abc.ABC, _OrderedWrapper[int]):
     def div(self, divisor: _te.Self) -> _te.Self:
         if not isinstance(divisor, type(self)):
             raise TypeError(type(divisor))
-        return type(self)(
-                _trunc_division_quotient(self._value, divisor._value))
+        return type(self)(_trunc_division_quotient(self._value,
+                                                   divisor._value))
 
     def div_euclid(self, divisor: _te.Self) -> _te.Self:
         if not isinstance(divisor, type(self)):
             raise TypeError(type(divisor))
-        return type(self)(
-                _floor_division_quotient(self._value, divisor._value))
+        return type(self)(_floor_division_quotient(self._value,
+                                                   divisor._value))
 
     @_abc.abstractmethod
     def rem(self, divisor: _te.Self) -> _te.Self:
@@ -133,10 +133,10 @@ class _BaseInteger(_abc.ABC, _OrderedWrapper[int]):
         ...
 
     def __mod__(self, other: _t.Any) -> _t.Any:
-        return (
-            type(self)(_trunc_division_remainder(self._value, other._value))
-            if isinstance(other, type(self))
-            else NotImplemented)
+        return (type(self)(_trunc_division_remainder(self._value,
+                                                     other._value))
+                if isinstance(other, type(self))
+                else NotImplemented)
 
     @_t.overload
     def __mul__(self, other: _te.Self) -> _te.Self:
