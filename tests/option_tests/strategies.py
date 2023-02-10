@@ -21,6 +21,6 @@ values |= _st.dictionaries(hashable_values, deferred_values)
 empty_factories = _st.builds(lambda value: (lambda: value), values)
 maps = _st.builds(lambda value: (lambda _: value), values)
 nones = _st.builds(None_)
-somes = _st.builds(Some, values)
+somes = _st.builds(Some, deferred_values)
 options = nones | somes
 values |= options
