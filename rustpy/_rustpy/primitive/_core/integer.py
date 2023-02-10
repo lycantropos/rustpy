@@ -10,7 +10,7 @@ import typing_extensions as _te
 from rustpy.option import (None_,
                            Option,
                            Some)
-from rustpy.primitive.bool_ import bool_
+from .bool_ import bool_
 from .utils import (floor_division_quotient,
                     floor_division_remainder,
                     trunc_division_quotient,

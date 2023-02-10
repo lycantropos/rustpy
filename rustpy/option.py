@@ -4,14 +4,15 @@ import typing as _t
 
 import typing_extensions as _te
 
-from .primitive import bool_
-
 try:
     from ._crustpy import (None_,
                            Some)
 except ImportError:
     from ._rustpy.option import (None_,
                                  Some)
+
+if _t.TYPE_CHECKING:
+    from .primitive import bool_
 
 _T = _t.TypeVar('_T')
 _T2 = _t.TypeVar('_T2')

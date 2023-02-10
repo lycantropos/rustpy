@@ -4,7 +4,7 @@ import typing as _t
 
 import typing_extensions as _te
 
-from rustpy.primitive.bool_ import bool_
+from .primitive.bool_ import bool_
 
 _T = _t.TypeVar('_T')
 _T2 = _t.TypeVar('_T2')

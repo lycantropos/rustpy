@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from rustpy.primitive.bool_ import bool_
+from .bool_ import bool_
 from .ordered import _OrderedWrapper
 
 
