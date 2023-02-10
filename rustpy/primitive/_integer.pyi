@@ -3,69 +3,7 @@ import typing as _t
 import typing_extensions as _te
 
 from rustpy.option import Option
-
-
-@_te.final
-class bool_:
-    def __init__(self, _value: bool) -> None:
-        ...
-
-
-class _BaseFloat(_te.Protocol):
-    def __bool__(self) -> _t.NoReturn:
-        ...
-
-    @_t.overload
-    def __eq__(self, other: _te.Self) -> bool:
-        ...
-
-    @_t.overload
-    def __eq__(self, other: _t.Any) -> _t.Any:
-        ...
-
-    @_t.overload
-    def __ge__(self, other: _te.Self) -> bool:
-        ...
-
-    @_t.overload
-    def __ge__(self, other: _t.Any) -> _t.Any:
-        ...
-
-    @_t.overload
-    def __gt__(self, other: _te.Self) -> bool:
-        ...
-
-    @_t.overload
-    def __gt__(self, other: _t.Any) -> _t.Any:
-        ...
-
-    @_t.overload
-    def __le__(self, other: _te.Self) -> bool:
-        ...
-
-    @_t.overload
-    def __le__(self, other: _t.Any) -> _t.Any:
-        ...
-
-    @_t.overload
-    def __lt__(self, other: _te.Self) -> bool:
-        ...
-
-    @_t.overload
-    def __lt__(self, other: _t.Any) -> _t.Any:
-        ...
-
-
-@_te.final
-class f32(_BaseFloat):
-    def __init__(self, _value: float) -> None:
-        ...
-
-
-@_te.final
-class f64(_BaseFloat):
-    def __init__(self, _value: float) -> None:
-        ...
+from rustpy.primitive.bool_ import bool_
 
 
 class _BaseInteger(_te.Protocol):
@@ -102,7 +40,7 @@ class _BaseInteger(_te.Protocol):
         ...
 
     @_t.overload
-    def __eq__(self, other: _te.Self) -> bool:
+    def __eq__(self, other: _te.Self) -> bool_:
         ...
 
     @_t.overload
@@ -118,7 +56,7 @@ class _BaseInteger(_te.Protocol):
         ...
 
     @_t.overload
-    def __ge__(self, other: _te.Self) -> bool:
+    def __ge__(self, other: _te.Self) -> bool_:
         ...
 
     @_t.overload
@@ -126,7 +64,7 @@ class _BaseInteger(_te.Protocol):
         ...
 
     @_t.overload
-    def __gt__(self, other: _te.Self) -> bool:
+    def __gt__(self, other: _te.Self) -> bool_:
         ...
 
     @_t.overload
@@ -140,7 +78,7 @@ class _BaseInteger(_te.Protocol):
         ...
 
     @_t.overload
-    def __le__(self, other: _te.Self) -> bool:
+    def __le__(self, other: _te.Self) -> bool_:
         ...
 
     @_t.overload
@@ -148,7 +86,7 @@ class _BaseInteger(_te.Protocol):
         ...
 
     @_t.overload
-    def __lt__(self, other: _te.Self) -> bool:
+    def __lt__(self, other: _te.Self) -> bool_:
         ...
 
     @_t.overload
