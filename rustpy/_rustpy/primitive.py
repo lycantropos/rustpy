@@ -124,16 +124,6 @@ u16.MIN = _unsigned_cls_to_min_value(u16)
 
 
 @_te.final
-class u32(_BaseUnsignedInteger):
-    pass
-
-
-u32.BITS = u32(32)
-u32.MAX = _unsigned_cls_to_max_value(u32)
-u32.MIN = _unsigned_cls_to_min_value(u32)
-
-
-@_te.final
 class u64(_BaseUnsignedInteger):
     pass
 
