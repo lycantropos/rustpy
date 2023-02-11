@@ -61,7 +61,6 @@ class Option(_te.Protocol, _t.Generic[_T]):
     def __bool__(self) -> _t.NoReturn:
         ...
 
-
     @_t.overload
     def __eq__(self, other: _te.Self) -> bool:
         ...
