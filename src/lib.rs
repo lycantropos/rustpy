@@ -227,6 +227,10 @@ impl Err_ {
         )))
     }
 
+    fn unwrap_err(&self) -> PyObject {
+        self.0.clone()
+    }
+
     fn unwrap_or(&self, default: PyObject) -> PyObject {
         default
     }
@@ -362,6 +366,13 @@ impl Ok_ {
 
     fn unwrap(&self) -> PyObject {
         self.0.clone()
+    }
+
+    fn unwrap_err(&self, py: Python) -> PyResult<PyObject> {
+        Err(PyValueError::new_err(format!(
+            "Called `unwrap` on an `Err` value: {}.",
+            self.0.as_ref(py).repr()?
+        )))
     }
 
     fn unwrap_or(&self, _default: PyObject) -> PyObject {

@@ -56,6 +56,9 @@ class Result(_te.Protocol, _t.Generic[_T, _E]):
     def unwrap(self) -> _T:
         ...
 
+    def unwrap_err(self) -> _E:
+        ...
+
     def unwrap_or(self, _default: _T) -> _T:
         ...
 
