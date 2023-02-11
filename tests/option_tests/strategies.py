@@ -1,8 +1,22 @@
+from functools import partial
+
 from hypothesis import strategies as _st
 
 from rustpy.option import (None_,
                            Some)
 
+comparable_values_categories_tuple = (
+    _st.booleans() | _st.integers() | _st.fractions()
+    | _st.floats(allow_nan=False),
+    _st.binary(),
+    _st.text(),
+    _st.dates(),
+    _st.datetimes()
+)
+comparable_values = _st.one_of(comparable_values_categories_tuple)
+comparable_values_categories = _st.sampled_from(
+        comparable_values_categories_tuple
+)
 hashable_equatable_values = (
         _st.none() | _st.sampled_from([Ellipsis, NotImplemented])
         | _st.booleans() | _st.integers() | _st.fractions()
@@ -38,6 +52,19 @@ equatable_pure_maps = (
 nones = _st.builds(None_)
 somes = _st.builds(Some, deferred_equatable_values)
 options = nones | somes
+comparable_options = nones | _st.builds(Some, comparable_values)
+comparable_somes_categories = comparable_values_categories.map(
+        partial(_st.builds, Some)
+)
+comparable_options_categories = comparable_somes_categories.map(
+        lambda somes: nones | somes
+)
+comparable_options_pairs = comparable_options_categories.flatmap(
+        lambda values: _st.tuples(values, values)
+)
+comparable_options_triplets = comparable_somes_categories.flatmap(
+    lambda values: _st.tuples(values, values, values)
+)
 options_maps = _st.builds(lambda value: (lambda _: value), options)
 options_empty_factories = _st.builds(lambda value: (lambda: value), options)
 equatable_values |= options
