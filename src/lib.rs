@@ -4,7 +4,7 @@ use pyo3::basic::CompareOp;
 use pyo3::exceptions::{PyOverflowError, PyTypeError, PyValueError};
 use pyo3::prelude::{pyclass, pymethods, pymodule, IntoPy, PyModule, PyObject, PyResult, Python};
 use pyo3::types::{PyFloat, PyTuple};
-use pyo3::{PyAny, PyRef};
+use pyo3::{PyAny, PyRef, PyTypeInfo};
 
 #[pymodule]
 fn _crustpy(_py: Python, module: &PyModule) -> PyResult<()> {
@@ -191,8 +191,8 @@ impl Err_ {
         default.call1(PyTuple::new(py, [self.0.as_ref(py)]))
     }
 
-    fn or_(&self, value: &PyAny, py: Python) -> PyResult<PyObject> {
-        extract_result_value(value, py).ok_or_else(|| {
+    fn or_<'a>(&self, value: &'a PyAny, py: Python) -> PyResult<&'a PyAny> {
+        check_result_value(value, py).ok_or_else(|| {
             value
                 .repr()
                 .map(|result_repr| {
@@ -205,9 +205,9 @@ impl Err_ {
         })
     }
 
-    fn or_else(&self, function: &PyAny, py: Python) -> PyResult<PyObject> {
+    fn or_else<'a>(&self, function: &'a PyAny, py: Python) -> PyResult<&'a PyAny> {
         let result = function.call1(PyTuple::new(py, [self.0.as_ref(py)]))?;
-        extract_result_value(result, py).ok_or_else(|| {
+        check_result_value(result, py).ok_or_else(|| {
             result
                 .repr()
                 .map(|result_repr| {
@@ -258,8 +258,8 @@ impl Ok_ {
         Self(_value)
     }
 
-    fn and_(&self, value: &PyAny, py: Python) -> PyResult<PyObject> {
-        extract_result_value(value, py).ok_or_else(|| {
+    fn and_<'a>(&self, value: &'a PyAny, py: Python) -> PyResult<&'a PyAny> {
+        check_result_value(value, py).ok_or_else(|| {
             value
                 .repr()
                 .map(|result_repr| {
@@ -272,9 +272,9 @@ impl Ok_ {
         })
     }
 
-    fn and_then(&self, function: &PyAny, py: Python) -> PyResult<PyObject> {
+    fn and_then<'a>(&self, function: &'a PyAny, py: Python) -> PyResult<&'a PyAny> {
         let result = function.call1(PyTuple::new(py, [self.0.as_ref(py)]))?;
-        extract_result_value(result, py).ok_or_else(|| {
+        check_result_value(result, py).ok_or_else(|| {
             result
                 .repr()
                 .map(|result_repr| {
@@ -402,8 +402,8 @@ impl None_ {
         default.call0()
     }
 
-    fn or_(&self, value: &PyAny, py: Python) -> PyResult<PyObject> {
-        extract_option_value(value, py).ok_or_else(|| {
+    fn or_<'a>(&self, value: &'a PyAny, py: Python) -> PyResult<&'a PyAny> {
+        check_option_value(value, py).ok_or_else(|| {
             value
                 .repr()
                 .map(|result_repr| {
@@ -416,9 +416,9 @@ impl None_ {
         })
     }
 
-    fn or_else(&self, function: &PyAny, py: Python) -> PyResult<PyObject> {
+    fn or_else<'a>(&self, function: &'a PyAny, py: Python) -> PyResult<&'a PyAny> {
         let result = function.call0()?;
-        extract_option_value(result, py).ok_or_else(|| {
+        check_option_value(result, py).ok_or_else(|| {
             result
                 .repr()
                 .map(|result_repr| {
@@ -465,8 +465,8 @@ impl Some_ {
         Self(_value)
     }
 
-    fn and_(&self, value: &PyAny, py: Python) -> PyResult<PyObject> {
-        extract_option_value(value, py).ok_or_else(|| {
+    fn and_<'a>(&self, value: &'a PyAny, py: Python) -> PyResult<&'a PyAny> {
+        check_option_value(value, py).ok_or_else(|| {
             value
                 .repr()
                 .map(|result_repr| {
@@ -479,9 +479,9 @@ impl Some_ {
         })
     }
 
-    fn and_then(&self, function: &PyAny, py: Python) -> PyResult<PyObject> {
+    fn and_then<'a>(&self, function: &'a PyAny, py: Python) -> PyResult<&'a PyAny> {
         let result = function.call1(PyTuple::new(py, [self.0.as_ref(py)]))?;
-        extract_option_value(result, py).ok_or_else(|| {
+        check_option_value(result, py).ok_or_else(|| {
             result
                 .repr()
                 .map(|result_repr| {
@@ -562,21 +562,29 @@ impl Some_ {
     }
 }
 
-fn extract_option_value(value: &PyAny, py: Python) -> Option<PyObject> {
-    if let Ok(value) = value.extract::<Some_>() {
-        Some(value.into_py(py))
-    } else if let Ok(value) = value.extract::<None_>() {
-        Some(value.into_py(py))
+fn check_option_value<'a>(value: &'a PyAny, py: Python) -> Option<&'a PyAny> {
+    if value
+        .is_instance(PyTuple::new(
+            py,
+            [Some_::type_object(py), None_::type_object(py)],
+        ))
+        .ok()?
+    {
+        Some(value)
     } else {
         None
     }
 }
 
-fn extract_result_value(value: &PyAny, py: Python) -> Option<PyObject> {
-    if let Ok(value) = value.extract::<Ok_>() {
-        Some(value.into_py(py))
-    } else if let Ok(value) = value.extract::<Err_>() {
-        Some(value.into_py(py))
+fn check_result_value<'a>(value: &'a PyAny, py: Python) -> Option<&'a PyAny> {
+    if value
+        .is_instance(PyTuple::new(
+            py,
+            [Err_::type_object(py), Ok_::type_object(py)],
+        ))
+        .ok()?
+    {
+        Some(value)
     } else {
         None
     }
