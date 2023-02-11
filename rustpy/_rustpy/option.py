@@ -50,11 +50,69 @@ class None_:
     def unwrap_or_else(self, _function: _t.Callable[[], _T]) -> _T:
         return _function()
 
+    @_t.overload
+    def __eq__(self, other: Option[_T]) -> bool_:
+        ...
+
+    @_t.overload
+    def __eq__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __eq__(self, other: _t.Any) -> _t.Any:
+        return (bool_(isinstance(other, None_))
+                or (bool_(not isinstance(other, Some))
+                    and NotImplemented))
+
+    @_t.overload
+    def __ge__(self, other: Option[_T]) -> bool_:
+        ...
+
+    @_t.overload
+    def __ge__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __ge__(self, other: _t.Any) -> _t.Any:
+        return (bool_(isinstance(other, None_))
+                or (bool_(not isinstance(other, Some))
+                    and NotImplemented))
+
+    @_t.overload
+    def __gt__(self, other: Option[_T]) -> bool_:
+        ...
+
+    @_t.overload
+    def __gt__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __gt__(self, other: _t.Any) -> _t.Any:
+        return bool_(not isinstance(other, (None_, Some))) and NotImplemented
+
+    @_t.overload
+    def __le__(self, other: Option[_T]) -> bool_:
+        ...
+
+    @_t.overload
+    def __le__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __le__(self, other: _t.Any) -> _t.Any:
+        return bool_(isinstance(other, (None_, Some))) or NotImplemented
+
+    @_t.overload
+    def __lt__(self, other: Option[_T]) -> bool_:
+        ...
+
+    @_t.overload
+    def __lt__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __lt__(self, other: _t.Any) -> _t.Any:
+        return (bool_(not isinstance(other, None_))
+                and (bool_(isinstance(other, Some))
+                     or NotImplemented))
+
 
 class Some(_t.Generic[_T]):
-    def __init__(self, value: _T) -> None:
-        self._value = value
-
     def and_(self, _other: Option[_T]) -> Option[_T]:
         return _other
 
@@ -93,6 +151,75 @@ class Some(_t.Generic[_T]):
 
     def unwrap_or_else(self, _function: _t.Callable[[], _T]) -> _T:
         return self._value
+
+    def __init__(self, value: _T) -> None:
+        self._value = value
+
+    @_t.overload
+    def __eq__(self, other: Option[_T]) -> bool_:
+        ...
+
+    @_t.overload
+    def __eq__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __eq__(self, other: _t.Any) -> _t.Any:
+        return (bool_(self._value == other._value)
+                if isinstance(other, Some)
+                else (bool_(not isinstance(other, None_))
+                      and NotImplemented))
+
+    @_t.overload
+    def __ge__(self, other: Option[_T]) -> bool_:
+        ...
+
+    @_t.overload
+    def __ge__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __ge__(self, other: _t.Any) -> _t.Any:
+        return (self._value >= other._value
+                if isinstance(other, Some)
+                else bool_(isinstance(other, None_)) or NotImplemented)
+
+    @_t.overload
+    def __gt__(self, other: Option[_T]) -> bool_:
+        ...
+
+    @_t.overload
+    def __gt__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __gt__(self, other: _t.Any) -> _t.Any:
+        return (self._value > other._value
+                if isinstance(other, Some)
+                else bool_(isinstance(other, None_)) or NotImplemented)
+
+    @_t.overload
+    def __le__(self, other: Option[_T]) -> bool_:
+        ...
+
+    @_t.overload
+    def __le__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __le__(self, other: _t.Any) -> _t.Any:
+        return (self._value <= other._value
+                if isinstance(other, Some)
+                else bool_(not isinstance(other, None_)) and NotImplemented)
+
+    @_t.overload
+    def __lt__(self, other: Option[_T]) -> bool_:
+        ...
+
+    @_t.overload
+    def __lt__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __lt__(self, other: _t.Any) -> _t.Any:
+        return (self._value < other._value
+                if isinstance(other, Some)
+                else bool_(not isinstance(other, None_)) and NotImplemented)
 
 
 Option = _t.Union[None_, Some[_T]]

@@ -452,6 +452,17 @@ impl None_ {
     fn __repr__(&self) -> &str {
         "None()"
     }
+
+    fn __richcmp__(&self, other: &PyAny, op: CompareOp) -> PyResult<PyObject> {
+        let py = other.py();
+        if other.is_instance_of::<Self>()? {
+            Ok(Bool(matches!(op, CompareOp::Eq | CompareOp::Ge | CompareOp::Le)).into_py(py))
+        } else if other.is_instance_of::<Some_>()? {
+            Ok(Bool(matches!(op, CompareOp::Le | CompareOp::Lt | CompareOp::Ne)).into_py(py))
+        } else {
+            Ok(py.NotImplemented())
+        }
+    }
 }
 
 #[pyclass(module = "rustpy.option", name = "Some")]
@@ -560,6 +571,31 @@ impl Some_ {
             .repr()
             .map(|value_repr| format!("Some({})", value_repr))
     }
+
+    fn __richcmp__(&self, other: &PyAny, op: CompareOp) -> PyResult<PyObject> {
+        let py = other.py();
+        other
+            .extract::<Self>()
+            .and_then(|other| {
+                self.0.as_ref(py).rich_compare(&other.0, op).map(|result| {
+                    if let Ok(result) = result.extract::<bool>() {
+                        Bool(result).into_py(py)
+                    } else {
+                        result.into_py(py)
+                    }
+                })
+            })
+            .or_else(|_| {
+                if other.is_instance_of::<None_>()? {
+                    Ok(
+                        Bool(matches!(op, CompareOp::Ge | CompareOp::Gt | CompareOp::Ne))
+                            .into_py(py),
+                    )
+                } else {
+                    Ok(py.NotImplemented())
+                }
+            })
+    }
 }
 
 fn check_option_value<'a>(value: &'a PyAny, py: Python) -> Option<&'a PyAny> {
@@ -635,7 +671,7 @@ macro_rules! define_signed_integer_python_binding {
 
             fn __richcmp__(&self, other: &PyAny, op: CompareOp) -> PyResult<PyObject> {
                 let py = other.py();
-                match other.extract::<$wrapper>() {
+                match other.extract::<Self>() {
                     Ok(other) => Ok(Bool(compare(&self.0, &other.0, op)).into_py(py)),
                     Err(_) => Ok(py.NotImplemented()),
                 }
@@ -690,7 +726,7 @@ macro_rules! define_unsigned_integer_python_binding {
 
             fn __richcmp__(&self, other: &PyAny, op: CompareOp) -> PyResult<PyObject> {
                 let py = other.py();
-                match other.extract::<$wrapper>() {
+                match other.extract::<Self>() {
                     Ok(other) => Ok(Bool(compare(&self.0, &other.0, op)).into_py(py)),
                     Err(_) => Ok(py.NotImplemented()),
                 }
