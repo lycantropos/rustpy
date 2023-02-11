@@ -1,6 +1,7 @@
 from hypothesis import strategies as _st
 
-from rustpy.option import None_, Some
+from rustpy.option import (None_,
+                           Some)
 
 hashable_equatable_values = (
         _st.none() | _st.sampled_from([Ellipsis, NotImplemented])
