@@ -1,5 +1,4 @@
-from typing import (Any,
-                    Callable)
+from typing import Callable
 
 from hypothesis import given
 
