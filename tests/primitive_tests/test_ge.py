@@ -2,10 +2,20 @@ from typing import Tuple
 
 from hypothesis import given
 
+from rustpy.primitive import bool_
 from tests.utils import (Primitive,
                          equivalence,
                          implication)
 from . import strategies
+
+
+@given(strategies.finite_primitives_pairs)
+def test_basic(pair: Tuple[Primitive, Primitive]) -> None:
+    first, second = pair
+
+    result = first >= second
+
+    assert isinstance(result, bool_)
 
 
 @given(strategies.finite_primitives)
