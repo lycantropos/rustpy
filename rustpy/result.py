@@ -61,3 +61,61 @@ class Result(_te.Protocol, _t.Generic[_T, _E]):
 
     def unwrap_or_else(self, _function: _t.Callable[[_E], _T]) -> _T:
         ...
+
+    def __bool__(self) -> _t.NoReturn:
+        ...
+
+    @_t.overload
+    def __eq__(self, other: _te.Self) -> bool:
+        ...
+
+    @_t.overload
+    def __eq__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __eq__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    @_t.overload
+    def __ge__(self, other: _te.Self) -> bool:
+        ...
+
+    @_t.overload
+    def __ge__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __ge__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    @_t.overload
+    def __gt__(self, other: _te.Self) -> bool:
+        ...
+
+    @_t.overload
+    def __gt__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __gt__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    @_t.overload
+    def __le__(self, other: _te.Self) -> bool:
+        ...
+
+    @_t.overload
+    def __le__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __le__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    @_t.overload
+    def __lt__(self, other: _te.Self) -> bool:
+        ...
+
+    @_t.overload
+    def __lt__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __lt__(self, other: _t.Any) -> _t.Any:
+        ...

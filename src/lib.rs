@@ -239,6 +239,31 @@ impl Err_ {
         Err(PyTypeError::new_err("Expected `bool_`, found `Err`."))
     }
 
+    fn __richcmp__(&self, other: &PyAny, op: CompareOp) -> PyResult<PyObject> {
+        let py = other.py();
+        other
+            .extract::<Self>()
+            .and_then(|other| {
+                self.0.as_ref(py).rich_compare(&other.0, op).map(|result| {
+                    if let Ok(result) = result.extract::<bool>() {
+                        Bool(result).into_py(py)
+                    } else {
+                        result.into_py(py)
+                    }
+                })
+            })
+            .or_else(|_| {
+                if other.is_instance_of::<Ok_>()? {
+                    Ok(
+                        Bool(matches!(op, CompareOp::Ge | CompareOp::Gt | CompareOp::Ne))
+                            .into_py(py),
+                    )
+                } else {
+                    Ok(py.NotImplemented())
+                }
+            })
+    }
+
     fn __repr__(&self, py: Python) -> PyResult<String> {
         self.0
             .as_ref(py)
@@ -356,6 +381,31 @@ impl Ok_ {
             .as_ref(py)
             .repr()
             .map(|value_repr| format!("Ok({})", value_repr))
+    }
+
+    fn __richcmp__(&self, other: &PyAny, op: CompareOp) -> PyResult<PyObject> {
+        let py = other.py();
+        other
+            .extract::<Self>()
+            .and_then(|other| {
+                self.0.as_ref(py).rich_compare(&other.0, op).map(|result| {
+                    if let Ok(result) = result.extract::<bool>() {
+                        Bool(result).into_py(py)
+                    } else {
+                        result.into_py(py)
+                    }
+                })
+            })
+            .or_else(|_| {
+                if other.is_instance_of::<Err_>()? {
+                    Ok(
+                        Bool(matches!(op, CompareOp::Le | CompareOp::Lt | CompareOp::Ne))
+                            .into_py(py),
+                    )
+                } else {
+                    Ok(py.NotImplemented())
+                }
+            })
     }
 }
 
