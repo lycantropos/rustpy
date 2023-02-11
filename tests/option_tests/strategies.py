@@ -37,4 +37,5 @@ equatable_pure_maps = (
 nones = _st.builds(None_)
 somes = _st.builds(Some, deferred_equatable_values)
 options = nones | somes
+options_maps = _st.builds(lambda value: (lambda _: value), options)
 equatable_values |= options
