@@ -38,4 +38,5 @@ nones = _st.builds(None_)
 somes = _st.builds(Some, deferred_equatable_values)
 options = nones | somes
 options_maps = _st.builds(lambda value: (lambda _: value), options)
+options_empty_factories = _st.builds(lambda value: (lambda: value), options)
 equatable_values |= options
