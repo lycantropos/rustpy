@@ -32,6 +32,58 @@ class _BaseInteger(_abc.ABC, _OrderedWrapper[int]):
     MAX: _t.ClassVar[_te.Self]
     MIN: _t.ClassVar[_te.Self]
 
+    def checked_add(self, other: _te.Self) -> _Option[_te.Self]:
+        if not isinstance(other, type(self)):
+            raise TypeError(type(other))
+        try:
+            return _Some(type(self)(self._value + other._value))
+        except OverflowError:
+            return _None()
+
+    def checked_div(self, other: _te.Self) -> _Option[_te.Self]:
+        if not isinstance(other, type(self)):
+            raise TypeError(type(other))
+        try:
+            return _Some(type(self)(_trunc_division_quotient(self._value,
+                                                             other._value)))
+        except OverflowError:
+            return _None()
+
+    def checked_div_euclid(self, other: _te.Self) -> _Option[_te.Self]:
+        if not isinstance(other, type(self)):
+            raise TypeError(type(other))
+        try:
+            return _Some(type(self)(_floor_division_quotient(self._value,
+                                                             other._value)))
+        except OverflowError:
+            return _None()
+
+    def checked_mul(self, other: _te.Self) -> _Option[_te.Self]:
+        if not isinstance(other, type(self)):
+            raise TypeError(type(other))
+        try:
+            return _Some(type(self)(self._value * other._value))
+        except OverflowError:
+            return _None()
+
+    def checked_rem(self, other: _te.Self) -> _Option[_te.Self]:
+        if not isinstance(other, type(self)):
+            raise TypeError(type(other))
+        try:
+            return _Some(type(self)(_trunc_division_remainder(self._value,
+                                                              other._value)))
+        except OverflowError:
+            return _None()
+
+    def checked_rem_euclid(self, other: _te.Self) -> _Option[_te.Self]:
+        if not isinstance(other, type(self)):
+            raise TypeError(type(other))
+        try:
+            return _Some(type(self)(_floor_division_remainder(self._value,
+                                                              other._value)))
+        except OverflowError:
+            return _None()
+
     def checked_sub(self, other: _te.Self) -> _Option[_te.Self]:
         if not isinstance(other, type(self)):
             raise TypeError(type(other))

@@ -73,7 +73,31 @@ class _BaseInteger(_te.Protocol):
     MAX: _t.ClassVar[_te.Self] = ...
     MIN: _t.ClassVar[_te.Self] = ...
 
+    def checked_add(self, other: _te.Self) -> Option[_te.Self]:
+        ...
+
+    def checked_div(self, other: _te.Self) -> Option[_te.Self]:
+        ...
+
+    def checked_div_euclid(self, other: _te.Self) -> Option[_te.Self]:
+        ...
+
+    def checked_mul(self, other: _te.Self) -> Option[_te.Self]:
+        ...
+
+    def checked_rem(self, other: _te.Self) -> Option[_te.Self]:
+        ...
+
+    def checked_rem_euclid(self, other: _te.Self) -> Option[_te.Self]:
+        ...
+
     def checked_sub(self, other: _te.Self) -> Option[_te.Self]:
+        ...
+
+    def div(self, divisor: _te.Self) -> _te.Self:
+        ...
+
+    def div_euclid(self, divisor: _te.Self) -> _te.Self:
         ...
 
     def rem(self, divisor: _te.Self) -> _te.Self:
@@ -107,14 +131,6 @@ class _BaseInteger(_te.Protocol):
 
     @_t.overload
     def __eq__(self, other: _t.Any) -> _t.Any:
-        ...
-
-    @_t.overload
-    def __floordiv__(self, other: _te.Self) -> _te.Self:
-        ...
-
-    @_t.overload
-    def __floordiv__(self, other: _t.Any) -> _t.Any:
         ...
 
     @_t.overload
@@ -193,6 +209,14 @@ class _BaseInteger(_te.Protocol):
 
     @_t.overload
     def __sub__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    @_t.overload
+    def __truediv__(self, other: _te.Self) -> _te.Self:
+        ...
+
+    @_t.overload
+    def __truediv__(self, other: _t.Any) -> _t.Any:
         ...
 
 

@@ -1,7 +1,7 @@
 use std::ffi::c_double;
 
 use pyo3::basic::CompareOp;
-use pyo3::exceptions::{PyOverflowError, PyTypeError, PyValueError};
+use pyo3::exceptions::{PyOverflowError, PyTypeError, PyValueError, PyZeroDivisionError};
 use pyo3::prelude::{pyclass, pymethods, pymodule, IntoPy, PyModule, PyObject, PyResult, Python};
 use pyo3::types::{PyFloat, PyTuple};
 use pyo3::{PyAny, PyRef, PyTypeInfo};
@@ -709,6 +709,129 @@ macro_rules! define_signed_integer_python_binding {
                 Self(value)
             }
 
+            fn checked_add(&self, other: &Self, py: Python) -> PyObject {
+                match self.0.checked_add(other.0) {
+                    Some(result) => Some_(Self(result).into_py(py)).into_py(py),
+                    None => None_().into_py(py),
+                }
+            }
+
+            fn checked_div(&self, other: &Self, py: Python) -> PyObject {
+                match self.0.checked_div(other.0) {
+                    Some(result) => Some_(Self(result).into_py(py)).into_py(py),
+                    None => None_().into_py(py),
+                }
+            }
+
+            fn checked_div_euclid(&self, other: &Self, py: Python) -> PyObject {
+                match self.0.checked_div_euclid(other.0) {
+                    Some(result) => Some_(Self(result).into_py(py)).into_py(py),
+                    None => None_().into_py(py),
+                }
+            }
+
+            fn checked_mul(&self, other: &Self, py: Python) -> PyObject {
+                match self.0.checked_mul(other.0) {
+                    Some(result) => Some_(Self(result).into_py(py)).into_py(py),
+                    None => None_().into_py(py),
+                }
+            }
+
+            fn checked_rem(&self, other: &Self, py: Python) -> PyObject {
+                match self.0.checked_rem(other.0) {
+                    Some(result) => Some_(Self(result).into_py(py)).into_py(py),
+                    None => None_().into_py(py),
+                }
+            }
+
+            fn checked_rem_euclid(&self, other: &Self, py: Python) -> PyObject {
+                match self.0.checked_rem_euclid(other.0) {
+                    Some(result) => Some_(Self(result).into_py(py)).into_py(py),
+                    None => None_().into_py(py),
+                }
+            }
+
+            fn checked_sub(&self, other: &Self, py: Python) -> PyObject {
+                match self.0.checked_sub(other.0) {
+                    Some(result) => Some_(Self(result).into_py(py)).into_py(py),
+                    None => None_().into_py(py),
+                }
+            }
+
+            fn div(&self, other: &Self) -> PyResult<Self> {
+                match self.0.checked_div(other.0) {
+                    Some(result) => Ok(Self(result)),
+                    None => Err(if other.0 == 0 {
+                        PyZeroDivisionError::new_err("Division by zero is undefined.")
+                    } else {
+                        PyOverflowError::new_err(format!(
+                            "{} cannot be divided by {}.",
+                            self.__repr__(),
+                            other.__repr__(),
+                        ))
+                    }),
+                }
+            }
+
+            fn div_euclid(&self, other: &Self) -> PyResult<Self> {
+                match self.0.checked_div_euclid(other.0) {
+                    Some(result) => Ok(Self(result)),
+                    None => Err(if other.0 == 0 {
+                        PyZeroDivisionError::new_err("Euclidean division by zero is undefined.")
+                    } else {
+                        PyOverflowError::new_err(format!(
+                            "{} cannot be Euclidean divided by {}.",
+                            self.__repr__(),
+                            other.__repr__(),
+                        ))
+                    }),
+                }
+            }
+
+            fn rem(&self, other: &Self) -> PyResult<Self> {
+                match self.0.checked_rem(other.0) {
+                    Some(result) => Ok(Self(result)),
+                    None => Err(if other.0 == 0 {
+                        PyZeroDivisionError::new_err("Division by zero is undefined.")
+                    } else {
+                        PyOverflowError::new_err(format!(
+                            "{} cannot be divided by {}.",
+                            self.__repr__(),
+                            other.__repr__(),
+                        ))
+                    }),
+                }
+            }
+
+            fn rem_euclid(&self, other: &Self) -> PyResult<Self> {
+                match self.0.checked_rem_euclid(other.0) {
+                    Some(result) => Ok(Self(result)),
+                    None => Err(if other.0 == 0 {
+                        PyZeroDivisionError::new_err("Euclidean division by zero is undefined.")
+                    } else {
+                        PyOverflowError::new_err(format!(
+                            "{} cannot be Euclidean divided by {}.",
+                            self.__repr__(),
+                            other.__repr__(),
+                        ))
+                    }),
+                }
+            }
+
+            fn __add__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
+                match other.extract::<Self>() {
+                    Ok(other) => match self.0.checked_add(other.0) {
+                        Some(result) => Ok(Self(result).into_py(py)),
+                        None => Err(PyOverflowError::new_err(format!(
+                            "{} cannot be increased by {}.",
+                            self.__repr__(),
+                            other.__repr__(),
+                        ))),
+                    },
+                    Err(_) => Ok(py.NotImplemented()),
+                }
+            }
+
             fn __bool__(&self) -> PyResult<()> {
                 Err(PyTypeError::new_err(format!(
                     "Expected `bool_`, found `{}`.",
@@ -720,10 +843,56 @@ macro_rules! define_signed_integer_python_binding {
                 Self(!self.0)
             }
 
+            fn __mod__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
+                match other.extract::<Self>() {
+                    Ok(other) => match self.0.checked_rem(other.0) {
+                        Some(result) => Ok(Self(result).into_py(py)),
+                        None => Err(if other.0 == 0 {
+                            PyZeroDivisionError::new_err("Division by zero is undefined.")
+                        } else {
+                            PyOverflowError::new_err(format!(
+                                "{} cannot be divided by {}.",
+                                self.__repr__(),
+                                other.__repr__(),
+                            ))
+                        }),
+                    },
+                    Err(_) => Ok(py.NotImplemented()),
+                }
+            }
+
+            fn __mul__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
+                match other.extract::<Self>() {
+                    Ok(other) => match self.0.checked_mul(other.0) {
+                        Some(result) => Ok(Self(result).into_py(py)),
+                        None => Err(PyOverflowError::new_err(format!(
+                            "{} cannot be multiplied by {}.",
+                            self.__repr__(),
+                            other.__repr__(),
+                        ))),
+                    },
+                    Err(_) => Ok(py.NotImplemented()),
+                }
+            }
+
             fn __neg__(&self) -> PyResult<Self> {
                 self.0.checked_neg().map(Self).ok_or_else(|| {
                     PyOverflowError::new_err(format!("{} cannot be negated.", self.__repr__()))
                 })
+            }
+
+            fn __sub__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
+                match other.extract::<Self>() {
+                    Ok(other) => match self.0.checked_sub(other.0) {
+                        Some(result) => Ok(Self(result).into_py(py)),
+                        None => Err(PyOverflowError::new_err(format!(
+                            "{} cannot be decreased by {}.",
+                            self.__repr__(),
+                            other.__repr__(),
+                        ))),
+                    },
+                    Err(_) => Ok(py.NotImplemented()),
+                }
             }
 
             fn __repr__(&self) -> String {
@@ -740,6 +909,24 @@ macro_rules! define_signed_integer_python_binding {
 
             fn __str__(&self) -> String {
                 format!("{}{}", self.0, $name)
+            }
+
+            fn __truediv__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
+                match other.extract::<Self>() {
+                    Ok(other) => match self.0.checked_div(other.0) {
+                        Some(result) => Ok(Self(result).into_py(py)),
+                        None => Err(if other.0 == 0 {
+                            PyZeroDivisionError::new_err("Division by zero is undefined.")
+                        } else {
+                            PyOverflowError::new_err(format!(
+                                "{} cannot be divided by {}.",
+                                self.__repr__(),
+                                other.__repr__(),
+                            ))
+                        }),
+                    },
+                    Err(_) => Ok(py.NotImplemented()),
+                }
             }
         }
     };
@@ -774,11 +961,166 @@ macro_rules! define_unsigned_integer_python_binding {
                 Self(value)
             }
 
+            fn checked_add(&self, other: &Self, py: Python) -> PyObject {
+                match self.0.checked_add(other.0) {
+                    Some(result) => Some_(Self(result).into_py(py)).into_py(py),
+                    None => None_().into_py(py),
+                }
+            }
+
+            fn checked_div(&self, other: &Self, py: Python) -> PyObject {
+                match self.0.checked_div(other.0) {
+                    Some(result) => Some_(Self(result).into_py(py)).into_py(py),
+                    None => None_().into_py(py),
+                }
+            }
+
+            fn checked_div_euclid(&self, other: &Self, py: Python) -> PyObject {
+                match self.0.checked_div_euclid(other.0) {
+                    Some(result) => Some_(Self(result).into_py(py)).into_py(py),
+                    None => None_().into_py(py),
+                }
+            }
+
+            fn checked_mul(&self, other: &Self, py: Python) -> PyObject {
+                match self.0.checked_mul(other.0) {
+                    Some(result) => Some_(Self(result).into_py(py)).into_py(py),
+                    None => None_().into_py(py),
+                }
+            }
+
+            fn checked_rem(&self, other: &Self, py: Python) -> PyObject {
+                match self.0.checked_rem(other.0) {
+                    Some(result) => Some_(Self(result).into_py(py)).into_py(py),
+                    None => None_().into_py(py),
+                }
+            }
+
+            fn checked_rem_euclid(&self, other: &Self, py: Python) -> PyObject {
+                match self.0.checked_rem_euclid(other.0) {
+                    Some(result) => Some_(Self(result).into_py(py)).into_py(py),
+                    None => None_().into_py(py),
+                }
+            }
+
+            fn checked_sub(&self, other: &Self, py: Python) -> PyObject {
+                match self.0.checked_sub(other.0) {
+                    Some(result) => Some_(Self(result).into_py(py)).into_py(py),
+                    None => None_().into_py(py),
+                }
+            }
+
+            fn div(&self, other: &Self) -> PyResult<Self> {
+                match self.0.checked_div(other.0) {
+                    Some(result) => Ok(Self(result)),
+                    None => Err(if other.0 == 0 {
+                        PyZeroDivisionError::new_err("Division by zero is undefined.")
+                    } else {
+                        PyOverflowError::new_err(format!(
+                            "{} cannot be divided by {}.",
+                            self.__repr__(),
+                            other.__repr__(),
+                        ))
+                    }),
+                }
+            }
+
+            fn div_euclid(&self, other: &Self) -> PyResult<Self> {
+                match self.0.checked_div_euclid(other.0) {
+                    Some(result) => Ok(Self(result)),
+                    None => Err(if other.0 == 0 {
+                        PyZeroDivisionError::new_err("Euclidean division by zero is undefined.")
+                    } else {
+                        PyOverflowError::new_err(format!(
+                            "{} cannot be Euclidean divided by {}.",
+                            self.__repr__(),
+                            other.__repr__(),
+                        ))
+                    }),
+                }
+            }
+
+            fn rem(&self, other: &Self) -> PyResult<Self> {
+                match self.0.checked_rem(other.0) {
+                    Some(result) => Ok(Self(result)),
+                    None => Err(if other.0 == 0 {
+                        PyZeroDivisionError::new_err("Division by zero is undefined.")
+                    } else {
+                        PyOverflowError::new_err(format!(
+                            "{} cannot be divided by {}.",
+                            self.__repr__(),
+                            other.__repr__(),
+                        ))
+                    }),
+                }
+            }
+
+            fn rem_euclid(&self, other: &Self) -> PyResult<Self> {
+                match self.0.checked_rem_euclid(other.0) {
+                    Some(result) => Ok(Self(result)),
+                    None => Err(if other.0 == 0 {
+                        PyZeroDivisionError::new_err("Euclidean division by zero is undefined.")
+                    } else {
+                        PyOverflowError::new_err(format!(
+                            "{} cannot be Euclidean divided by {}.",
+                            self.__repr__(),
+                            other.__repr__(),
+                        ))
+                    }),
+                }
+            }
+
+            fn __add__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
+                match other.extract::<Self>() {
+                    Ok(other) => match self.0.checked_add(other.0) {
+                        Some(result) => Ok(Self(result).into_py(py)),
+                        None => Err(PyOverflowError::new_err(format!(
+                            "{} cannot be increased by {}.",
+                            self.__repr__(),
+                            other.__repr__(),
+                        ))),
+                    },
+                    Err(_) => Ok(py.NotImplemented()),
+                }
+            }
+
             fn __bool__(&self) -> PyResult<()> {
                 Err(PyTypeError::new_err(format!(
                     "Expected `bool_`, found `{}`.",
                     $name
                 )))
+            }
+
+            fn __mod__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
+                match other.extract::<Self>() {
+                    Ok(other) => match self.0.checked_rem(other.0) {
+                        Some(result) => Ok(Self(result).into_py(py)),
+                        None => Err(if other.0 == 0 {
+                            PyZeroDivisionError::new_err("Division by zero is undefined.")
+                        } else {
+                            PyOverflowError::new_err(format!(
+                                "{} cannot be divided by {}.",
+                                self.__repr__(),
+                                other.__repr__(),
+                            ))
+                        }),
+                    },
+                    Err(_) => Ok(py.NotImplemented()),
+                }
+            }
+
+            fn __mul__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
+                match other.extract::<Self>() {
+                    Ok(other) => match self.0.checked_mul(other.0) {
+                        Some(result) => Ok(Self(result).into_py(py)),
+                        None => Err(PyOverflowError::new_err(format!(
+                            "{} cannot be multiplied by {}.",
+                            self.__repr__(),
+                            other.__repr__(),
+                        ))),
+                    },
+                    Err(_) => Ok(py.NotImplemented()),
+                }
             }
 
             fn __repr__(&self) -> String {
@@ -793,8 +1135,40 @@ macro_rules! define_unsigned_integer_python_binding {
                 }
             }
 
+            fn __sub__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
+                match other.extract::<Self>() {
+                    Ok(other) => match self.0.checked_sub(other.0) {
+                        Some(result) => Ok(Self(result).into_py(py)),
+                        None => Err(PyOverflowError::new_err(format!(
+                            "{} cannot be decreased by {}.",
+                            self.__repr__(),
+                            other.__repr__(),
+                        ))),
+                    },
+                    Err(_) => Ok(py.NotImplemented()),
+                }
+            }
+
             fn __str__(&self) -> String {
                 format!("{}{}", self.0, $name)
+            }
+
+            fn __truediv__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
+                match other.extract::<Self>() {
+                    Ok(other) => match self.0.checked_div(other.0) {
+                        Some(result) => Ok(Self(result).into_py(py)),
+                        None => Err(if other.0 == 0 {
+                            PyZeroDivisionError::new_err("Division by zero is undefined.")
+                        } else {
+                            PyOverflowError::new_err(format!(
+                                "{} cannot be divided by {}.",
+                                self.__repr__(),
+                                other.__repr__(),
+                            ))
+                        }),
+                    },
+                    Err(_) => Ok(py.NotImplemented()),
+                }
             }
         }
     };
