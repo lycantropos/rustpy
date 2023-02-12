@@ -23,11 +23,11 @@ class Err(_t.Generic[_E]):
     def expect(self, _message: str) -> _t.NoReturn:
         raise ValueError(f'{_message}: {self._value!r}')
 
-    def is_err(self) -> bool:
-        return True
+    def is_err(self) -> bool_:
+        return bool_(True)
 
-    def is_ok(self) -> bool:
-        return False
+    def is_ok(self) -> bool_:
+        return bool_(False)
 
     def map(self, _function: _t.Callable[[_T], _T2]) -> _te.Self:
         return self
@@ -148,11 +148,11 @@ class Ok(_t.Generic[_T]):
     def expect(self, _message: str) -> _T:
         return self._value
 
-    def is_err(self) -> bool:
-        return False
+    def is_err(self) -> bool_:
+        return bool_(False)
 
-    def is_ok(self) -> bool:
-        return True
+    def is_ok(self) -> bool_:
+        return bool_(True)
 
     def map(self, _function: _t.Callable[[_T], _T2]) -> Ok[_T2]:
         return Ok(_function(self._value))
