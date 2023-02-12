@@ -4,6 +4,8 @@ import typing as _t
 
 import typing_extensions as _te
 
+from ._core.bool_ import bool_
+
 _E = _t.TypeVar('_E')
 _E2 = _t.TypeVar('_E2')
 _T = _t.TypeVar('_T')
@@ -11,9 +13,6 @@ _T2 = _t.TypeVar('_T2')
 
 
 class Err(_t.Generic[_E]):
-    def __init__(self, value: _E) -> None:
-        self._value = value
-
     def and_(self, _other: Result[_T, _E]) -> _te.Self:
         return self
 
@@ -67,11 +66,77 @@ class Err(_t.Generic[_E]):
     def unwrap_or_else(self, _function: _t.Callable[[_E], _T]) -> _T:
         return _function(self._value)
 
-
-class Ok(_t.Generic[_T]):
-    def __init__(self, value: _T) -> None:
+    def __init__(self, value: _E) -> None:
         self._value = value
 
+    @_t.overload
+    def __eq__(self, other: Result[_T]) -> bool_:
+        ...
+
+    @_t.overload
+    def __eq__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __eq__(self, other: _t.Any) -> _t.Any:
+        return (bool_(self._value == other._value)
+                if isinstance(other, Err)
+                else (bool_(not isinstance(other, Ok))
+                      and NotImplemented))
+
+    @_t.overload
+    def __ge__(self, other: Result[_T]) -> bool_:
+        ...
+
+    @_t.overload
+    def __ge__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __ge__(self, other: _t.Any) -> _t.Any:
+        return (bool_(self._value >= other._value)
+                if isinstance(other, Err)
+                else bool_(isinstance(other, Ok)) or NotImplemented)
+
+    @_t.overload
+    def __gt__(self, other: Result[_T]) -> bool_:
+        ...
+
+    @_t.overload
+    def __gt__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __gt__(self, other: _t.Any) -> _t.Any:
+        return (bool_(self._value > other._value)
+                if isinstance(other, Err)
+                else bool_(isinstance(other, Ok)) or NotImplemented)
+
+    @_t.overload
+    def __le__(self, other: Result[_T]) -> bool_:
+        ...
+
+    @_t.overload
+    def __le__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __le__(self, other: _t.Any) -> _t.Any:
+        return (bool_(self._value <= other._value)
+                if isinstance(other, Err)
+                else bool_(not isinstance(other, Ok)) and NotImplemented)
+
+    @_t.overload
+    def __lt__(self, other: Result[_T]) -> bool_:
+        ...
+
+    @_t.overload
+    def __lt__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __lt__(self, other: _t.Any) -> _t.Any:
+        return (bool_(self._value < other._value)
+                if isinstance(other, Err)
+                else bool_(not isinstance(other, Ok)) and NotImplemented)
+
+
+class Ok(_t.Generic[_T]):
     def and_(self, _other: Result[_T, _E]) -> Result[_T, _E]:
         return _other
 
@@ -124,6 +189,75 @@ class Ok(_t.Generic[_T]):
 
     def unwrap_or_else(self, _function: _t.Callable[[_E], _T]) -> _T:
         return self._value
+
+    def __init__(self, value: _T) -> None:
+        self._value = value
+
+    @_t.overload
+    def __eq__(self, other: Result[_T]) -> bool_:
+        ...
+
+    @_t.overload
+    def __eq__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __eq__(self, other: _t.Any) -> _t.Any:
+        return (bool_(self._value == other._value)
+                if isinstance(other, Ok)
+                else (bool_(not isinstance(other, Err))
+                      and NotImplemented))
+
+    @_t.overload
+    def __ge__(self, other: Result[_T]) -> bool_:
+        ...
+
+    @_t.overload
+    def __ge__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __ge__(self, other: _t.Any) -> _t.Any:
+        return (bool_(self._value >= other._value)
+                if isinstance(other, Ok)
+                else bool_(not isinstance(other, Err)) and NotImplemented)
+
+    @_t.overload
+    def __gt__(self, other: Result[_T]) -> bool_:
+        ...
+
+    @_t.overload
+    def __gt__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __gt__(self, other: _t.Any) -> _t.Any:
+        return (bool_(self._value > other._value)
+                if isinstance(other, Ok)
+                else bool_(not isinstance(other, Err)) and NotImplemented)
+
+    @_t.overload
+    def __le__(self, other: Result[_T]) -> bool_:
+        ...
+
+    @_t.overload
+    def __le__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __le__(self, other: _t.Any) -> _t.Any:
+        return (bool_(self._value <= other._value)
+                if isinstance(other, Ok)
+                else bool_(isinstance(other, Err)) or NotImplemented)
+
+    @_t.overload
+    def __lt__(self, other: Result[_T]) -> bool_:
+        ...
+
+    @_t.overload
+    def __lt__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __lt__(self, other: _t.Any) -> _t.Any:
+        return (bool_(self._value < other._value)
+                if isinstance(other, Ok)
+                else bool_(isinstance(other, Err)) or NotImplemented)
 
 
 Result = _t.Union[Ok[_T], Err[_E]]
