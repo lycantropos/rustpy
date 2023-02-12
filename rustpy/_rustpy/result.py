@@ -70,7 +70,7 @@ class Err(_t.Generic[_E]):
         self._value = value
 
     @_t.overload
-    def __eq__(self, other: Result[_T]) -> bool_:
+    def __eq__(self, other: Result[_T, _E]) -> bool_:
         ...
 
     @_t.overload
@@ -84,7 +84,7 @@ class Err(_t.Generic[_E]):
                       and NotImplemented))
 
     @_t.overload
-    def __ge__(self, other: Result[_T]) -> bool_:
+    def __ge__(self, other: Result[_T, _E]) -> bool_:
         ...
 
     @_t.overload
@@ -97,7 +97,7 @@ class Err(_t.Generic[_E]):
                 else bool_(isinstance(other, Ok)) or NotImplemented)
 
     @_t.overload
-    def __gt__(self, other: Result[_T]) -> bool_:
+    def __gt__(self, other: Result[_T, _E]) -> bool_:
         ...
 
     @_t.overload
@@ -110,7 +110,7 @@ class Err(_t.Generic[_E]):
                 else bool_(isinstance(other, Ok)) or NotImplemented)
 
     @_t.overload
-    def __le__(self, other: Result[_T]) -> bool_:
+    def __le__(self, other: Result[_T, _E]) -> bool_:
         ...
 
     @_t.overload
@@ -123,7 +123,7 @@ class Err(_t.Generic[_E]):
                 else bool_(not isinstance(other, Ok)) and NotImplemented)
 
     @_t.overload
-    def __lt__(self, other: Result[_T]) -> bool_:
+    def __lt__(self, other: Result[_T, _E]) -> bool_:
         ...
 
     @_t.overload
@@ -194,7 +194,7 @@ class Ok(_t.Generic[_T]):
         self._value = value
 
     @_t.overload
-    def __eq__(self, other: Result[_T]) -> bool_:
+    def __eq__(self, other: Result[_T, _E]) -> bool_:
         ...
 
     @_t.overload
@@ -208,7 +208,7 @@ class Ok(_t.Generic[_T]):
                       and NotImplemented))
 
     @_t.overload
-    def __ge__(self, other: Result[_T]) -> bool_:
+    def __ge__(self, other: Result[_T, _E]) -> bool_:
         ...
 
     @_t.overload
@@ -221,7 +221,7 @@ class Ok(_t.Generic[_T]):
                 else bool_(not isinstance(other, Err)) and NotImplemented)
 
     @_t.overload
-    def __gt__(self, other: Result[_T]) -> bool_:
+    def __gt__(self, other: Result[_T, _E]) -> bool_:
         ...
 
     @_t.overload
@@ -234,7 +234,7 @@ class Ok(_t.Generic[_T]):
                 else bool_(not isinstance(other, Err)) and NotImplemented)
 
     @_t.overload
-    def __le__(self, other: Result[_T]) -> bool_:
+    def __le__(self, other: Result[_T, _E]) -> bool_:
         ...
 
     @_t.overload
@@ -247,7 +247,7 @@ class Ok(_t.Generic[_T]):
                 else bool_(isinstance(other, Err)) or NotImplemented)
 
     @_t.overload
-    def __lt__(self, other: Result[_T]) -> bool_:
+    def __lt__(self, other: Result[_T, _E]) -> bool_:
         ...
 
     @_t.overload
