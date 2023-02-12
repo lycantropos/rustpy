@@ -1,5 +1,3 @@
-from functools import partial
-
 from hypothesis import strategies as _st
 
 from rustpy.result import (Err,
