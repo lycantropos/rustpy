@@ -379,8 +379,8 @@ impl Ok_ {
         self.0.clone()
     }
 
-    fn unwrap_or_else<'a>(&self, _function: &'a PyAny, py: Python) -> PyResult<&'a PyAny> {
-        _function.call1(PyTuple::new(py, [self.0.as_ref(py)]))
+    fn unwrap_or_else(&self, _function: &PyAny) -> PyObject {
+        self.0.clone()
     }
 
     fn __bool__(&self) -> PyResult<()> {
