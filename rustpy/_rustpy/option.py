@@ -178,7 +178,7 @@ class Some(_t.Generic[_T]):
         ...
 
     def __ge__(self, other: _t.Any) -> _t.Any:
-        return (self._value >= other._value
+        return (bool_(self._value >= other._value)
                 if isinstance(other, Some)
                 else bool_(isinstance(other, None_)) or NotImplemented)
 
@@ -191,7 +191,7 @@ class Some(_t.Generic[_T]):
         ...
 
     def __gt__(self, other: _t.Any) -> _t.Any:
-        return (self._value > other._value
+        return (bool_(self._value > other._value)
                 if isinstance(other, Some)
                 else bool_(isinstance(other, None_)) or NotImplemented)
 
@@ -204,7 +204,7 @@ class Some(_t.Generic[_T]):
         ...
 
     def __le__(self, other: _t.Any) -> _t.Any:
-        return (self._value <= other._value
+        return (bool_(self._value <= other._value)
                 if isinstance(other, Some)
                 else bool_(not isinstance(other, None_)) and NotImplemented)
 
@@ -217,7 +217,7 @@ class Some(_t.Generic[_T]):
         ...
 
     def __lt__(self, other: _t.Any) -> _t.Any:
-        return (self._value < other._value
+        return (bool_(self._value < other._value)
                 if isinstance(other, Some)
                 else bool_(not isinstance(other, None_)) and NotImplemented)
 
