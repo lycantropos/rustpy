@@ -38,6 +38,9 @@ class Result(_te.Protocol, _t.Generic[_T, _E]):
     def map(self, _function: _t.Callable[[_T], _T2]) -> Result[_T2, _E]:
         ...
 
+    def map_err(self, _function: _t.Callable[[_E], _E2]) -> Result[_T, _E2]:
+        ...
+
     def map_or(self, _default: _T2, _function: _t.Callable[[_T], _T2]) -> _T2:
         ...
 
