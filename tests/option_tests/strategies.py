@@ -75,7 +75,7 @@ comparable_options_categories = comparable_somes_categories.map(
 comparable_options_pairs = comparable_options_categories.flatmap(
         lambda values: _st.tuples(values, values)
 )
-comparable_options_triplets = comparable_somes_categories.flatmap(
+comparable_options_triplets = comparable_options_categories.flatmap(
         lambda values: _st.tuples(values, values, values)
 )
 options_maps = _st.builds(lambda value: (lambda _: value), options)
