@@ -3,8 +3,7 @@ from typing import Tuple
 import pytest
 from hypothesis import given
 
-from tests.utils import (Integer,
-                         integer_to_zero)
+from tests.utils import Integer
 from . import strategies
 
 
@@ -33,8 +32,8 @@ def test_commutativity(pair: Tuple[Integer, Integer]) -> None:
         assert result == second + first
 
 
-@given(strategies.integers)
-def test_neutral_element(integer: Integer) -> None:
-    zero = integer_to_zero(type(integer))
+@given(strategies.integers_with_zeros)
+def test_neutral_element(integer_with_zero: Tuple[Integer, Integer]) -> None:
+    integer, zero = integer_with_zero
 
     assert integer + zero == integer == zero + integer
