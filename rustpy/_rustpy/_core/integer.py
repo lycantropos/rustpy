@@ -109,6 +109,11 @@ class _BaseInteger(_abc.ABC, _OrderedWrapper[int]):
         return type(self)(_floor_division_quotient(self._value,
                                                    divisor._value))
 
+    def mul(self, other: _te.Self) -> _te.Self:
+        if not isinstance(other, type(self)):
+            raise TypeError(type(other))
+        return type(self)(self._value * other._value)
+
     @_abc.abstractmethod
     def rem(self, divisor: _te.Self) -> _te.Self:
         ...

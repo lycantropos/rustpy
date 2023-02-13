@@ -103,6 +103,9 @@ class _BaseInteger(_te.Protocol):
     def div_euclid(self, divisor: _te.Self) -> _te.Self:
         ...
 
+    def mul(self, other: _te.Self) -> _te.Self:
+        ...
+
     def rem(self, divisor: _te.Self) -> _te.Self:
         ...
 

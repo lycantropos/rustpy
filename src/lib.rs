@@ -799,6 +799,17 @@ macro_rules! define_signed_integer_python_binding {
                 }
             }
 
+            fn mul(&self, other: &Self) -> PyResult<Self> {
+                match self.0.checked_mul(other.0) {
+                    Some(result) => Ok(Self(result)),
+                    None => Err(PyOverflowError::new_err(format!(
+                        "{} cannot be multiplied by {}.",
+                        self.__repr__(),
+                        other.__repr__(),
+                    ))),
+                }
+            }
+
             fn rem(&self, other: &Self) -> PyResult<Self> {
                 match self.0.checked_rem(other.0) {
                     Some(result) => Ok(Self(result)),
@@ -1070,6 +1081,17 @@ macro_rules! define_unsigned_integer_python_binding {
                             other.__repr__(),
                         ))
                     }),
+                }
+            }
+
+            fn mul(&self, other: &Self) -> PyResult<Self> {
+                match self.0.checked_mul(other.0) {
+                    Some(result) => Ok(Self(result)),
+                    None => Err(PyOverflowError::new_err(format!(
+                        "{} cannot be multiplied by {}.",
+                        self.__repr__(),
+                        other.__repr__(),
+                    ))),
                 }
             }
 
