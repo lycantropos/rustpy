@@ -51,7 +51,7 @@ class _BaseInteger(_abc.ABC, _OrderedWrapper[int]):
         try:
             return _Some(type(self)(_trunc_division_quotient(self._value,
                                                              other._value)))
-        except OverflowError:
+        except (OverflowError, ZeroDivisionError):
             return _None()
 
     def checked_div_euclid(self, other: _te.Self) -> _Option[_te.Self]:
@@ -60,7 +60,7 @@ class _BaseInteger(_abc.ABC, _OrderedWrapper[int]):
         try:
             return _Some(type(self)(_floor_division_quotient(self._value,
                                                              other._value)))
-        except OverflowError:
+        except (OverflowError, ZeroDivisionError):
             return _None()
 
     def checked_mul(self, other: _te.Self) -> _Option[_te.Self]:
@@ -77,7 +77,7 @@ class _BaseInteger(_abc.ABC, _OrderedWrapper[int]):
         try:
             return _Some(type(self)(_trunc_division_remainder(self._value,
                                                               other._value)))
-        except OverflowError:
+        except (OverflowError, ZeroDivisionError):
             return _None()
 
     def checked_rem_euclid(self, other: _te.Self) -> _Option[_te.Self]:
@@ -86,7 +86,7 @@ class _BaseInteger(_abc.ABC, _OrderedWrapper[int]):
         try:
             return _Some(type(self)(_floor_division_remainder(self._value,
                                                               other._value)))
-        except OverflowError:
+        except (OverflowError, ZeroDivisionError):
             return _None()
 
     def checked_sub(self, other: _te.Self) -> _Option[_te.Self]:
@@ -266,9 +266,10 @@ class _BaseInteger(_abc.ABC, _OrderedWrapper[int]):
 
 class BaseSignedInteger(_BaseInteger):
     def rem(self, divisor: _te.Self) -> _te.Self:
-        return (self % divisor
-                if ((self < 0) is (divisor < 0))
-                else -((-self) % divisor))
+        if not isinstance(divisor, type(self)):
+            raise TypeError(divisor)
+        return type(self)(_trunc_division_remainder(self._value,
+                                                    divisor._value))
 
     def __invert__(self) -> _te.Self:
         return type(self)(~self._value)
@@ -279,7 +280,10 @@ class BaseSignedInteger(_BaseInteger):
 
 class BaseUnsignedInteger(_BaseInteger):
     def rem(self, divisor: _te.Self) -> _te.Self:
-        return self % divisor
+        if not isinstance(divisor, type(self)):
+            raise TypeError(divisor)
+        return type(self)(_floor_division_remainder(self._value,
+                                                    divisor._value))
 
     def __invert__(self) -> _te.Self:
         return type(self)(self.MAX - self._value)
