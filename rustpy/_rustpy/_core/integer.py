@@ -32,6 +32,11 @@ class _BaseInteger(_abc.ABC, _OrderedWrapper[int]):
     MAX: _t.ClassVar[_te.Self]
     MIN: _t.ClassVar[_te.Self]
 
+    def add(self, other: _te.Self) -> _te.Self:
+        if not isinstance(other, type(self)):
+            raise TypeError(type(other))
+        return type(self)(self._value + other._value)
+
     def checked_add(self, other: _te.Self) -> _Option[_te.Self]:
         if not isinstance(other, type(self)):
             raise TypeError(type(other))
