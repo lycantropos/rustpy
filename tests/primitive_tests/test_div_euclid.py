@@ -25,11 +25,12 @@ def test_connection_with_rem_euclid(pair: Tuple[Integer, Integer]) -> None:
 
     try:
         result = dividend.div_euclid(divisor)
-        result_times_divisor = result * divisor
+        euclid_quotient_times_divisor = result * divisor
     except OverflowError:
         pass
     else:
-        assert result_times_divisor + dividend.rem_euclid(divisor) == dividend
+        assert (euclid_quotient_times_divisor + dividend.rem_euclid(divisor)
+                == dividend)
 
 
 @given(strategies.integers_with_zeros)
