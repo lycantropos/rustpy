@@ -41,16 +41,19 @@ u128s = to_integers(primitive.u128)
 usizes = to_integers(primitive.usize)
 
 finite_floats_values = finite_f32s, finite_f64s
-signed_integers_values = i128s, i16s, i32s, i64s, i8s, isizes
-unsigned_integers_values = u128s, u16s, u32s, u64s, u8s, usizes
-integers_values = (*signed_integers_values, *unsigned_integers_values)
-finite_primitives_values = (bools, *integers_values, *finite_floats_values)
-finite_primitives = bools | _st.one_of(integers_values)
+signed_integer_values = i128s, i16s, i32s, i64s, i8s, isizes
+unsigned_integer_values = u128s, u16s, u32s, u64s, u8s, usizes
+integer_values = (*signed_integer_values, *unsigned_integer_values)
+finite_primitives_values = (bools, *integer_values, *finite_floats_values)
+integers = _st.one_of(integer_values)
+integers_pairs = _st.one_of([_st.tuples(values, values)
+                             for values in integer_values])
+integers_triplets = _st.one_of([_st.tuples(values, values, values)
+                                for values in integer_values])
+finite_primitives = _st.one_of(finite_primitives_values)
 finite_primitives_pairs = _st.one_of([_st.tuples(values, values)
                                       for values in finite_primitives_values])
 finite_primitives_triplets = _st.one_of(
         [_st.tuples(values, values, values)
          for values in finite_primitives_values]
 )
-integers_pairs = _st.one_of([_st.tuples(values, values)
-                             for values in integers_values])
