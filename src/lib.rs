@@ -829,6 +829,17 @@ macro_rules! define_signed_integer_python_binding {
                 }
             }
 
+            fn sub(&self, other: &Self) -> PyResult<Self> {
+                match self.0.checked_sub(other.0) {
+                    Some(result) => Ok(Self(result)),
+                    None => Err(PyOverflowError::new_err(format!(
+                        "{} cannot be decreased by {}.",
+                        self.__repr__(),
+                        other.__repr__(),
+                    ))),
+                }
+            }
+
             fn __add__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
                 match other.extract::<Self>() {
                     Ok(other) => match self.0.checked_add(other.0) {
@@ -1089,6 +1100,17 @@ macro_rules! define_unsigned_integer_python_binding {
                             other.__repr__(),
                         ))
                     }),
+                }
+            }
+
+            fn sub(&self, other: &Self) -> PyResult<Self> {
+                match self.0.checked_sub(other.0) {
+                    Some(result) => Ok(Self(result)),
+                    None => Err(PyOverflowError::new_err(format!(
+                        "{} cannot be decreased by {}.",
+                        self.__repr__(),
+                        other.__repr__(),
+                    ))),
                 }
             }
 

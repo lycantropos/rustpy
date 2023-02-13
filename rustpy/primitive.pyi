@@ -109,6 +109,9 @@ class _BaseInteger(_te.Protocol):
     def rem_euclid(self, divisor: _te.Self) -> _te.Self:
         ...
 
+    def sub(self, other: _te.Self) -> _te.Self:
+        ...
+
     @_t.overload
     def __add__(self, other: _te.Self) -> _te.Self:
         ...

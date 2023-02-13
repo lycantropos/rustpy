@@ -119,6 +119,11 @@ class _BaseInteger(_abc.ABC, _OrderedWrapper[int]):
         return type(self)(_floor_division_remainder(self._value,
                                                     divisor._value))
 
+    def sub(self, other: _te.Self) -> _te.Self:
+        if not isinstance(other, type(self)):
+            raise TypeError(type(other))
+        return type(self)(self._value - other._value)
+
     _value: int
 
     __module__ = 'rustpy.primitive'
