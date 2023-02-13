@@ -28,6 +28,10 @@ def implication(antecedent: _AnyBool, consequent: _AnyBool) -> bool:
     return not antecedent or bool(consequent)
 
 
+def integer_to_zero(cls: _t.Type[Integer]) -> Integer:
+    return cls(0)
+
+
 @contextmanager
 def not_raises(
         *exceptions: _t.Type[BaseException]
