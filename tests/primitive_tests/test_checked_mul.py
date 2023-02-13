@@ -27,7 +27,7 @@ def test_some(pair: Tuple[Integer, Integer]) -> None:
 
     assert (result.is_none()
             or (type(first).MIN <= result.unwrap() <= type(first).MAX
-                and result.unwrap() == first * second))
+                and result.unwrap() == first.mul(second)))
 
 
 @given(strategies.integers_pairs)
@@ -37,4 +37,4 @@ def test_none(pair: Tuple[Integer, Integer]) -> None:
     result = first.checked_mul(second)
 
     with (pytest.raises if result.is_none() else not_raises)(OverflowError):
-        first * second
+        first.mul(second)
