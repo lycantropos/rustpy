@@ -20,7 +20,7 @@ def test_basic(pair: Tuple[Integer, Integer]) -> None:
 
 
 @given(strategies.integers_pairs)
-def test_connection_with___add__(pair: Tuple[Integer, Integer]) -> None:
+def test_connection_with___sub__(pair: Tuple[Integer, Integer]) -> None:
     first, second = pair
 
     try:
