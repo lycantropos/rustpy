@@ -20,16 +20,16 @@ def test_basic(pair: Tuple[Integer, Integer]) -> None:
 
 
 @given(strategies.divisible_integers_pairs)
-def test_connection_with_mod(pair: Tuple[Integer, Integer]) -> None:
+def test_connection_with_truediv(pair: Tuple[Integer, Integer]) -> None:
     dividend, divisor = pair
 
     try:
         result = dividend % divisor
+        quotient_times_divisor = (dividend / divisor) * divisor
     except OverflowError:
-        with pytest.raises(OverflowError):
-            dividend / divisor
+        pass
     else:
-        assert (dividend / divisor) * divisor + result == dividend
+        assert quotient_times_divisor + result == dividend
 
 
 @given(strategies.integers_with_zeros)

@@ -25,10 +25,11 @@ def test_connection_with_mod(pair: Tuple[Integer, Integer]) -> None:
 
     try:
         result = dividend / divisor
+        quotient_times_divisor = result * divisor
     except OverflowError:
         pass
     else:
-        assert result * divisor + dividend % divisor == dividend
+        assert quotient_times_divisor + dividend % divisor == dividend
 
 
 @given(strategies.integers_with_zeros)
