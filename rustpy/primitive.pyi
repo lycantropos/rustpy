@@ -2,7 +2,7 @@ import typing as _t
 
 import typing_extensions as _te
 
-from rustpy.option import Option
+from rustpy.option import Option as _Option
 
 
 @_te.final
@@ -156,25 +156,25 @@ class _BaseInteger(_te.Protocol):
     def add(self, other: _te.Self) -> _te.Self:
         ...
 
-    def checked_add(self, other: _te.Self) -> Option[_te.Self]:
+    def checked_add(self, other: _te.Self) -> _Option[_te.Self]:
         ...
 
-    def checked_div(self, other: _te.Self) -> Option[_te.Self]:
+    def checked_div(self, other: _te.Self) -> _Option[_te.Self]:
         ...
 
-    def checked_div_euclid(self, other: _te.Self) -> Option[_te.Self]:
+    def checked_div_euclid(self, other: _te.Self) -> _Option[_te.Self]:
         ...
 
-    def checked_mul(self, other: _te.Self) -> Option[_te.Self]:
+    def checked_mul(self, other: _te.Self) -> _Option[_te.Self]:
         ...
 
-    def checked_rem(self, other: _te.Self) -> Option[_te.Self]:
+    def checked_rem(self, other: _te.Self) -> _Option[_te.Self]:
         ...
 
-    def checked_rem_euclid(self, other: _te.Self) -> Option[_te.Self]:
+    def checked_rem_euclid(self, other: _te.Self) -> _Option[_te.Self]:
         ...
 
-    def checked_sub(self, other: _te.Self) -> Option[_te.Self]:
+    def checked_sub(self, other: _te.Self) -> _Option[_te.Self]:
         ...
 
     def div(self, divisor: _te.Self) -> _te.Self:
@@ -310,6 +310,12 @@ class _BaseInteger(_te.Protocol):
 
 
 class _BaseSignedInteger(_BaseInteger):
+    def checked_neg(self) -> _Option[_te.Self]:
+        ...
+
+    def neg(self) -> _te.Self:
+        ...
+
     def __neg__(self) -> _te.Self:
         ...
 

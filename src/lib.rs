@@ -820,6 +820,13 @@ macro_rules! define_signed_integer_python_binding {
                 }
             }
 
+            fn checked_neg(&self, py: Python) -> PyObject {
+                match self.0.checked_neg() {
+                    Some(result) => Some_(Self(result).into_py(py)).into_py(py),
+                    None => None_().into_py(py),
+                }
+            }
+
             fn checked_rem(&self, other: &Self, py: Python) -> PyObject {
                 match self.0.checked_rem(other.0) {
                     Some(result) => Some_(Self(result).into_py(py)).into_py(py),
@@ -880,6 +887,12 @@ macro_rules! define_signed_integer_python_binding {
                         other.__repr__(),
                     ))),
                 }
+            }
+
+            fn neg(&self) -> PyResult<Self> {
+                self.0.checked_neg().map(Self).ok_or_else(|| {
+                    PyOverflowError::new_err(format!("{} cannot be negated.", self.__repr__()))
+                })
             }
 
             fn rem(&self, other: &Self) -> PyResult<Self> {

@@ -260,6 +260,15 @@ class _BaseInteger(_abc.ABC, _OrderedWrapper[int]):
 
 
 class BaseSignedInteger(_BaseInteger):
+    def checked_neg(self) -> _Option[_te.Self]:
+        try:
+            return _Some(type(self)(-self._value))
+        except OverflowError:
+            return _None()
+
+    def neg(self) -> _te.Self:
+        return type(self)(-self._value)
+
     def rem(self, divisor: _te.Self) -> _te.Self:
         if not isinstance(divisor, type(self)):
             raise TypeError(divisor)
