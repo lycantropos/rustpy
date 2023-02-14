@@ -19,18 +19,13 @@ bool_ = _bool.bool_
 
 @_te.final
 class f32(BaseFloat):
-    __slots__ = '_value',
-
     def __init__(self, _value: float) -> None:
         self._value = c_float(_value).value
 
 
 @_te.final
 class f64(BaseFloat):
-    __slots__ = '_value',
-
-    def __init__(self, _value: float) -> None:
-        self._value = c_float(_value).value
+    pass
 
 
 @_te.final

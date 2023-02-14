@@ -12,6 +12,53 @@ class bool_:
 
 
 class _BaseFloat(_te.Protocol):
+    def abs(self) -> _te.Self:
+        ...
+
+    def add(self, other: _te.Self) -> _te.Self:
+        ...
+
+    def div(self, divisor: _te.Self) -> _te.Self:
+        ...
+
+    def div_euclid(self, divisor: _te.Self) -> _te.Self:
+        ...
+
+    def fract(self) -> _te.Self:
+        ...
+
+    def is_finite(self) -> bool_:
+        ...
+
+    def is_infinite(self) -> bool_:
+        ...
+
+    def is_nan(self) -> bool_:
+        ...
+
+    def mul(self, other: _te.Self) -> _te.Self:
+        ...
+
+    def rem(self, divisor: _te.Self) -> _te.Self:
+        ...
+
+    def rem_euclid(self, divisor: _te.Self) -> _te.Self:
+        ...
+
+    def sub(self, other: _te.Self) -> _te.Self:
+        ...
+
+    def trunc(self) -> _te.Self:
+        ...
+
+    @_t.overload
+    def __add__(self, other: _te.Self) -> _te.Self:
+        ...
+
+    @_t.overload
+    def __add__(self, other: _t.Any) -> _t.Any:
+        ...
+
     def __bool__(self) -> _t.NoReturn:
         ...
 
@@ -39,6 +86,9 @@ class _BaseFloat(_te.Protocol):
     def __gt__(self, other: _t.Any) -> _t.Any:
         ...
 
+    def __init__(self, _value: float) -> None:
+        ...
+
     @_t.overload
     def __le__(self, other: _te.Self) -> bool:
         ...
@@ -55,17 +105,47 @@ class _BaseFloat(_te.Protocol):
     def __lt__(self, other: _t.Any) -> _t.Any:
         ...
 
+    @_t.overload
+    def __mod__(self, other: _te.Self) -> _te.Self:
+        ...
+
+    @_t.overload
+    def __mod__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    @_t.overload
+    def __mul__(self, other: _te.Self) -> _te.Self:
+        ...
+
+    @_t.overload
+    def __mul__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    @_t.overload
+    def __sub__(self, other: _te.Self) -> _te.Self:
+        ...
+
+    @_t.overload
+    def __sub__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    @_t.overload
+    def __truediv__(self, other: _te.Self) -> _te.Self:
+        ...
+
+    @_t.overload
+    def __truediv__(self, other: _t.Any) -> _t.Any:
+        ...
+
 
 @_te.final
 class f32(_BaseFloat):
-    def __init__(self, _value: float) -> None:
-        ...
+    pass
 
 
 @_te.final
 class f64(_BaseFloat):
-    def __init__(self, _value: float) -> None:
-        ...
+    pass
 
 
 class _BaseInteger(_te.Protocol):

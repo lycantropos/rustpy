@@ -9,7 +9,6 @@ import typing_extensions as _te
 from rustpy.option import (None_ as _None,
                            Option as _Option,
                            Some as _Some)
-from .bool_ import bool_ as _bool
 from .ordered import OrderedWrapper as _OrderedWrapper
 from .utils import (floor_division_quotient as _floor_division_quotient,
                     floor_division_remainder as _floor_division_remainder,
@@ -169,10 +168,6 @@ class _BaseInteger(_abc.ABC, _OrderedWrapper[int]):
         return (type(self)(self._value & other._value)
                 if isinstance(other, type(self))
                 else NotImplemented)
-
-    def __bool__(self) -> bool:
-        raise TypeError(f'Expected `{_bool.__qualname__}`, '
-                        f'found `{type(self).__qualname__}`.')
 
     @_abc.abstractmethod
     def __invert__(self) -> _te.Self:

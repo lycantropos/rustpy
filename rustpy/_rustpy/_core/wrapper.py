@@ -15,8 +15,12 @@ class Wrapper(_t.Generic[_T]):
     __module__ = 'rustpy.primitive'
     __slots__ = '_value',
 
+    def __bool__(self) -> _t.NoReturn:
+        raise TypeError(f'Expected `{_bool.__qualname__}`, '
+                        f'found `{type(self).__qualname__}`.')
+
     @_t.overload
-    def __eq__(self, other: _te.Self) -> bool:
+    def __eq__(self, other: _te.Self) -> _bool:
         ...
 
     @_t.overload

@@ -66,73 +66,6 @@ impl Bool {
     }
 }
 
-#[pyclass(module = "rustpy.primitive", name = "f32")]
-#[derive(Clone)]
-struct F32(f32);
-
-#[pymethods]
-impl F32 {
-    #[new]
-    fn new(value: f32) -> Self {
-        Self(value)
-    }
-
-    fn __bool__(&self) -> PyResult<()> {
-        Err(PyTypeError::new_err("Expected `bool_`, found `f32`."))
-    }
-
-    fn __repr__(&self, py: Python) -> PyResult<String> {
-        Ok(format!(
-            "f32({})",
-            PyFloat::new(py, self.0 as c_double).repr()?
-        ))
-    }
-
-    fn __richcmp__(&self, other: &PyAny, op: CompareOp) -> PyResult<PyObject> {
-        let py = other.py();
-        match other.extract::<F32>() {
-            Ok(other) => Ok(Bool(compare(&self.0, &other.0, op)).into_py(py)),
-            Err(_) => Ok(py.NotImplemented()),
-        }
-    }
-
-    fn __str__(&self) -> String {
-        format!("{}f32", self.0)
-    }
-}
-
-#[pyclass(module = "rustpy.primitive", name = "f64")]
-#[derive(Clone)]
-struct F64(f64);
-
-#[pymethods]
-impl F64 {
-    #[new]
-    fn new(value: f64) -> Self {
-        Self(value)
-    }
-
-    fn __bool__(&self) -> PyResult<()> {
-        Err(PyTypeError::new_err("Expected `bool_`, found `f32`."))
-    }
-
-    fn __repr__(&self, py: Python) -> PyResult<String> {
-        Ok(format!("f64({})", PyFloat::new(py, self.0).repr()?))
-    }
-
-    fn __richcmp__(&self, other: &PyAny, op: CompareOp) -> PyResult<PyObject> {
-        let py = other.py();
-        match other.extract::<F64>() {
-            Ok(other) => Ok(Bool(compare(&self.0, &other.0, op)).into_py(py)),
-            Err(_) => Ok(py.NotImplemented()),
-        }
-    }
-
-    fn __str__(&self) -> String {
-        format!("{}f64", self.0)
-    }
-}
-
 #[pyclass(module = "rustpy.result", name = "Err")]
 #[derive(Clone)]
 struct Err_(PyObject);
@@ -686,6 +619,145 @@ fn check_result_value<'a>(value: &'a PyAny, py: Python) -> Option<&'a PyAny> {
         None
     }
 }
+
+macro_rules! define_floating_point_python_binding {
+    ($float:ident => ($name:literal, $wrapper:ident)) => {
+        const _: () = assert!(are_strings_equal($name, stringify!($float)));
+
+        #[pyclass(module = "rustpy.primitive", name = $name)]
+        #[derive(Clone)]
+        struct $wrapper($float);
+
+        #[pymethods]
+        impl $wrapper {
+            #[new]
+            fn new(value: $float) -> Self {
+                Self(value)
+            }
+
+            fn abs(&self) -> Self {
+                Self(self.0.abs())
+            }
+
+            fn add(&self, other: &Self) -> Self {
+                Self(self.0 + other.0)
+            }
+
+            fn div(&self, other: &Self) -> Self {
+                Self(self.0 / other.0)
+            }
+
+            fn div_euclid(&self, other: &Self) -> Self {
+                Self(self.0.div_euclid(other.0))
+            }
+
+            fn fract(&self) -> Self {
+                Self(self.0.fract())
+            }
+
+            fn is_finite(&self) -> Bool {
+                Bool(self.0.is_finite())
+            }
+
+            fn is_infinite(&self) -> Bool {
+                Bool(self.0.is_infinite())
+            }
+
+            fn is_nan(&self) -> Bool {
+                Bool(self.0.is_nan())
+            }
+
+            fn mul(&self, other: &Self) -> Self {
+                Self(self.0 * other.0)
+            }
+
+            fn rem(&self, other: &Self) -> Self {
+                Self(self.0 % other.0)
+            }
+
+            fn rem_euclid(&self, other: &Self) -> Self {
+                Self(self.0.rem_euclid(other.0))
+            }
+
+            fn sub(&self, other: &Self) -> Self {
+                Self(self.0 - other.0)
+            }
+
+            fn trunc(&self) -> Self {
+                Self(self.0.trunc())
+            }
+
+            fn __add__(&self, other: &PyAny, py: Python) -> PyObject {
+                match other.extract::<Self>() {
+                    Ok(other) => Self(self.0 + other.0).into_py(py),
+                    Err(_) => py.NotImplemented(),
+                }
+            }
+
+            fn __bool__(&self) -> PyResult<()> {
+                Err(PyTypeError::new_err(format!(
+                    "Expected `bool_`, found `{}`.",
+                    $name
+                )))
+            }
+
+            fn __mod__(&self, other: &PyAny, py: Python) -> PyObject {
+                match other.extract::<Self>() {
+                    Ok(other) => Self(self.0 % other.0).into_py(py),
+                    Err(_) => py.NotImplemented(),
+                }
+            }
+
+            fn __mul__(&self, other: &PyAny, py: Python) -> PyObject {
+                match other.extract::<Self>() {
+                    Ok(other) => Self(self.0 * other.0).into_py(py),
+                    Err(_) => py.NotImplemented(),
+                }
+            }
+
+            fn __neg__(&self) -> Self {
+                Self(-self.0)
+            }
+
+            fn __sub__(&self, other: &PyAny, py: Python) -> PyObject {
+                match other.extract::<Self>() {
+                    Ok(other) => Self(self.0 - other.0).into_py(py),
+                    Err(_) => py.NotImplemented(),
+                }
+            }
+
+            fn __repr__(&self, py: Python) -> PyResult<String> {
+                Ok(format!(
+                    "{}({})",
+                    $name,
+                    PyFloat::new(py, self.0 as c_double).repr()?
+                ))
+            }
+
+            fn __richcmp__(&self, other: &PyAny, op: CompareOp) -> PyResult<PyObject> {
+                let py = other.py();
+                match other.extract::<Self>() {
+                    Ok(other) => Ok(Bool(compare(&self.0, &other.0, op)).into_py(py)),
+                    Err(_) => Ok(py.NotImplemented()),
+                }
+            }
+
+            fn __str__(&self) -> String {
+                format!("{}{}", self.0, $name)
+            }
+
+            fn __truediv__(&self, other: &PyAny, py: Python) -> PyObject {
+                match other.extract::<Self>() {
+                    Ok(other) => Self(self.0 / other.0).into_py(py),
+                    Err(_) => py.NotImplemented(),
+                }
+            }
+        }
+    };
+}
+
+define_floating_point_python_binding!(f32 => ("f32", F32));
+define_floating_point_python_binding!(f64 => ("f64", F64));
 
 macro_rules! define_signed_integer_python_binding {
     ($integer:ident => ($name:literal, $wrapper:ident)) => {

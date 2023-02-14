@@ -60,7 +60,7 @@ _OrderedT = _t.TypeVar('_OrderedT',
 
 class OrderedWrapper(_Wrapper[_OrderedT]):
     @_t.overload
-    def __ge__(self, other: _te.Self) -> bool:
+    def __ge__(self, other: _te.Self) -> _bool:
         ...
 
     @_t.overload
@@ -73,7 +73,7 @@ class OrderedWrapper(_Wrapper[_OrderedT]):
                 else NotImplemented)
 
     @_t.overload
-    def __gt__(self, other: _te.Self) -> bool:
+    def __gt__(self, other: _te.Self) -> _bool:
         ...
 
     @_t.overload
@@ -86,7 +86,7 @@ class OrderedWrapper(_Wrapper[_OrderedT]):
                 else NotImplemented)
 
     @_t.overload
-    def __le__(self, other: _te.Self) -> bool:
+    def __le__(self, other: _te.Self) -> _bool:
         ...
 
     @_t.overload
@@ -99,7 +99,7 @@ class OrderedWrapper(_Wrapper[_OrderedT]):
                 else NotImplemented)
 
     @_t.overload
-    def __lt__(self, other: _te.Self) -> bool:
+    def __lt__(self, other: _te.Self) -> _bool:
         ...
 
     @_t.overload
