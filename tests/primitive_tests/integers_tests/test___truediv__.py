@@ -20,7 +20,7 @@ def test_basic(pair: Tuple[Integer, Integer]) -> None:
 
 
 @given(strategies.divisible_integers_pairs)
-def test_connection_with_mod(pair: Tuple[Integer, Integer]) -> None:
+def test_connection_with___mod__(pair: Tuple[Integer, Integer]) -> None:
     dividend, divisor = pair
 
     try:

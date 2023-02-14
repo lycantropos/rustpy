@@ -37,3 +37,10 @@ def test_absorbing_element(integer_with_zero: Tuple[Integer, Integer]) -> None:
     integer, zero = integer_with_zero
 
     assert integer * zero == zero == zero * integer
+
+
+@given(strategies.integers_with_ones)
+def test_neutral_element(integer_with_one: Tuple[Integer, Integer]) -> None:
+    integer, one = integer_with_one
+
+    assert integer * one == integer == one * integer
