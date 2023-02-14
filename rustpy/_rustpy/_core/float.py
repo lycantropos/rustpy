@@ -32,8 +32,10 @@ class BaseFloat(_OrderedWrapper[float]):
     def div(self, divisor: _te.Self) -> _te.Self:
         if not isinstance(divisor, type(self)):
             raise TypeError(type(divisor))
-        return type(self)(_math.copysign(_math.inf,
-                                         self._value * divisor._value)
+        return type(self)((_math.nan
+                           if self._value == 0.0
+                           else _math.copysign(_math.inf,
+                                               self._value * divisor._value))
                           if divisor._value == 0.0
                           else _trunc_division_quotient(self._value,
                                                         divisor._value))
@@ -41,8 +43,10 @@ class BaseFloat(_OrderedWrapper[float]):
     def div_euclid(self, divisor: _te.Self) -> _te.Self:
         if not isinstance(divisor, type(self)):
             raise TypeError(type(divisor))
-        return type(self)(_math.copysign(_math.inf,
-                                         self._value * divisor._value)
+        return type(self)((_math.nan
+                           if self._value == 0.0
+                           else _math.copysign(_math.inf,
+                                               self._value * divisor._value))
                           if divisor._value == 0.0
                           else _floor_division_quotient(self._value,
                                                         divisor._value))
@@ -132,6 +136,9 @@ class BaseFloat(_OrderedWrapper[float]):
                 if isinstance(other, type(self))
                 else NotImplemented)
 
+    def __neg__(self) -> _te.Self:
+        return type(self)(-self._value)
+
     def __repr__(self) -> str:
         return f'{type(self).__qualname__}({self._value})'
 
@@ -160,8 +167,10 @@ class BaseFloat(_OrderedWrapper[float]):
         ...
 
     def __truediv__(self, other: _t.Any) -> _t.Any:
-        return (type(self)(_math.copysign(_math.inf,
-                                          self._value * other._value)
+        return (type(self)((_math.nan
+                            if self._value == 0.0
+                            else _math.copysign(_math.inf,
+                                                self._value * other._value))
                            if other._value == 0.0
                            else _trunc_division_quotient(self._value,
                                                          other._value))
