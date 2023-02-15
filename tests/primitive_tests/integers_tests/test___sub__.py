@@ -1,3 +1,4 @@
+from contextlib import suppress
 from typing import Tuple
 
 from hypothesis import given
@@ -11,11 +12,9 @@ from . import strategies
 def test_basic(pair: Tuple[Integer, Integer]) -> None:
     first, second = pair
 
-    try:
+    with suppress(OverflowError):
         result = first - second
-    except OverflowError:
-        pass
-    else:
+
         assert isinstance(result, type(first))
 
 
@@ -30,14 +29,8 @@ def test_diagonal(integer_with_zero: Tuple[Integer, Integer]) -> None:
 def test_commutative_case(pair: Tuple[Integer, Integer]) -> None:
     first, second = pair
 
-    try:
-        first_minus_second = first - second
-        second_minus_first = second - first
-    except OverflowError:
-        pass
-    else:
-        assert equivalence(first_minus_second == second_minus_first,
-                           first == second)
+    with suppress(OverflowError):
+        assert equivalence(first - second == second - first, first == second)
 
 
 @given(strategies.integers_with_zeros)

@@ -1,3 +1,4 @@
+from contextlib import suppress
 from typing import Tuple
 
 import pytest
@@ -11,11 +12,9 @@ from . import strategies
 def test_basic(pair: Tuple[Integer, Integer]) -> None:
     dividend, divisor = pair
 
-    try:
+    with suppress(OverflowError):
         result = dividend / divisor
-    except OverflowError:
-        pass
-    else:
+
         assert isinstance(result, type(dividend))
 
 
@@ -23,13 +22,10 @@ def test_basic(pair: Tuple[Integer, Integer]) -> None:
 def test_connection_with___mod__(pair: Tuple[Integer, Integer]) -> None:
     dividend, divisor = pair
 
-    try:
+    with suppress(OverflowError):
         result = dividend / divisor
-        quotient_times_divisor = result * divisor
-    except OverflowError:
-        pass
-    else:
-        assert quotient_times_divisor + dividend % divisor == dividend
+
+        assert result * divisor + dividend % divisor == dividend
 
 
 @given(strategies.integers_with_zeros)

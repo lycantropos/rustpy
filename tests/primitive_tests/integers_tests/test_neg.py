@@ -1,4 +1,4 @@
-from typing import Tuple
+from contextlib import suppress
 
 import pytest
 from hypothesis import given
@@ -9,11 +9,9 @@ from . import strategies
 
 @given(strategies.signed_integers)
 def test_basic(integer: Integer) -> None:
-    try:
+    with suppress(OverflowError):
         result = integer.neg()
-    except OverflowError:
-        pass
-    else:
+
         assert isinstance(result, type(integer))
 
 

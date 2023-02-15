@@ -1,3 +1,4 @@
+from contextlib import suppress
 from typing import Tuple
 
 import pytest
@@ -11,11 +12,9 @@ from . import strategies
 def test_basic(pair: Tuple[Integer, Integer]) -> None:
     first, second = pair
 
-    try:
+    with suppress(OverflowError, ZeroDivisionError):
         result = first.div_euclid(second)
-    except (OverflowError, ZeroDivisionError):
-        pass
-    else:
+
         assert isinstance(result, type(first))
 
 
@@ -23,14 +22,10 @@ def test_basic(pair: Tuple[Integer, Integer]) -> None:
 def test_connection_with_rem_euclid(pair: Tuple[Integer, Integer]) -> None:
     dividend, divisor = pair
 
-    try:
+    with suppress(OverflowError):
         result = dividend.div_euclid(divisor)
-        euclid_quotient_times_divisor = result * divisor
-    except OverflowError:
-        pass
-    else:
-        assert (euclid_quotient_times_divisor + dividend.rem_euclid(divisor)
-                == dividend)
+
+        assert result * divisor + dividend.rem_euclid(divisor) == dividend
 
 
 @given(strategies.integers_with_zeros)

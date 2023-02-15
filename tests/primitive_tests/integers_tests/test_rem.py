@@ -1,3 +1,4 @@
+from contextlib import suppress
 from typing import Tuple
 
 import pytest
@@ -11,11 +12,9 @@ from . import strategies
 def test_basic(pair: Tuple[Integer, Integer]) -> None:
     first, second = pair
 
-    try:
+    with suppress(OverflowError, ZeroDivisionError):
         result = first.rem(second)
-    except (OverflowError, ZeroDivisionError):
-        pass
-    else:
+
         assert isinstance(result, type(first))
 
 
