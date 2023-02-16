@@ -10,7 +10,7 @@ def test_err(err: Err) -> None:
     result = err.err()
 
     assert result.is_some()
-    assert result.unwrap() is err.unwrap()
+    assert result.unwrap() is err.unwrap_err()
 
 
 @given(strategies.oks)
