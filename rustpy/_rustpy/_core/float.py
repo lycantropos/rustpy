@@ -97,9 +97,9 @@ class BaseFloat(_OrderedWrapper[float]):
 
     def round(self) -> _te.Self:
         fractional_part, whole_part = _math.modf(self._value)
-        value = whole_part + (_math.ceil
-                              if fractional_part > 0.0
-                              else _math.floor)(fractional_part)
+        value = whole_part
+        if abs(fractional_part) * 2.0 >= 1:
+            value += 1.0 if fractional_part > 0.0 else -1.0
         return type(self)(value)
 
     def sub(self, other: _te.Self) -> _te.Self:
