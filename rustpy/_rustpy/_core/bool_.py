@@ -12,10 +12,10 @@ class bool_:
     __slots__ = '_value',
 
     def __new__(cls, _value: bool) -> bool_:
-        if not isinstance(_value, (bool, bool_)):
+        if not isinstance(_value, bool):
             raise TypeError(type(_value))
         self = super().__new__(cls)
-        self._value = bool(_value)
+        self._value = _value
         return self
 
     def __bool__(self) -> bool:
