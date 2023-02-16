@@ -12,8 +12,8 @@ except ImportError:
                                  Some)
 
 if _t.TYPE_CHECKING:
-    from .primitive import bool_
-    from .result import Result
+    from .primitive import bool_ as _bool
+    from .result import Result as _Result
 
 _E = _t.TypeVar('_E')
 _T = _t.TypeVar('_T')
@@ -28,16 +28,16 @@ class Option(_te.Protocol, _t.Generic[_T]):
                  _function: _t.Callable[[_T], Option[_T2]]) -> Option[_T2]:
         ...
 
-    def is_none(self) -> bool_:
+    def is_none(self) -> _bool:
         ...
 
-    def is_some(self) -> bool_:
+    def is_some(self) -> _bool:
         ...
 
-    def ok_or(self, _err: _E) -> Result[_T, _E]:
+    def ok_or(self, _err: _E) -> _Result[_T, _E]:
         ...
 
-    def ok_or_else(self, _err: _t.Callable[[], _E]) -> Result[_T, _E]:
+    def ok_or_else(self, _err: _t.Callable[[], _E]) -> _Result[_T, _E]:
         ...
 
     def or_(self, _other: Option[_T]) -> Option[_T]:
