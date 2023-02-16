@@ -24,25 +24,27 @@ def _to_zero_floats(cls: _t.Type[_Float]) -> _SearchStrategy[_Float]:
     return _st.builds(cls, _st.just(0.0))
 
 
-float_types = _primitive.f32, _primitive.f64
+_float_types = _primitive.f32, _primitive.f64
 
-finite_floats_values = tuple(_to_floats(float_type,
-                                        finite=True)
-                             for float_type in float_types)
-floats_values = tuple(_to_floats(float_type,
-                                 finite=False)
-                      for float_type in float_types)
-floats = _st.one_of(floats_values)
-finite_floats = _st.one_of(finite_floats_values)
+float_types = _st.sampled_from(_float_types)
+
+_finite_floats_values = tuple(_to_floats(float_type,
+                                         finite=True)
+                              for float_type in _float_types)
+_floats_values = tuple(_to_floats(float_type,
+                                  finite=False)
+                       for float_type in _float_types)
+floats = _st.one_of(_floats_values)
+finite_floats = _st.one_of(_finite_floats_values)
 finite_floats_pairs = _st.one_of([_st.tuples(values, values)
-                                  for values in finite_floats_values])
+                                  for values in _finite_floats_values])
 finite_floats_with_ones = _st.one_of([_st.tuples(_to_floats(float_type,
                                                             finite=True),
                                                  _to_unit_floats(float_type))
-                                      for float_type in float_types])
+                                      for float_type in _float_types])
 finite_floats_with_zeros = _st.one_of(
         [_st.tuples(_to_floats(float_type,
                                finite=True),
                     _to_zero_floats(float_type))
-         for float_type in float_types]
+         for float_type in _float_types]
 )
