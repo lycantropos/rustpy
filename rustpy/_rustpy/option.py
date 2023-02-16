@@ -6,6 +6,11 @@ import typing_extensions as _te
 
 from ._core.bool_ import bool_
 
+if _t.TYPE_CHECKING:
+    from .result import (Err,
+                         Ok)
+
+_E = _t.TypeVar('_E')
 _T = _t.TypeVar('_T')
 _T2 = _t.TypeVar('_T2')
 
@@ -33,6 +38,14 @@ class None_:
                     _default: _t.Callable[[], _T2],
                     _function: _t.Callable[[_T], _T2]) -> _T2:
         return _default()
+
+    def ok_or(self, _err: _E) -> Err[_E]:
+        from .result import Err
+        return Err(_err)
+
+    def ok_or_else(self, _err: _t.Callable[[], _E]) -> Err[_E]:
+        from .result import Err
+        return Err(_err())
 
     def or_(self, _other: Option[_T]) -> Option[_T]:
         return _other
@@ -125,6 +138,14 @@ class Some(_t.Generic[_T]):
 
     def is_some(self) -> bool_:
         return bool_(True)
+
+    def ok_or(self, _err: _E) -> Ok[_T]:
+        from .result import Ok
+        return Ok(self._value)
+
+    def ok_or_else(self, _err: _t.Callable[[], _E]) -> Ok[_T]:
+        from .result import Ok
+        return Ok(self._value)
 
     def or_(self, _other: Option[_T]) -> _te.Self:
         return self

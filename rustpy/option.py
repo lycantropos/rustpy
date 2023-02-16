@@ -13,7 +13,9 @@ except ImportError:
 
 if _t.TYPE_CHECKING:
     from .primitive import bool_
+    from .result import Result
 
+_E = _t.TypeVar('_E')
 _T = _t.TypeVar('_T')
 _T2 = _t.TypeVar('_T2')
 
@@ -30,6 +32,12 @@ class Option(_te.Protocol, _t.Generic[_T]):
         ...
 
     def is_some(self) -> bool_:
+        ...
+
+    def ok_or(self, _err: _E) -> Result[_T, _E]:
+        ...
+
+    def ok_or_else(self, _err: _t.Callable[[], _E]) -> Result[_T, _E]:
         ...
 
     def or_(self, _other: Option[_T]) -> Option[_T]:

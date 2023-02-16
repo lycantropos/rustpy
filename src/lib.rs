@@ -396,6 +396,14 @@ impl None_ {
         default.call0()
     }
 
+    fn ok_or(&self, _err: PyObject) -> Err_ {
+        Err_(_err)
+    }
+
+    fn ok_or_else(&self, _err: &PyAny, py: Python) -> PyResult<Err_> {
+        _err.call0().map(|value| Err_(value.into_py(py)))
+    }
+
     fn or_<'a>(&self, value: &'a PyAny, py: Python) -> PyResult<&'a PyAny> {
         check_option_value(value, py).ok_or_else(|| {
             value
@@ -533,6 +541,14 @@ impl Some_ {
         py: Python,
     ) -> PyResult<&'a PyAny> {
         function.call1(PyTuple::new(py, [self.0.as_ref(py)]))
+    }
+
+    fn ok_or(slf: PyRef<Self>, _err: PyObject) -> Ok_ {
+        Ok_(slf.0.clone())
+    }
+
+    fn ok_or_else(slf: PyRef<Self>, _err: &PyAny) -> Ok_ {
+        Ok_(slf.0.clone())
     }
 
     fn or_<'a>(slf: PyRef<'a, Self>, _value: &PyAny) -> PyRef<'a, Self> {
