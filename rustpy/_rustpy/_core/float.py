@@ -12,8 +12,27 @@ from .utils import (floor_division_quotient as _floor_division_quotient,
                     trunc_division_quotient as _trunc_division_quotient,
                     trunc_division_remainder as _trunc_division_remainder)
 
+if _t.TYPE_CHECKING:
+    from rustpy._rustpy.primitive import (i32,
+                                          u32)
+
 
 class BaseFloat(_OrderedWrapper[float]):
+    DIGITS: _t.ClassVar[u32]
+    EPSILON: _t.ClassVar[_te.Self]
+    INFINITY: _t.ClassVar[_te.Self]
+    MANTISSA_DIGITS: _t.ClassVar[u32]
+    MAX: _t.ClassVar[_te.Self]
+    MAX_10_EXP: _t.ClassVar[i32]
+    MAX_EXP: _t.ClassVar[i32]
+    MIN: _t.ClassVar[_te.Self]
+    MIN_10_EXP: _t.ClassVar[i32]
+    MIN_EXP: _t.ClassVar[i32]
+    MIN_POSITIVE: _t.ClassVar[_te.Self]
+    NAN: _t.ClassVar[_te.Self]
+    NEG_INFINITY: _t.ClassVar[_te.Self]
+    RADIX: _t.ClassVar[u32]
+
     def __new__(cls, _value: float) -> _te.Self:
         if not isinstance(_value, float):
             raise TypeError(type(_value))

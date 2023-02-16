@@ -1,3 +1,4 @@
+import math as _math
 from ctypes import c_float
 
 import typing_extensions as _te
@@ -15,17 +16,6 @@ from ._core.integer import (
 )
 
 bool_ = _bool.bool_
-
-
-@_te.final
-class f32(BaseFloat):
-    def __init__(self, _value: float) -> None:
-        self._value = c_float(_value).value
-
-
-@_te.final
-class f64(BaseFloat):
-    pass
 
 
 @_te.final
@@ -146,3 +136,46 @@ class usize(_BaseUnsignedInteger):
 usize.BITS = u32(_SIZE_BITS)
 usize.MAX = _unsigned_cls_to_max_value(usize)
 usize.MIN = _unsigned_cls_to_min_value(usize)
+
+
+@_te.final
+class f32(BaseFloat):
+    def __init__(self, _value: float) -> None:
+        self._value = c_float(_value).value
+
+
+f32.DIGITS = u32(6)
+f32.EPSILON = f32(1.1920929e-7)
+f32.INFINITY = f32(_math.inf)
+f32.MANTISSA_DIGITS = u32(24)
+f32.MAX = f32(3.40282347e+38)
+f32.MAX_10_EXP = i32(38)
+f32.MAX_EXP = i32(128)
+f32.MIN = f32(-3.40282347e+38)
+f32.MIN_10_EXP = i32(-37)
+f32.MIN_EXP = i32(-125)
+f32.MIN_POSITIVE = f32(1.17549435e-38)
+f32.NAN = f32(_math.nan)
+f32.NEG_INFINITY = f32(-_math.inf)
+f32.RADIX = u32(2)
+
+
+@_te.final
+class f64(BaseFloat):
+    pass
+
+
+f64.DIGITS = u32(15)
+f64.EPSILON = f64(2.2204460492503131e-16)
+f64.INFINITY = f64(_math.inf)
+f64.MANTISSA_DIGITS = u32(53)
+f64.MAX = f64(1.7976931348623157e+308)
+f64.MAX_10_EXP = i32(308)
+f64.MAX_EXP = i32(1_024)
+f64.MIN = f64(-3.40282347e+38)
+f64.MIN_10_EXP = i32(-307)
+f64.MIN_EXP = i32(-1_021)
+f64.MIN_POSITIVE = f64(2.2250738585072014e-308)
+f64.NAN = f64(_math.nan)
+f64.NEG_INFINITY = f64(-_math.inf)
+f64.RADIX = u32(2)

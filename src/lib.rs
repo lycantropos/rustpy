@@ -630,6 +630,35 @@ macro_rules! define_floating_point_python_binding {
 
         #[pymethods]
         impl $wrapper {
+            #[classattr]
+            const DIGITS: U32 = U32(<$float>::DIGITS);
+            #[classattr]
+            const EPSILON: Self = Self(<$float>::EPSILON);
+            #[classattr]
+            const INFINITY: Self = Self(<$float>::INFINITY);
+            #[classattr]
+            const MANTISSA_DIGITS: U32 = U32(<$float>::MANTISSA_DIGITS);
+            #[classattr]
+            const MAX: Self = Self(<$float>::MAX);
+            #[classattr]
+            const MAX_10_EXP: I32 = I32(<$float>::MAX_10_EXP);
+            #[classattr]
+            const MAX_EXP: I32 = I32(<$float>::MAX_EXP);
+            #[classattr]
+            const MIN: Self = Self(<$float>::MIN);
+            #[classattr]
+            const MIN_10_EXP: I32 = I32(<$float>::MIN_10_EXP);
+            #[classattr]
+            const MIN_EXP: I32 = I32(<$float>::MIN_EXP);
+            #[classattr]
+            const MIN_POSITIVE: Self = Self(<$float>::MIN_POSITIVE);
+            #[classattr]
+            const NAN: Self = Self(<$float>::NAN);
+            #[classattr]
+            const NEG_INFINITY: Self = Self(<$float>::NEG_INFINITY);
+            #[classattr]
+            const RADIX: U32 = U32(<$float>::RADIX);
+
             #[new]
             fn new(value: $float) -> Self {
                 Self(value)
