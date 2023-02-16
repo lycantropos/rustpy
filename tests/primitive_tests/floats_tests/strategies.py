@@ -34,6 +34,16 @@ _finite_floats_values = tuple(_to_floats(float_type,
 _floats_values = tuple(_to_floats(float_type,
                                   finite=False)
                        for float_type in _float_types)
+float_types_with_finite_values = _st.one_of(
+        [_st.tuples(_st.just(float_type), _to_floats(float_type,
+                                                     finite=True))
+         for float_type in _float_types]
+)
+float_types_with_values = _st.one_of(
+        [_st.tuples(_st.just(float_type), _to_floats(float_type,
+                                                     finite=False))
+         for float_type in _float_types]
+)
 floats = _st.one_of(_floats_values)
 finite_floats = _st.one_of(_finite_floats_values)
 finite_floats_pairs = _st.one_of([_st.tuples(values, values)
