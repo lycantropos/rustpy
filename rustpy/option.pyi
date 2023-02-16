@@ -2,7 +2,7 @@ import typing as _t
 
 import typing_extensions as _te
 
-from rustpy.primitive import bool_
+from rustpy.primitive import bool_ as _bool
 
 _T = _t.TypeVar('_T')
 _T2 = _t.TypeVar('_T2')
@@ -16,10 +16,10 @@ class Option(_te.Protocol, _t.Generic[_T]):
                  _function: _t.Callable[[_T], Option[_T2]]) -> Option[_T2]:
         ...
 
-    def is_none(self) -> bool_:
+    def is_none(self) -> _bool:
         ...
 
-    def is_some(self) -> bool_:
+    def is_some(self) -> _bool:
         ...
 
     def or_(self, _other: Option[_T]) -> Option[_T]:
