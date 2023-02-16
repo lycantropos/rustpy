@@ -11,6 +11,9 @@ except ImportError:
     from ._rustpy.result import (Err,
                                  Ok)
 
+if _t.TYPE_CHECKING:
+    from .option import Option as _Option
+
 _E = _t.TypeVar('_E')
 _E2 = _t.TypeVar('_E2')
 _T = _t.TypeVar('_T')
@@ -24,6 +27,9 @@ class Result(_te.Protocol, _t.Generic[_T, _E]):
     def and_then(
             self, _other: _t.Callable[[_T], Result[_T2, _E]]
     ) -> Result[_T2, _E]:
+        ...
+
+    def err(self) -> _Option[_E]:
         ...
 
     def expect(self, _message: str) -> _T:
@@ -47,6 +53,9 @@ class Result(_te.Protocol, _t.Generic[_T, _E]):
     def map_or_else(self,
                     _default: _t.Callable[[_E], _T2],
                     _function: _t.Callable[[_T], _T2]) -> _T2:
+        ...
+
+    def ok(self) -> _Option[_T]:
         ...
 
     def or_(self, _other: Result[_T, _E2]) -> Result[_T, _E2]:

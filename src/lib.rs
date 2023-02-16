@@ -85,6 +85,10 @@ impl Err_ {
         slf
     }
 
+    fn err(&self) -> Some_ {
+        Some_(self.0.clone())
+    }
+
     fn expect(&self, message: String, py: Python) -> PyResult<PyObject> {
         Err(PyValueError::new_err(format!(
             "{}: {}",
@@ -122,6 +126,10 @@ impl Err_ {
         py: Python,
     ) -> PyResult<&'a PyAny> {
         default.call1(PyTuple::new(py, [self.0.as_ref(py)]))
+    }
+
+    fn ok(&self) -> None_ {
+        None_()
     }
 
     fn or_<'a>(&self, value: &'a PyAny, py: Python) -> PyResult<&'a PyAny> {
@@ -249,6 +257,10 @@ impl Ok_ {
         })
     }
 
+    fn err(&self) -> None_ {
+        None_()
+    }
+
     fn expect(&self, _message: String) -> PyObject {
         self.0.clone()
     }
@@ -287,6 +299,10 @@ impl Ok_ {
         py: Python,
     ) -> PyResult<&'a PyAny> {
         function.call1(PyTuple::new(py, [self.0.as_ref(py)]))
+    }
+
+    fn ok(&self) -> Some_ {
+        Some_(self.0.clone())
     }
 
     fn or_<'a>(slf: PyRef<'a, Self>, _value: &PyAny) -> PyRef<'a, Self> {
