@@ -17,7 +17,7 @@ def test_value(float_with_one: Float) -> None:
 
     result = float_.floor()
 
-    assert float_ <= result <= float_ + one
+    assert float_ - one <= result <= float_
     assert result.fract() == type(float_)(0.0)
 
 
