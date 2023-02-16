@@ -18,10 +18,16 @@ class _BaseFloat(_te.Protocol):
     def add(self, other: _te.Self) -> _te.Self:
         ...
 
+    def ceil(self) -> _te.Self:
+        ...
+
     def div(self, divisor: _te.Self) -> _te.Self:
         ...
 
     def div_euclid(self, divisor: _te.Self) -> _te.Self:
+        ...
+
+    def floor(self) -> _te.Self:
         ...
 
     def fract(self) -> _te.Self:
@@ -43,6 +49,9 @@ class _BaseFloat(_te.Protocol):
         ...
 
     def rem_euclid(self, divisor: _te.Self) -> _te.Self:
+        ...
+
+    def round(self) -> _te.Self:
         ...
 
     def sub(self, other: _te.Self) -> _te.Self:

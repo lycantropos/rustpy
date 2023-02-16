@@ -29,6 +29,11 @@ class BaseFloat(_OrderedWrapper[float]):
             raise TypeError(type(other))
         return type(self)(self._value + other._value)
 
+    def ceil(self) -> _te.Self:
+        fractional_part, whole_part = _math.modf(self._value)
+        value = whole_part + _math.ceil(fractional_part)
+        return type(self)(value)
+
     def div(self, divisor: _te.Self) -> _te.Self:
         if not isinstance(divisor, type(self)):
             raise TypeError(type(divisor))
@@ -50,6 +55,11 @@ class BaseFloat(_OrderedWrapper[float]):
                           if divisor._value == 0.0
                           else _floor_division_quotient(self._value,
                                                         divisor._value))
+
+    def floor(self) -> _te.Self:
+        fractional_part, whole_part = _math.modf(self._value)
+        value = whole_part + _math.floor(fractional_part)
+        return type(self)(value)
 
     def fract(self) -> _te.Self:
         value, _ = _math.modf(self._value)
@@ -84,6 +94,13 @@ class BaseFloat(_OrderedWrapper[float]):
                           if divisor._value == 0.0
                           else _floor_division_remainder(self._value,
                                                          divisor._value))
+
+    def round(self) -> _te.Self:
+        fractional_part, whole_part = _math.modf(self._value)
+        value = whole_part + (_math.ceil
+                              if fractional_part > 0.0
+                              else _math.floor)(fractional_part)
+        return type(self)(value)
 
     def sub(self, other: _te.Self) -> _te.Self:
         if not isinstance(other, type(self)):

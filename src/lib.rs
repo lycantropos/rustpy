@@ -643,12 +643,20 @@ macro_rules! define_floating_point_python_binding {
                 Self(self.0 + other.0)
             }
 
+            fn ceil(&self) -> Self {
+                Self(self.0.ceil())
+            }
+
             fn div(&self, other: &Self) -> Self {
                 Self(self.0 / other.0)
             }
 
             fn div_euclid(&self, other: &Self) -> Self {
                 Self(self.0.div_euclid(other.0))
+            }
+
+            fn floor(&self) -> Self {
+                Self(self.0.floor())
             }
 
             fn fract(&self) -> Self {
@@ -677,6 +685,10 @@ macro_rules! define_floating_point_python_binding {
 
             fn rem_euclid(&self, other: &Self) -> Self {
                 Self(self.0.rem_euclid(other.0))
+            }
+
+            fn round(&self) -> Self {
+                Self(self.0.round())
             }
 
             fn sub(&self, other: &Self) -> Self {
