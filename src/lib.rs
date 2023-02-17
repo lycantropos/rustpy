@@ -858,7 +858,7 @@ macro_rules! define_signed_integer_python_binding {
                 match self.0.checked_add(other.0) {
                     Some(result) => Ok(Self(result)),
                     None => Err(PyOverflowError::new_err(format!(
-                        "{} cannot be increased by {}.",
+                        "Sum of {} and {} overflows.",
                         self.__repr__(),
                         other.__repr__(),
                     ))),
@@ -928,7 +928,7 @@ macro_rules! define_signed_integer_python_binding {
                         PyZeroDivisionError::new_err("Division by zero is undefined.")
                     } else {
                         PyOverflowError::new_err(format!(
-                            "{} cannot be divided by {}.",
+                            "Division of {} by {} overflows.",
                             self.__repr__(),
                             other.__repr__(),
                         ))
@@ -943,7 +943,7 @@ macro_rules! define_signed_integer_python_binding {
                         PyZeroDivisionError::new_err("Euclidean division by zero is undefined.")
                     } else {
                         PyOverflowError::new_err(format!(
-                            "{} cannot be Euclidean divided by {}.",
+                            "Euclidean division of {} by {} overflows.",
                             self.__repr__(),
                             other.__repr__(),
                         ))
@@ -955,7 +955,7 @@ macro_rules! define_signed_integer_python_binding {
                 match self.0.checked_mul(other.0) {
                     Some(result) => Ok(Self(result)),
                     None => Err(PyOverflowError::new_err(format!(
-                        "{} cannot be multiplied by {}.",
+                        "Multiplication of {} and {} overflows.",
                         self.__repr__(),
                         other.__repr__(),
                     ))),
@@ -964,7 +964,7 @@ macro_rules! define_signed_integer_python_binding {
 
             fn neg(&self) -> PyResult<Self> {
                 self.0.checked_neg().map(Self).ok_or_else(|| {
-                    PyOverflowError::new_err(format!("{} cannot be negated.", self.__repr__()))
+                    PyOverflowError::new_err(format!("Negation of {} overflows.", self.__repr__()))
                 })
             }
 
@@ -975,7 +975,7 @@ macro_rules! define_signed_integer_python_binding {
                         PyZeroDivisionError::new_err("Division by zero is undefined.")
                     } else {
                         PyOverflowError::new_err(format!(
-                            "{} cannot be divided by {}.",
+                            "Division of {} by {} overflows.",
                             self.__repr__(),
                             other.__repr__(),
                         ))
@@ -990,7 +990,7 @@ macro_rules! define_signed_integer_python_binding {
                         PyZeroDivisionError::new_err("Euclidean division by zero is undefined.")
                     } else {
                         PyOverflowError::new_err(format!(
-                            "{} cannot be Euclidean divided by {}.",
+                            "Euclidean division of {} by {} overflows.",
                             self.__repr__(),
                             other.__repr__(),
                         ))
@@ -1002,7 +1002,7 @@ macro_rules! define_signed_integer_python_binding {
                 match self.0.checked_sub(other.0) {
                     Some(result) => Ok(Self(result)),
                     None => Err(PyOverflowError::new_err(format!(
-                        "{} cannot be decreased by {}.",
+                        "Difference of {} and {} overflows.",
                         self.__repr__(),
                         other.__repr__(),
                     ))),
@@ -1014,7 +1014,7 @@ macro_rules! define_signed_integer_python_binding {
                     Ok(other) => match self.0.checked_add(other.0) {
                         Some(result) => Ok(Self(result).into_py(py)),
                         None => Err(PyOverflowError::new_err(format!(
-                            "{} cannot be increased by {}.",
+                            "Sum of {} and {} overflows.",
                             self.__repr__(),
                             other.__repr__(),
                         ))),
@@ -1042,7 +1042,7 @@ macro_rules! define_signed_integer_python_binding {
                             PyZeroDivisionError::new_err("Division by zero is undefined.")
                         } else {
                             PyOverflowError::new_err(format!(
-                                "{} cannot be divided by {}.",
+                                "Division of {} by {} overflows.",
                                 self.__repr__(),
                                 other.__repr__(),
                             ))
@@ -1057,7 +1057,7 @@ macro_rules! define_signed_integer_python_binding {
                     Ok(other) => match self.0.checked_mul(other.0) {
                         Some(result) => Ok(Self(result).into_py(py)),
                         None => Err(PyOverflowError::new_err(format!(
-                            "{} cannot be multiplied by {}.",
+                            "Multiplication of {} and {} overflows.",
                             self.__repr__(),
                             other.__repr__(),
                         ))),
@@ -1068,7 +1068,7 @@ macro_rules! define_signed_integer_python_binding {
 
             fn __neg__(&self) -> PyResult<Self> {
                 self.0.checked_neg().map(Self).ok_or_else(|| {
-                    PyOverflowError::new_err(format!("{} cannot be negated.", self.__repr__()))
+                    PyOverflowError::new_err(format!("Negation of {} overflows.", self.__repr__()))
                 })
             }
 
@@ -1077,7 +1077,7 @@ macro_rules! define_signed_integer_python_binding {
                     Ok(other) => match self.0.checked_sub(other.0) {
                         Some(result) => Ok(Self(result).into_py(py)),
                         None => Err(PyOverflowError::new_err(format!(
-                            "{} cannot be decreased by {}.",
+                            "Difference of {} and {} overflows.",
                             self.__repr__(),
                             other.__repr__(),
                         ))),
@@ -1110,7 +1110,7 @@ macro_rules! define_signed_integer_python_binding {
                             PyZeroDivisionError::new_err("Division by zero is undefined.")
                         } else {
                             PyOverflowError::new_err(format!(
-                                "{} cannot be divided by {}.",
+                                "Division of {} by {} overflows.",
                                 self.__repr__(),
                                 other.__repr__(),
                             ))
@@ -1156,7 +1156,7 @@ macro_rules! define_unsigned_integer_python_binding {
                 match self.0.checked_add(other.0) {
                     Some(result) => Ok(Self(result)),
                     None => Err(PyOverflowError::new_err(format!(
-                        "{} cannot be increased by {}.",
+                        "Sum of {} and {} overflows.",
                         self.__repr__(),
                         other.__repr__(),
                     ))),
@@ -1219,7 +1219,7 @@ macro_rules! define_unsigned_integer_python_binding {
                         PyZeroDivisionError::new_err("Division by zero is undefined.")
                     } else {
                         PyOverflowError::new_err(format!(
-                            "{} cannot be divided by {}.",
+                            "Division of {} by {} overflows.",
                             self.__repr__(),
                             other.__repr__(),
                         ))
@@ -1234,7 +1234,7 @@ macro_rules! define_unsigned_integer_python_binding {
                         PyZeroDivisionError::new_err("Euclidean division by zero is undefined.")
                     } else {
                         PyOverflowError::new_err(format!(
-                            "{} cannot be Euclidean divided by {}.",
+                            "Euclidean division of {} by {} overflows.",
                             self.__repr__(),
                             other.__repr__(),
                         ))
@@ -1246,7 +1246,7 @@ macro_rules! define_unsigned_integer_python_binding {
                 match self.0.checked_mul(other.0) {
                     Some(result) => Ok(Self(result)),
                     None => Err(PyOverflowError::new_err(format!(
-                        "{} cannot be multiplied by {}.",
+                        "Multiplication of {} and {} overflows.",
                         self.__repr__(),
                         other.__repr__(),
                     ))),
@@ -1260,7 +1260,7 @@ macro_rules! define_unsigned_integer_python_binding {
                         PyZeroDivisionError::new_err("Division by zero is undefined.")
                     } else {
                         PyOverflowError::new_err(format!(
-                            "{} cannot be divided by {}.",
+                            "Division of {} by {} overflows.",
                             self.__repr__(),
                             other.__repr__(),
                         ))
@@ -1275,7 +1275,7 @@ macro_rules! define_unsigned_integer_python_binding {
                         PyZeroDivisionError::new_err("Euclidean division by zero is undefined.")
                     } else {
                         PyOverflowError::new_err(format!(
-                            "{} cannot be Euclidean divided by {}.",
+                            "Euclidean division of {} by {} overflows.",
                             self.__repr__(),
                             other.__repr__(),
                         ))
@@ -1287,7 +1287,7 @@ macro_rules! define_unsigned_integer_python_binding {
                 match self.0.checked_sub(other.0) {
                     Some(result) => Ok(Self(result)),
                     None => Err(PyOverflowError::new_err(format!(
-                        "{} cannot be decreased by {}.",
+                        "Difference of {} and {} overflows.",
                         self.__repr__(),
                         other.__repr__(),
                     ))),
@@ -1299,7 +1299,7 @@ macro_rules! define_unsigned_integer_python_binding {
                     Ok(other) => match self.0.checked_add(other.0) {
                         Some(result) => Ok(Self(result).into_py(py)),
                         None => Err(PyOverflowError::new_err(format!(
-                            "{} cannot be increased by {}.",
+                            "Sum of {} and {} overflows.",
                             self.__repr__(),
                             other.__repr__(),
                         ))),
@@ -1323,7 +1323,7 @@ macro_rules! define_unsigned_integer_python_binding {
                             PyZeroDivisionError::new_err("Division by zero is undefined.")
                         } else {
                             PyOverflowError::new_err(format!(
-                                "{} cannot be divided by {}.",
+                                "Division of {} by {} overflows.",
                                 self.__repr__(),
                                 other.__repr__(),
                             ))
@@ -1338,7 +1338,7 @@ macro_rules! define_unsigned_integer_python_binding {
                     Ok(other) => match self.0.checked_mul(other.0) {
                         Some(result) => Ok(Self(result).into_py(py)),
                         None => Err(PyOverflowError::new_err(format!(
-                            "{} cannot be multiplied by {}.",
+                            "Multiplication of {} and {} overflows.",
                             self.__repr__(),
                             other.__repr__(),
                         ))),
@@ -1364,7 +1364,7 @@ macro_rules! define_unsigned_integer_python_binding {
                     Ok(other) => match self.0.checked_sub(other.0) {
                         Some(result) => Ok(Self(result).into_py(py)),
                         None => Err(PyOverflowError::new_err(format!(
-                            "{} cannot be decreased by {}.",
+                            "Difference of {} and {} overflows.",
                             self.__repr__(),
                             other.__repr__(),
                         ))),
@@ -1385,7 +1385,7 @@ macro_rules! define_unsigned_integer_python_binding {
                             PyZeroDivisionError::new_err("Division by zero is undefined.")
                         } else {
                             PyOverflowError::new_err(format!(
-                                "{} cannot be divided by {}.",
+                                "Division of {} by {} overflows.",
                                 self.__repr__(),
                                 other.__repr__(),
                             ))
