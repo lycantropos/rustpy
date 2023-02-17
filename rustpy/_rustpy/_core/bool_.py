@@ -86,6 +86,12 @@ class bool_:
                 if isinstance(other, bool_)
                 else NotImplemented)
 
+    def __repr__(self) -> str:
+        return f'{type(self).__qualname__}({self._value!r})'
+
+    def __str__(self) -> str:
+        return 'true' if self._value else 'false'
+
 
 _T = _t.TypeVar('_T')
 
