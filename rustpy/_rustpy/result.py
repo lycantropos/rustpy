@@ -4,7 +4,8 @@ import typing as _t
 
 import typing_extensions as _te
 
-from ._core.bool_ import bool_ as _bool
+from ._core.bool_ import (bool_ as _bool,
+                          try_construct_bool_ as _try_construct_bool)
 from .option import (None_ as _None,
                      Some as _Some)
 
@@ -86,7 +87,7 @@ class Err(_t.Generic[_E]):
         ...
 
     def __eq__(self, other: _t.Any) -> _t.Any:
-        return (_bool(bool(self._value == other._value))
+        return (_try_construct_bool(self._value == other._value)
                 if isinstance(other, Err)
                 else (_bool(not isinstance(other, Ok))
                       and NotImplemented))
@@ -100,7 +101,7 @@ class Err(_t.Generic[_E]):
         ...
 
     def __ge__(self, other: _t.Any) -> _t.Any:
-        return (_bool(bool(self._value >= other._value))
+        return (_try_construct_bool(self._value >= other._value)
                 if isinstance(other, Err)
                 else _bool(isinstance(other, Ok)) or NotImplemented)
 
@@ -113,7 +114,7 @@ class Err(_t.Generic[_E]):
         ...
 
     def __gt__(self, other: _t.Any) -> _t.Any:
-        return (_bool(bool(self._value > other._value))
+        return (_try_construct_bool(self._value > other._value)
                 if isinstance(other, Err)
                 else _bool(isinstance(other, Ok)) or NotImplemented)
 
@@ -126,7 +127,7 @@ class Err(_t.Generic[_E]):
         ...
 
     def __le__(self, other: _t.Any) -> _t.Any:
-        return (_bool(bool(self._value <= other._value))
+        return (_try_construct_bool(self._value <= other._value)
                 if isinstance(other, Err)
                 else _bool(not isinstance(other, Ok)) and NotImplemented)
 
@@ -139,7 +140,7 @@ class Err(_t.Generic[_E]):
         ...
 
     def __lt__(self, other: _t.Any) -> _t.Any:
-        return (_bool(bool(self._value < other._value))
+        return (_try_construct_bool(self._value < other._value)
                 if isinstance(other, Err)
                 else _bool(not isinstance(other, Ok)) and NotImplemented)
 
@@ -216,7 +217,7 @@ class Ok(_t.Generic[_T]):
         ...
 
     def __eq__(self, other: _t.Any) -> _t.Any:
-        return (_bool(bool(self._value == other._value))
+        return (_try_construct_bool(self._value == other._value)
                 if isinstance(other, Ok)
                 else (_bool(not isinstance(other, Err))
                       and NotImplemented))
@@ -230,7 +231,7 @@ class Ok(_t.Generic[_T]):
         ...
 
     def __ge__(self, other: _t.Any) -> _t.Any:
-        return (_bool(bool(self._value >= other._value))
+        return (_try_construct_bool(self._value >= other._value)
                 if isinstance(other, Ok)
                 else _bool(not isinstance(other, Err)) and NotImplemented)
 
@@ -243,7 +244,7 @@ class Ok(_t.Generic[_T]):
         ...
 
     def __gt__(self, other: _t.Any) -> _t.Any:
-        return (_bool(bool(self._value > other._value))
+        return (_try_construct_bool(self._value > other._value)
                 if isinstance(other, Ok)
                 else _bool(not isinstance(other, Err)) and NotImplemented)
 
@@ -256,7 +257,7 @@ class Ok(_t.Generic[_T]):
         ...
 
     def __le__(self, other: _t.Any) -> _t.Any:
-        return (_bool(bool(self._value <= other._value))
+        return (_try_construct_bool(self._value <= other._value)
                 if isinstance(other, Ok)
                 else _bool(isinstance(other, Err)) or NotImplemented)
 
@@ -269,7 +270,7 @@ class Ok(_t.Generic[_T]):
         ...
 
     def __lt__(self, other: _t.Any) -> _t.Any:
-        return (_bool(bool(self._value < other._value))
+        return (_try_construct_bool(self._value < other._value)
                 if isinstance(other, Ok)
                 else _bool(isinstance(other, Err)) or NotImplemented)
 

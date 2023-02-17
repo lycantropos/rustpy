@@ -85,3 +85,10 @@ class bool_:
         return (bool_(self._value < other._value)
                 if isinstance(other, bool_)
                 else NotImplemented)
+
+
+_T = _t.TypeVar('_T')
+
+
+def try_construct_bool_(value: _T) -> _t.Union[_T, bool_]:
+    return bool_(value) if isinstance(value, bool) else value
