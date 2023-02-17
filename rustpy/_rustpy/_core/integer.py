@@ -260,6 +260,15 @@ class _BaseInteger(_abc.ABC, _OrderedWrapper[int]):
 
 
 class BaseSignedInteger(_BaseInteger):
+    def abs(self) -> _te.Self:
+        return type(self)(abs(self._value))
+
+    def checked_abs(self) -> _Option[_te.Self]:
+        try:
+            return _Some(type(self)(abs(self._value)))
+        except OverflowError:
+            return _None()
+
     def checked_neg(self) -> _Option[_te.Self]:
         try:
             return _Some(type(self)(-self._value))

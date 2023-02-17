@@ -334,6 +334,12 @@ class _BaseInteger(_te.Protocol):
 
 
 class _BaseSignedInteger(_BaseInteger):
+    def abs(self) -> _te.Self:
+        ...
+
+    def checked_abs(self) -> _Option[_te.Self]:
+        ...
+
     def checked_neg(self) -> _Option[_te.Self]:
         ...
 

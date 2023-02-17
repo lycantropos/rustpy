@@ -854,6 +854,16 @@ macro_rules! define_signed_integer_python_binding {
                 Self(value)
             }
 
+            fn abs(&self) -> PyResult<Self> {
+                match self.0.checked_abs() {
+                    Some(result) => Ok(Self(result)),
+                    None => Err(PyOverflowError::new_err(format!(
+                        "Absolute value of {} overflows.",
+                        self.__repr__()
+                    ))),
+                }
+            }
+
             fn add(&self, other: &Self) -> PyResult<Self> {
                 match self.0.checked_add(other.0) {
                     Some(result) => Ok(Self(result)),
@@ -862,6 +872,13 @@ macro_rules! define_signed_integer_python_binding {
                         self.__repr__(),
                         other.__repr__(),
                     ))),
+                }
+            }
+
+            fn checked_abs(&self, py: Python) -> PyObject {
+                match self.0.checked_abs() {
+                    Some(result) => Some_(Self(result).into_py(py)).into_py(py),
+                    None => None_().into_py(py),
                 }
             }
 
