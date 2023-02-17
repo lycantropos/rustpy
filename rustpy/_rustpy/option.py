@@ -125,6 +125,9 @@ class None_:
                 and (_bool(isinstance(other, Some))
                      or NotImplemented))
 
+    def __repr__(self) -> str:
+        return f'{type(self).__qualname__}()'
+
 
 class Some(_t.Generic[_T]):
     def and_(self, _other: Option[_T]) -> Option[_T]:
@@ -242,6 +245,9 @@ class Some(_t.Generic[_T]):
         return (_try_construct_bool(self._value < other._value)
                 if isinstance(other, Some)
                 else _bool(not isinstance(other, None_)) and NotImplemented)
+
+    def __repr__(self) -> str:
+        return f'{type(self).__qualname__}({self._value}!r)'
 
 
 Option = _t.Union[None_, Some[_T]]

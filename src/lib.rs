@@ -468,7 +468,7 @@ impl None_ {
     }
 
     fn __repr__(&self) -> &str {
-        "None()"
+        "None_()"
     }
 
     fn __richcmp__(&self, other: &PyAny, op: CompareOp) -> PyResult<PyObject> {
