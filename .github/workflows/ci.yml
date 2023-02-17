@@ -68,13 +68,10 @@ jobs:
           python-version: ${{ matrix.python_version }}
           architecture: ${{ matrix.platform.python_architecture }}
       - name: 'Setup Rust'
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@nightly
         with:
           components: rustfmt
-          default: true
-          profile: minimal
           target: ${{ matrix.platform.rust_target }}
-          toolchain: nightly
         if: ${{ !startsWith(matrix.python_version, 'pypy') }}
       - name: 'Run Rust linter'
         run: cargo fmt --check
@@ -154,11 +151,7 @@ jobs:
       - name: 'Checkout'
         uses: actions/checkout@v3
       - name: 'Setup Rust'
-        uses: actions-rs/toolchain@v1
-        with:
-          default: true
-          profile: minimal
-          toolchain: nightly
+        uses: dtolnay/rust-toolchain@nightly
       - name: 'Upload'
         run: cargo publish --no-verify
         env:
@@ -339,12 +332,9 @@ jobs:
         with:
           architecture: ${{ matrix.platform.python_architecture }}
       - name: 'Setup Rust'
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@nightly
         with:
-          default: true
-          profile: minimal
           target: ${{ matrix.platform.rust_target }}
-          toolchain: nightly
         if: ${{ runner.os != 'Linux' }}
       - name: 'Setup QEMU'
         uses: docker/setup-qemu-action@v2
