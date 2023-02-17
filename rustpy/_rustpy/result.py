@@ -145,7 +145,7 @@ class Err(_t.Generic[_E]):
                 else _bool(not isinstance(other, Ok)) and NotImplemented)
 
     def __repr__(self) -> str:
-        return f'{type(self).__qualname__}({self._value}!r)'
+        return f'{type(self).__qualname__}({self._value!r})'
 
 
 class Ok(_t.Generic[_T]):
@@ -278,7 +278,7 @@ class Ok(_t.Generic[_T]):
                 else _bool(isinstance(other, Err)) or NotImplemented)
 
     def __repr__(self) -> str:
-        return f'{type(self).__qualname__}({self._value}!r)'
+        return f'{type(self).__qualname__}({self._value!r})'
 
 
 Result = _t.Union[Ok[_T], Err[_E]]

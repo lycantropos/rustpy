@@ -247,7 +247,7 @@ class Some(_t.Generic[_T]):
                 else _bool(not isinstance(other, None_)) and NotImplemented)
 
     def __repr__(self) -> str:
-        return f'{type(self).__qualname__}({self._value}!r)'
+        return f'{type(self).__qualname__}({self._value!r})'
 
 
 Option = _t.Union[None_, Some[_T]]
