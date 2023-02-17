@@ -14,7 +14,7 @@ def test_basic(result: Result) -> None:
     assert isinstance(result_, str)
 
 
-@given(strategies.lossless_representable_results)
+@given(strategies.losslessly_representable_results)
 def test_round_trip(result: Result) -> None:
     result_ = eval(repr(result), {**vars(primitive), **vars(option_module),
                                   **vars(result_module)})

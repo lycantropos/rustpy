@@ -5,7 +5,7 @@ from rustpy.result import (Err as _Err,
 from tests.strategies import (
     comparable_values_categories as _comparable_values_categories,
     equatable_values as _equatable_values,
-    lossless_representable_values as _lossless_representable_values
+    losslessly_representable_values as _losslessly_representable_values
 )
 
 MAX_RECURSION_DEPTH = 3
@@ -30,7 +30,7 @@ comparable_results_triplets = _comparable_results_categories.flatmap(
         lambda values: _st.tuples(values, values, values)
 )
 results_maps = _st.builds(lambda value: (lambda _: value), equatable_results)
-lossless_representable_results = (
-        _st.builds(_Err, _lossless_representable_values)
-        | _st.builds(_Ok, _lossless_representable_values)
+losslessly_representable_results = (
+        _st.builds(_Err, _losslessly_representable_values)
+        | _st.builds(_Ok, _losslessly_representable_values)
 )

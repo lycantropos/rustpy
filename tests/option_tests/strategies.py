@@ -4,7 +4,7 @@ from rustpy.option import (None_ as _None,
                            Some as _Some)
 from tests.strategies import (comparable_values_categories,
                               equatable_values,
-                              lossless_representable_values)
+                              losslessly_representable_values)
 
 equatable_empty_factories = (
         _st.sampled_from([bool, type(None), int, float, complex, str, bytes,
@@ -32,5 +32,6 @@ comparable_options_triplets = comparable_options_categories.flatmap(
 )
 options_maps = equatable_options.map(lambda value: (lambda _: value))
 options_empty_factories = equatable_options.map(lambda value: (lambda: value))
-lossless_representable_options = (nones
-                                  | lossless_representable_values.map(_Some))
+losslessly_representable_options = (
+        nones | losslessly_representable_values.map(_Some)
+)
