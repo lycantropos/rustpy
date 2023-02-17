@@ -47,7 +47,7 @@ def test___mul___operand(pair: Tuple[Integer, Integer]) -> None:
         assert result == (-first) * second == first * (-second)
 
 
-@given(strategies.signed_divisible_integers_pairs)
+@given(strategies.divisible_signed_integers_pairs)
 def test___truediv___operand(pair: Tuple[Integer, Integer]) -> None:
     first, second = pair
 

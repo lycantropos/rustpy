@@ -46,18 +46,23 @@ integers_with_zeros = _st.one_of([_st.tuples(_to_integers(integer_type),
 integers_with_ones = _st.one_of([_st.tuples(_to_integers(integer_type),
                                             _to_unit_integers(integer_type))
                                  for integer_type in integer_types])
-signed_integer_values = tuple(_to_integers(integer_type)
-                              for integer_type in signed_integer_types)
-unsigned_integer_values = tuple(_to_integers(integer_type)
-                                for integer_type in unsigned_integer_types)
-integer_values = (*signed_integer_values, *unsigned_integer_values)
-signed_integers = _st.one_of(signed_integer_values)
-signed_divisible_integers_pairs = _st.one_of(
+_signed_integer_values = tuple(_to_integers(integer_type)
+                               for integer_type in signed_integer_types)
+_unsigned_integer_values = tuple(_to_integers(integer_type)
+                                 for integer_type in unsigned_integer_types)
+_integer_values = (*_signed_integer_values, *_unsigned_integer_values)
+integers_pairs = _st.one_of([_st.tuples(values, values)
+                             for values in _integer_values])
+signed_integers = _st.one_of(_signed_integer_values)
+signed_integers_pairs = _st.one_of([_st.tuples(values, values)
+                                    for values in _signed_integer_values])
+divisible_signed_integers_pairs = _st.one_of(
         [_st.tuples(_to_integers(integer_type),
                     _to_non_zero_integers(integer_type))
          for integer_type in signed_integer_types]
 )
-signed_integers_pairs = _st.one_of([_st.tuples(values, values)
-                                    for values in signed_integer_values])
-integers_pairs = _st.one_of([_st.tuples(values, values)
-                             for values in integer_values])
+signed_integers_with_zeros = _st.one_of(
+        [_st.tuples(_to_integers(integer_type),
+                    _to_zero_integers(integer_type))
+         for integer_type in signed_integer_types]
+)
