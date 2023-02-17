@@ -59,6 +59,5 @@ comparable_options_triplets = comparable_options_categories.flatmap(
 )
 options_maps = _st.builds(lambda value: (lambda _: value), options)
 options_empty_factories = _st.builds(lambda value: (lambda: value), options)
-lossless_representable_options = (
-        nones | _st.builds(_Some, lossless_representable_values)
-)
+lossless_representable_options = (nones
+                                  | lossless_representable_values.map(_Some))
