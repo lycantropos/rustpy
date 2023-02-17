@@ -144,6 +144,9 @@ class Err(_t.Generic[_E]):
                 if isinstance(other, Err)
                 else _bool(not isinstance(other, Ok)) and NotImplemented)
 
+    def __repr__(self) -> str:
+        return f'{type(self).__qualname__}({self._value}!r)'
+
 
 class Ok(_t.Generic[_T]):
     def and_(self, _other: Result[_T, _E]) -> Result[_T, _E]:
@@ -273,6 +276,9 @@ class Ok(_t.Generic[_T]):
         return (_try_construct_bool(self._value < other._value)
                 if isinstance(other, Ok)
                 else _bool(isinstance(other, Err)) or NotImplemented)
+
+    def __repr__(self) -> str:
+        return f'{type(self).__qualname__}({self._value}!r)'
 
 
 Result = _t.Union[Ok[_T], Err[_E]]
