@@ -7,13 +7,13 @@ from tests.utils import not_raises
 from . import strategies
 
 
-@given(strategies.errs)
+@given(strategies.equatable_errs)
 def test_err(err: Err) -> None:
     with not_raises(BaseException):
         err.unwrap_err()
 
 
-@given(strategies.oks)
+@given(strategies.equatable_oks)
 def test_ok(ok: Ok) -> None:
     with pytest.raises(ValueError):
         ok.unwrap_err()

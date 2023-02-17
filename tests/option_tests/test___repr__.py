@@ -7,7 +7,7 @@ from rustpy.option import Option
 from . import strategies
 
 
-@given(strategies.options)
+@given(strategies.equatable_options)
 def test_basic(option: Option) -> None:
     result = repr(option)
 

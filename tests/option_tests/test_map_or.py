@@ -16,7 +16,7 @@ def test_none(none: None_, value: Any, map_: Callable[[Any], Any]) -> None:
     assert result is value
 
 
-@given(strategies.somes, strategies.equatable_values,
+@given(strategies.equatable_somes, strategies.equatable_values,
        strategies.equatable_pure_maps)
 def test_some(some: Some, value: Any, map_: Callable[[Any], Any]) -> None:
     result = some.map_or(value, map_)

@@ -16,7 +16,7 @@ def test_none(none: None_, option_map: Callable[[Any], Option]) -> None:
     assert result is none
 
 
-@given(strategies.somes, strategies.options_maps)
+@given(strategies.equatable_somes, strategies.options_maps)
 def test_some(some: Some, option_map: Callable[[Any], Option]) -> None:
     result = some.and_then(option_map)
 

@@ -13,7 +13,7 @@ def test_none(none: None_) -> None:
         none.unwrap()
 
 
-@given(strategies.somes)
+@given(strategies.equatable_somes)
 def test_some(some: Some) -> None:
     with not_raises(BaseException):
         some.unwrap()

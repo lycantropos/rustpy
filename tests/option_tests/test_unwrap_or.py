@@ -14,7 +14,7 @@ def test_none(none: None_, value: Any) -> None:
     assert result is value
 
 
-@given(strategies.somes, strategies.equatable_values)
+@given(strategies.equatable_somes, strategies.equatable_values)
 def test_some(some: Some, value: Any) -> None:
     result = some.unwrap_or(value)
 

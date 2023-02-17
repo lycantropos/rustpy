@@ -5,7 +5,8 @@ from rustpy.option import (None_ as _None,
                            Some as _Some)
 from rustpy.result import (Err as _Err,
                            Ok as _Ok)
-from tests.utils import to_integers as _to_integers
+from tests.utils import (to_homogeneous_tuples as _to_homogeneous_tuples,
+                         to_integers as _to_integers)
 
 MAX_RECURSION_DEPTH = 3
 hashable_equatable_values = _st.recursive(
@@ -13,7 +14,7 @@ hashable_equatable_values = _st.recursive(
         | _st.booleans() | _st.integers() | _st.fractions()
         | _st.floats(allow_nan=False) | _st.complex_numbers(allow_nan=False)
         | _st.binary() | _st.text() | _st.dates() | _st.datetimes(),
-        lambda values: _st.frozensets(values) | _st.lists(values).map(tuple)
+        lambda values: _st.frozensets(values) | _to_homogeneous_tuples(values)
 )
 _bools = _st.builds(_primitive.bool_, _st.booleans())
 _equatable_f32s = _st.builds(_primitive.f32, _st.floats(allow_nan=False,
@@ -52,9 +53,25 @@ equatable_values = _st.recursive(
         (hashable_equatable_values | _st.sets(hashable_equatable_values)
          | _st.one_of(equatable_primitives_values) | nones),
         lambda values:
-        (_st.lists(values) | _st.lists(values).map(tuple)
+        (_st.lists(values) | _to_homogeneous_tuples(values)
          | _st.dictionaries(hashable_equatable_values, values)
          | values.map(_Some) | values.map(_Err) | values.map(_Ok)),
+        max_leaves=MAX_RECURSION_DEPTH
+)
+_comparable_homogeneous_values_categories = _st.recursive(
+        _st.sampled_from([_st.booleans() | _st.integers() | _st.fractions()
+                          | _st.floats(allow_nan=False),
+                          _st.binary(), _st.text(), _st.dates(),
+                          _st.datetimes()]),
+        lambda base: base.map(_st.lists) | base.map(_to_homogeneous_tuples),
+        max_leaves=MAX_RECURSION_DEPTH
+)
+comparable_values_categories = _st.recursive(
+        _comparable_homogeneous_values_categories,
+        lambda base:
+        (_st.lists(base).map(lambda values: _st.tuples(*values))
+         | base.map(lambda values: _st.builds(_None) | values.map(_Some))
+         | base.map(lambda values: values.map(_Err) | values.map(_Ok))),
         max_leaves=MAX_RECURSION_DEPTH
 )
 hashable_lossless_representable_values = _st.recursive(
@@ -65,14 +82,14 @@ hashable_lossless_representable_values = _st.recursive(
         | _st.complex_numbers(allow_infinity=False,
                               allow_nan=False)
         | _st.binary() | _st.text(),
-        lambda values: _st.frozensets(values) | _st.lists(values).map(tuple),
+        lambda values: _st.frozensets(values) | _to_homogeneous_tuples(values),
         max_leaves=MAX_RECURSION_DEPTH
 )
 lossless_representable_values = _st.recursive(
         hashable_lossless_representable_values
         | _st.one_of(lossless_representable_primitives_values) | nones,
         lambda values:
-        (_st.lists(values) | _st.lists(values).map(tuple)
+        (_st.lists(values) | _to_homogeneous_tuples(values)
          | _st.dictionaries(hashable_lossless_representable_values, values)
          | values.map(_Some) | values.map(_Err) | values.map(_Ok)),
         max_leaves=MAX_RECURSION_DEPTH

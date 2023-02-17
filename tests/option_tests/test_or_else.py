@@ -15,7 +15,7 @@ def test_none(none: None_, factory: Callable[[], Option]) -> None:
     assert result == factory()
 
 
-@given(strategies.somes, strategies.options_empty_factories)
+@given(strategies.equatable_somes, strategies.options_empty_factories)
 def test_some(some: Some, factory: Callable[[], Option]) -> None:
     result = some.or_else(factory)
 

@@ -3,7 +3,7 @@ from contextlib import contextmanager as _contextmanager
 
 import pytest as _pytest
 from hypothesis import strategies as _st
-from hypothesis.strategies import SearchStrategy as _Strategy
+from hypothesis.strategies import SearchStrategy as _SearchStrategy
 
 from rustpy import primitive as _primitive
 
@@ -45,7 +45,16 @@ def rust_int_to_python_int(value: _t.Any) -> int:
     return int(str(value)[:-len(type(value).__qualname__)])
 
 
-def to_integers(integer_type: _t.Type[Integer]) -> _Strategy[Integer]:
+_T = _t.TypeVar('_T')
+
+
+def to_homogeneous_tuples(
+        values: _SearchStrategy[_T]
+) -> _SearchStrategy[_t.Tuple[_T, ...]]:
+    return _st.lists(values).map(tuple)
+
+
+def to_integers(integer_type: _t.Type[Integer]) -> _SearchStrategy[Integer]:
     return (_st.integers(rust_int_to_python_int(integer_type.MIN),
                          rust_int_to_python_int(integer_type.MAX))
             .map(integer_type))

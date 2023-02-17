@@ -5,7 +5,7 @@ from rustpy.result import (Err,
 from . import strategies
 
 
-@given(strategies.errs)
+@given(strategies.equatable_errs)
 def test_err(err: Err) -> None:
     result = err.err()
 
@@ -13,7 +13,7 @@ def test_err(err: Err) -> None:
     assert result.unwrap() is err.unwrap_err()
 
 
-@given(strategies.oks)
+@given(strategies.equatable_oks)
 def test_ok(ok: Ok) -> None:
     result = ok.err()
 

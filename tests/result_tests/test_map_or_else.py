@@ -8,7 +8,7 @@ from rustpy.result import (Err,
 from . import strategies
 
 
-@given(strategies.errs, strategies.equatable_pure_maps,
+@given(strategies.equatable_errs, strategies.equatable_pure_maps,
        strategies.equatable_pure_maps)
 def test_err(err: Err,
              first_map: Callable[[Any], Any],
@@ -18,7 +18,7 @@ def test_err(err: Err,
     assert result == first_map(err.unwrap_err())
 
 
-@given(strategies.oks, strategies.equatable_pure_maps,
+@given(strategies.equatable_oks, strategies.equatable_pure_maps,
        strategies.equatable_pure_maps)
 def test_ok(ok: Ok,
             first_map: Callable[[Any], Any],

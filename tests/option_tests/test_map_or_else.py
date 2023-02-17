@@ -18,7 +18,7 @@ def test_none(none: None_,
     assert result == factory()
 
 
-@given(strategies.somes, strategies.equatable_empty_factories,
+@given(strategies.equatable_somes, strategies.equatable_empty_factories,
        strategies.equatable_pure_maps)
 def test_some(some: Some,
               factory: Callable[[], Any],

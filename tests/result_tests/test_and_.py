@@ -6,11 +6,11 @@ from rustpy.result import (Err,
 from . import strategies
 
 
-@given(strategies.errs, strategies.results)
+@given(strategies.equatable_errs, strategies.equatable_results)
 def test_err(err: Err, result: Result) -> None:
     assert err.and_(result) is err
 
 
-@given(strategies.oks, strategies.results)
+@given(strategies.equatable_oks, strategies.equatable_results)
 def test_ok(ok: Ok, result: Result) -> None:
     assert ok.and_(result) is result
