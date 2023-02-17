@@ -1,25 +1,26 @@
 import typing as _t
-from contextlib import contextmanager
-from typing import Any
+from contextlib import contextmanager as _contextmanager
 
-import pytest
+import pytest as _pytest
+from hypothesis import strategies as _st
+from hypothesis.strategies import SearchStrategy as _Strategy
 
-from rustpy import primitive
+from rustpy import primitive as _primitive
 
-Float = _t.TypeVar('Float', primitive.f32, primitive.f64)
-Integer = _t.TypeVar('Integer', primitive.i128, primitive.i16,
-                     primitive.i32, primitive.i64, primitive.i8,
-                     primitive.isize, primitive.u128, primitive.u16,
-                     primitive.u32, primitive.u64, primitive.u8,
-                     primitive.usize)
-Primitive = _t.TypeVar('Primitive', primitive.bool_, primitive.f32,
-                       primitive.f64, primitive.i128, primitive.i16,
-                       primitive.i32, primitive.i64, primitive.i8,
-                       primitive.isize, primitive.u128, primitive.u16,
-                       primitive.u32, primitive.u64, primitive.u8,
-                       primitive.usize)
+Float = _t.TypeVar('Float', _primitive.f32, _primitive.f64)
+Integer = _t.TypeVar('Integer', _primitive.i128, _primitive.i16,
+                     _primitive.i32, _primitive.i64, _primitive.i8,
+                     _primitive.isize, _primitive.u128, _primitive.u16,
+                     _primitive.u32, _primitive.u64, _primitive.u8,
+                     _primitive.usize)
+Primitive = _t.TypeVar('Primitive', _primitive.bool_, _primitive.f32,
+                       _primitive.f64, _primitive.i128, _primitive.i16,
+                       _primitive.i32, _primitive.i64, _primitive.i8,
+                       _primitive.isize, _primitive.u128, _primitive.u16,
+                       _primitive.u32, _primitive.u64, _primitive.u8,
+                       _primitive.usize)
 
-_AnyBool = _t.Union[bool, primitive.bool_]
+_AnyBool = _t.Union[bool, _primitive.bool_]
 
 
 def equivalence(first: _AnyBool, second: _AnyBool) -> bool:
@@ -30,15 +31,21 @@ def implication(antecedent: _AnyBool, consequent: _AnyBool) -> bool:
     return not antecedent or bool(consequent)
 
 
-@contextmanager
+@_contextmanager
 def not_raises(
         *exceptions: _t.Type[BaseException]
 ) -> _t.Generator[None, None, None]:
     try:
         yield
     except exceptions:
-        raise pytest.fail('DID RAISE {}'.format(exceptions))
+        raise _pytest.fail('DID RAISE {}'.format(exceptions))
 
 
-def rust_int_to_python_int(value: Any) -> int:
+def rust_int_to_python_int(value: _t.Any) -> int:
     return int(str(value)[:-len(type(value).__qualname__)])
+
+
+def to_integers(integer_type: _t.Type[Integer]) -> _Strategy[Integer]:
+    return (_st.integers(rust_int_to_python_int(integer_type.MIN),
+                         rust_int_to_python_int(integer_type.MAX))
+            .map(integer_type))
