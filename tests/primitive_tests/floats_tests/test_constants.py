@@ -57,3 +57,10 @@ def test_max(float_type_with_float: Tuple[Type[Float], Float]) -> None:
     float_type, float_ = float_type_with_float
 
     assert float_type.MAX >= float_
+
+
+@given(strategies.float_types_with_finite_values)
+def test_min(float_type_with_float: Tuple[Type[Float], Float]) -> None:
+    float_type, float_ = float_type_with_float
+
+    assert float_type.MIN <= float_
