@@ -6,7 +6,7 @@ import typing as _t
 import typing_extensions as _te
 
 from .bool_ import bool_ as _bool
-from .ordered import OrderedWrapper as _OrderedWrapper
+from .number import NumberWrapper as _NumberWrapper
 from .utils import (floor_division_quotient as _floor_division_quotient,
                     floor_division_remainder as _floor_division_remainder,
                     trunc_division_quotient as _trunc_division_quotient,
@@ -17,7 +17,7 @@ if _t.TYPE_CHECKING:
                                           u32)
 
 
-class BaseFloat(_OrderedWrapper[float]):
+class BaseFloat(_NumberWrapper[float]):
     DIGITS: _t.ClassVar[u32]
     EPSILON: _t.ClassVar[_te.Self]
     INFINITY: _t.ClassVar[_te.Self]
@@ -42,11 +42,6 @@ class BaseFloat(_OrderedWrapper[float]):
 
     def abs(self) -> _te.Self:
         return type(self)(abs(self._value))
-
-    def add(self, other: _te.Self) -> _te.Self:
-        if not isinstance(other, type(self)):
-            raise TypeError(type(other))
-        return type(self)(self._value + other._value)
 
     def ceil(self) -> _te.Self:
         fractional_part, whole_part = _math.modf(self._value)
@@ -93,11 +88,6 @@ class BaseFloat(_OrderedWrapper[float]):
     def is_nan(self) -> _bool:
         return _bool(_math.isnan(self._value))
 
-    def mul(self, other: _te.Self) -> _te.Self:
-        if not isinstance(other, type(self)):
-            raise TypeError(type(other))
-        return type(self)(self._value * other._value)
-
     def neg(self) -> _te.Self:
         return type(self)(-self._value)
 
@@ -134,19 +124,6 @@ class BaseFloat(_OrderedWrapper[float]):
         return type(self)(value)
 
     @_t.overload
-    def __add__(self, other: _te.Self) -> _te.Self:
-        ...
-
-    @_t.overload
-    def __add__(self, other: _t.Any) -> _t.Any:
-        ...
-
-    def __add__(self, other: _t.Any) -> _t.Any:
-        return (type(self)(self._value + other._value)
-                if isinstance(other, type(self))
-                else NotImplemented)
-
-    @_t.overload
     def __mod__(self, other: _te.Self) -> _te.Self:
         ...
 
@@ -162,19 +139,6 @@ class BaseFloat(_OrderedWrapper[float]):
                 if isinstance(other, type(self))
                 else NotImplemented)
 
-    @_t.overload
-    def __mul__(self, other: _te.Self) -> _te.Self:
-        ...
-
-    @_t.overload
-    def __mul__(self, other: _t.Any) -> _t.Any:
-        ...
-
-    def __mul__(self, other: _t.Any) -> _t.Any:
-        return (type(self)(self._value * other._value)
-                if isinstance(other, type(self))
-                else NotImplemented)
-
     def __neg__(self) -> _te.Self:
         return type(self)(-self._value)
 
@@ -183,19 +147,6 @@ class BaseFloat(_OrderedWrapper[float]):
 
     def __str__(self) -> str:
         return f'{self._value}{type(self).__qualname__}'
-
-    @_t.overload
-    def __sub__(self, other: _te.Self) -> _te.Self:
-        ...
-
-    @_t.overload
-    def __sub__(self, other: _t.Any) -> _t.Any:
-        ...
-
-    def __sub__(self, other: _t.Any) -> _t.Any:
-        return (type(self)(self._value - other._value)
-                if isinstance(other, type(self))
-                else NotImplemented)
 
     @_t.overload
     def __truediv__(self, other: _te.Self) -> _te.Self:

@@ -9,7 +9,7 @@ import typing_extensions as _te
 from rustpy.option import (None_ as _None,
                            Option as _Option,
                            Some as _Some)
-from .ordered import OrderedWrapper as _OrderedWrapper
+from .number import NumberWrapper as _NumberWrapper
 from .utils import (floor_division_quotient as _floor_division_quotient,
                     floor_division_remainder as _floor_division_remainder,
                     trunc_division_quotient as _trunc_division_quotient,
@@ -26,15 +26,10 @@ def _u32_to_int(value: u32) -> int:
     return value._value
 
 
-class _BaseInteger(_abc.ABC, _OrderedWrapper[int]):
+class _BaseInteger(_abc.ABC, _NumberWrapper[int]):
     BITS: _t.ClassVar[u32]
     MAX: _t.ClassVar[_te.Self]
     MIN: _t.ClassVar[_te.Self]
-
-    def add(self, other: _te.Self) -> _te.Self:
-        if not isinstance(other, type(self)):
-            raise TypeError(type(other))
-        return type(self)(self._value + other._value)
 
     def checked_add(self, other: _te.Self) -> _Option[_te.Self]:
         if not isinstance(other, type(self)):
@@ -108,11 +103,6 @@ class _BaseInteger(_abc.ABC, _OrderedWrapper[int]):
         return type(self)(_floor_division_quotient(self._value,
                                                    divisor._value))
 
-    def mul(self, other: _te.Self) -> _te.Self:
-        if not isinstance(other, type(self)):
-            raise TypeError(type(other))
-        return type(self)(self._value * other._value)
-
     @_abc.abstractmethod
     def rem(self, divisor: _te.Self) -> _te.Self:
         ...
@@ -123,15 +113,7 @@ class _BaseInteger(_abc.ABC, _OrderedWrapper[int]):
         return type(self)(_floor_division_remainder(self._value,
                                                     divisor._value))
 
-    def sub(self, other: _te.Self) -> _te.Self:
-        if not isinstance(other, type(self)):
-            raise TypeError(type(other))
-        return type(self)(self._value - other._value)
-
-    _value: int
-
     __module__ = 'rustpy.primitive'
-    __slots__ = '_value',
 
     def __new__(cls, _value: int) -> _te.Self:
         try:
@@ -142,19 +124,6 @@ class _BaseInteger(_abc.ABC, _OrderedWrapper[int]):
         self = super().__new__(cls)
         self._value = _value
         return self
-
-    @_t.overload
-    def __add__(self, other: _te.Self) -> _te.Self:
-        ...
-
-    @_t.overload
-    def __add__(self, other: _t.Any) -> _t.Any:
-        ...
-
-    def __add__(self, other: _t.Any) -> _t.Any:
-        return (type(self)(self._value + other._value)
-                if isinstance(other, type(self))
-                else NotImplemented)
 
     @_t.overload
     def __and__(self, other: _te.Self) -> _te.Self:
@@ -200,19 +169,6 @@ class _BaseInteger(_abc.ABC, _OrderedWrapper[int]):
                 if isinstance(other, type(self))
                 else NotImplemented)
 
-    @_t.overload
-    def __mul__(self, other: _te.Self) -> _te.Self:
-        ...
-
-    @_t.overload
-    def __mul__(self, other: _t.Any) -> _t.Any:
-        ...
-
-    def __mul__(self, other: _t.Any) -> _t.Any:
-        return (type(self)(self._value * other._value)
-                if isinstance(other, type(self))
-                else NotImplemented)
-
     def __repr__(self) -> str:
         return f'{type(self).__qualname__}({self._value})'
 
@@ -231,19 +187,6 @@ class _BaseInteger(_abc.ABC, _OrderedWrapper[int]):
 
     def __str__(self) -> str:
         return f'{self._value}{type(self).__qualname__}'
-
-    @_t.overload
-    def __sub__(self, other: _te.Self) -> _te.Self:
-        ...
-
-    @_t.overload
-    def __sub__(self, other: _t.Any) -> _t.Any:
-        ...
-
-    def __sub__(self, other: _t.Any) -> _t.Any:
-        return (type(self)(self._value - other._value)
-                if isinstance(other, type(self))
-                else NotImplemented)
 
     @_t.overload
     def __truediv__(self, other: _te.Self) -> _te.Self:

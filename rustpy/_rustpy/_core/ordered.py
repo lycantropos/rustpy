@@ -8,7 +8,7 @@ from .bool_ import bool_ as _bool
 from .wrapper import Wrapper as _Wrapper
 
 
-class _Ordered(_te.Protocol):
+class Ordered(_te.Protocol):
     @_t.overload
     def __ge__(self, other: _te.Self) -> bool:
         ...
@@ -55,7 +55,7 @@ class _Ordered(_te.Protocol):
 
 
 _OrderedT = _t.TypeVar('_OrderedT',
-                       bound=_Ordered)
+                       bound=Ordered)
 
 
 class OrderedWrapper(_Wrapper[_OrderedT]):
