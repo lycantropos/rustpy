@@ -740,6 +740,10 @@ macro_rules! define_floating_point_python_binding {
                 Self(self.0 * other.0)
             }
 
+            fn neg(&self) -> Self {
+                Self(-self.0)
+            }
+
             fn rem(&self, other: &Self) -> Self {
                 Self(self.0 % other.0)
             }

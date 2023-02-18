@@ -98,6 +98,9 @@ class BaseFloat(_OrderedWrapper[float]):
             raise TypeError(type(other))
         return type(self)(self._value * other._value)
 
+    def neg(self) -> _te.Self:
+        return type(self)(-self._value)
+
     def rem(self, divisor: _te.Self) -> _te.Self:
         if not isinstance(divisor, type(self)):
             raise TypeError(type(self))

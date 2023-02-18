@@ -60,6 +60,9 @@ class _BaseFloat(_te.Protocol):
     def mul(self, other: _te.Self) -> _te.Self:
         ...
 
+    def neg(self) -> _te.Self:
+        ...
+
     def rem(self, divisor: _te.Self) -> _te.Self:
         ...
 
@@ -143,6 +146,9 @@ class _BaseFloat(_te.Protocol):
 
     @_t.overload
     def __mul__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __neg__(self) -> _te.Self:
         ...
 
     @_t.overload
