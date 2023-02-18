@@ -144,6 +144,27 @@ usize.MIN = _unsigned_cls_to_min_value(usize)
 
 @_te.final
 class f32(BaseFloat):
+    @classmethod
+    def from_be_bytes(cls, _bytes: bytes) -> _te.Self:
+        try:
+            return _struct.unpack('>f', _bytes)
+        except _struct.error:
+            raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
+
+    @classmethod
+    def from_le_bytes(cls, _bytes: bytes) -> _te.Self:
+        try:
+            return _struct.unpack('<f', _bytes)
+        except _struct.error:
+            raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
+
+    @classmethod
+    def from_ne_bytes(cls, _bytes: bytes) -> _te.Self:
+        try:
+            return _struct.unpack('=f', _bytes)
+        except _struct.error:
+            raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
+
     def to_be_bytes(self) -> bytes:
         return _struct.pack('>f', self._value)
 
@@ -175,6 +196,27 @@ f32.RADIX = u32(2)
 
 @_te.final
 class f64(BaseFloat):
+    @classmethod
+    def from_be_bytes(cls, _bytes: bytes) -> _te.Self:
+        try:
+            return _struct.unpack('>d', _bytes)
+        except _struct.error:
+            raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
+
+    @classmethod
+    def from_le_bytes(cls, _bytes: bytes) -> _te.Self:
+        try:
+            return _struct.unpack('<d', _bytes)
+        except _struct.error:
+            raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
+
+    @classmethod
+    def from_ne_bytes(cls, _bytes: bytes) -> _te.Self:
+        try:
+            return _struct.unpack('=d', _bytes)
+        except _struct.error:
+            raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
+
     def to_be_bytes(self) -> bytes:
         return _struct.pack('>d', self._value)
 

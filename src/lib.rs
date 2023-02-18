@@ -3,7 +3,7 @@ use std::ffi::c_double;
 use pyo3::basic::CompareOp;
 use pyo3::exceptions::{PyOverflowError, PyTypeError, PyValueError, PyZeroDivisionError};
 use pyo3::prelude::{pyclass, pymethods, pymodule, IntoPy, PyModule, PyObject, PyResult, Python};
-use pyo3::types::{PyBytes, PyFloat, PyTuple};
+use pyo3::types::{PyBytes, PyFloat, PyTuple, PyType};
 use pyo3::{PyAny, PyRef, PyTypeInfo};
 
 #[pymodule]
@@ -694,6 +694,48 @@ macro_rules! define_floating_point_python_binding {
             #[new]
             fn new(value: $float) -> Self {
                 Self(value)
+            }
+
+            #[classmethod]
+            fn from_be_bytes(_cls: &PyType, _bytes: &PyBytes) -> PyResult<Self> {
+                let bytes = _bytes.as_bytes();
+                bytes
+                    .try_into()
+                    .map(|bytes| Self(<$float>::from_be_bytes(bytes)))
+                    .map_err(|_| {
+                        PyTypeError::new_err(format!(
+                            "Invalid number of bytes, got {}.",
+                            bytes.len()
+                        ))
+                    })
+            }
+
+            #[classmethod]
+            fn from_le_bytes(_cls: &PyType, _bytes: &PyBytes) -> PyResult<Self> {
+                let bytes = _bytes.as_bytes();
+                bytes
+                    .try_into()
+                    .map(|bytes| Self(<$float>::from_le_bytes(bytes)))
+                    .map_err(|_| {
+                        PyTypeError::new_err(format!(
+                            "Invalid number of bytes, got {}.",
+                            bytes.len()
+                        ))
+                    })
+            }
+
+            #[classmethod]
+            fn from_ne_bytes(_cls: &PyType, _bytes: &PyBytes) -> PyResult<Self> {
+                let bytes = _bytes.as_bytes();
+                bytes
+                    .try_into()
+                    .map(|bytes| Self(<$float>::from_ne_bytes(bytes)))
+                    .map_err(|_| {
+                        PyTypeError::new_err(format!(
+                            "Invalid number of bytes, got {}.",
+                            bytes.len()
+                        ))
+                    })
             }
 
             fn abs(&self) -> Self {
