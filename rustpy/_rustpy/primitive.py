@@ -1,4 +1,8 @@
+from __future__ import annotations
+
 import math as _math
+import struct as _struct
+import typing as _t
 from ctypes import c_float
 
 import typing_extensions as _te
@@ -140,6 +144,15 @@ usize.MIN = _unsigned_cls_to_min_value(usize)
 
 @_te.final
 class f32(BaseFloat):
+    def to_be_bytes(self) -> bytes:
+        return _struct.pack('>f', self._value)
+
+    def to_le_bytes(self) -> bytes:
+        return _struct.pack('<f', self._value)
+
+    def to_ne_bytes(self) -> bytes:
+        return _struct.pack('=f', self._value)
+
     def __init__(self, _value: float) -> None:
         self._value = c_float(_value).value
 
@@ -162,7 +175,14 @@ f32.RADIX = u32(2)
 
 @_te.final
 class f64(BaseFloat):
-    pass
+    def to_be_bytes(self) -> bytes:
+        return _struct.pack('>d', self._value)
+
+    def to_le_bytes(self) -> bytes:
+        return _struct.pack('<d', self._value)
+
+    def to_ne_bytes(self) -> bytes:
+        return _struct.pack('=d', self._value)
 
 
 f64.DIGITS = u32(15)

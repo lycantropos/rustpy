@@ -3,7 +3,7 @@ use std::ffi::c_double;
 use pyo3::basic::CompareOp;
 use pyo3::exceptions::{PyOverflowError, PyTypeError, PyValueError, PyZeroDivisionError};
 use pyo3::prelude::{pyclass, pymethods, pymodule, IntoPy, PyModule, PyObject, PyResult, Python};
-use pyo3::types::{PyFloat, PyTuple};
+use pyo3::types::{PyBytes, PyFloat, PyTuple};
 use pyo3::{PyAny, PyRef, PyTypeInfo};
 
 #[pymodule]
@@ -758,6 +758,18 @@ macro_rules! define_floating_point_python_binding {
 
             fn sub(&self, other: &Self) -> Self {
                 Self(self.0 - other.0)
+            }
+
+            fn to_be_bytes<'a>(&self, py: Python<'a>) -> &'a PyBytes {
+                PyBytes::new(py, &self.0.to_be_bytes())
+            }
+
+            fn to_le_bytes<'a>(&self, py: Python<'a>) -> &'a PyBytes {
+                PyBytes::new(py, &self.0.to_le_bytes())
+            }
+
+            fn to_ne_bytes<'a>(&self, py: Python<'a>) -> &'a PyBytes {
+                PyBytes::new(py, &self.0.to_ne_bytes())
             }
 
             fn trunc(&self) -> Self {
