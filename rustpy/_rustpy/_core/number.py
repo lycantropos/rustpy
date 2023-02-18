@@ -6,7 +6,7 @@ from .ordered import (Ordered as _Ordered,
                       OrderedWrapper as _OrderedWrapper)
 
 
-class _Number(_te.Protocol, _Ordered):
+class _Number(_Ordered, _te.Protocol):
     def __add__(self, other: _te.Self) -> _te.Self:
         ...
 
