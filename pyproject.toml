@@ -6,15 +6,11 @@ dependencies = [
 ]
 dynamic = ["version"]
 
-[tool.setuptools.dynamic]
-version = { attr = "rustpy.__version__" }
-
 [project.optional-dependencies]
 tests = [
     "pytest>=7.2.1,<8.0",
     "hypothesis>=6.66.0,<7.0"
 ]
-
 
 [build-system]
 requires = [
@@ -22,3 +18,9 @@ requires = [
     "setuptools"
 ]
 build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+addopts = "--verbose -s --hypothesis-profile=default"
+
+[tool.setuptools.dynamic]
+version = { attr = "rustpy.__version__" }
