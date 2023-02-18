@@ -15,4 +15,4 @@ def test_basic(float_: Float) -> None:
 def test_connection_with___neg__(float_: Float) -> None:
     result = float_.neg()
 
-    assert result == -float_
+    assert result.is_nan() and float_.is_nan() or result == -float_
