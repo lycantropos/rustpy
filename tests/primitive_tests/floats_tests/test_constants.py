@@ -1,8 +1,12 @@
+import sys
 from typing import (Tuple,
                     Type)
 
 from hypothesis import given
 
+from rustpy.primitive import (f64,
+                              i32,
+                              u32)
 from tests.utils import (Float,
                          implication)
 from . import strategies
@@ -64,3 +68,17 @@ def test_min(float_type_with_float: Tuple[Type[Float], Float]) -> None:
     float_type, float_ = float_type_with_float
 
     assert float_type.MIN <= float_
+
+
+def test_connection_with_sys_float_info() -> None:
+    assert f64.DIGITS == u32(sys.float_info.dig)
+    assert f64.EPSILON == f64(sys.float_info.epsilon)
+    assert f64.MANTISSA_DIGITS == u32(sys.float_info.mant_dig)
+    assert f64.MAX == f64(sys.float_info.max)
+    assert f64.MAX_10_EXP == i32(sys.float_info.max_10_exp)
+    assert f64.MAX_EXP == i32(sys.float_info.max_exp)
+    assert f64.MIN == f64(-sys.float_info.max)
+    assert f64.MIN_10_EXP == i32(sys.float_info.min_10_exp)
+    assert f64.MIN_EXP == i32(sys.float_info.min_exp)
+    assert f64.MIN_POSITIVE == f64(sys.float_info.min)
+    assert f64.RADIX == u32(sys.float_info.radix)
