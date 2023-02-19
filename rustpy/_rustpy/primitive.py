@@ -7,8 +7,8 @@ from ctypes import c_float
 
 import typing_extensions as _te
 
-from ._core import bool_ as _bool
-from ._core.float import BaseFloat
+from ._core.bool_ import bool_ as _bool
+from ._core.float import BaseFloat as _BaseFloat
 from ._core.integer import (
     SIZE_BITS as _SIZE_BITS,
     BaseSignedInteger as _BaseSignedInteger,
@@ -19,7 +19,7 @@ from ._core.integer import (
     unsigned_cls_to_min_value as _unsigned_cls_to_min_value
 )
 
-bool_ = _bool.bool_
+bool_ = _bool
 
 
 @_te.final
@@ -143,7 +143,7 @@ usize.MIN = _unsigned_cls_to_min_value(usize)
 
 
 @_te.final
-class f32(BaseFloat):
+class f32(_BaseFloat):
     @classmethod
     def from_be_bytes(cls, _bytes: bytes) -> _te.Self:
         try:
@@ -201,7 +201,7 @@ f32.RADIX = u32(2)
 
 
 @_te.final
-class f64(BaseFloat):
+class f64(_BaseFloat):
     @classmethod
     def from_be_bytes(cls, _bytes: bytes) -> _te.Self:
         try:
