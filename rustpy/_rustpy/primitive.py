@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import math as _math
 import struct as _struct
+import sys as _sys
 import typing as _t
 from ctypes import c_float
 
@@ -15,6 +16,7 @@ from ._core.integer import (
     BaseUnsignedInteger as _BaseUnsignedInteger,
     signed_cls_to_max_value as _signed_cls_to_max_value,
     signed_cls_to_min_value as _signed_cls_to_min_value,
+    u32_to_int as _u32_to_int,
     unsigned_cls_to_max_value as _unsigned_cls_to_max_value,
     unsigned_cls_to_min_value as _unsigned_cls_to_min_value
 )
@@ -22,8 +24,41 @@ from ._core.integer import (
 bool_ = _bool
 
 
+class _CastableBaseSignedInteger(_BaseSignedInteger):
+    def as_(self, cls: _t.Type[_PrimitiveNumberT]) -> _PrimitiveNumberT:
+        if issubclass(cls, (_CastableBaseSignedInteger,
+                            _CastableBaseUnsignedInteger)):
+            return cls.from_ne_bytes(
+                    self.to_ne_bytes()[:_u32_to_int(cls.BITS) // 8]
+                    if self.BITS > cls.BITS
+                    else self._value.to_bytes(_u32_to_int(cls.BITS) // 8,
+                                              _sys.byteorder,
+                                              signed=True)
+            )
+        elif issubclass(cls, _BaseFloat):
+            return cls(float(self._value))
+        else:
+            raise TypeError(cls)
+
+
+class _CastableBaseUnsignedInteger(_BaseUnsignedInteger):
+    def as_(self, cls: _t.Type[_PrimitiveNumberT]) -> _PrimitiveNumberT:
+        if issubclass(cls, (_CastableBaseSignedInteger,
+                            _CastableBaseUnsignedInteger)):
+            return cls.from_ne_bytes(
+                    self.to_ne_bytes()[:_u32_to_int(cls.BITS) // 8]
+                    if self.BITS > cls.BITS
+                    else self._value.to_bytes(_u32_to_int(cls.BITS) // 8,
+                                              _sys.byteorder)
+            )
+        elif issubclass(cls, _BaseFloat):
+            return cls(float(self._value))
+        else:
+            raise TypeError(cls)
+
+
 @_te.final
-class u32(_BaseUnsignedInteger):
+class u32(_CastableBaseUnsignedInteger):
     pass
 
 
@@ -33,7 +68,7 @@ u32.MIN = u32(0)
 
 
 @_te.final
-class i8(_BaseSignedInteger):
+class i8(_CastableBaseSignedInteger):
     pass
 
 
@@ -43,7 +78,7 @@ i8.MIN = _signed_cls_to_min_value(i8)
 
 
 @_te.final
-class i16(_BaseSignedInteger):
+class i16(_CastableBaseSignedInteger):
     pass
 
 
@@ -53,7 +88,7 @@ i16.MIN = _signed_cls_to_min_value(i16)
 
 
 @_te.final
-class i32(_BaseSignedInteger):
+class i32(_CastableBaseSignedInteger):
     pass
 
 
@@ -63,7 +98,7 @@ i32.MIN = _signed_cls_to_min_value(i32)
 
 
 @_te.final
-class i64(_BaseSignedInteger):
+class i64(_CastableBaseSignedInteger):
     pass
 
 
@@ -73,7 +108,7 @@ i64.MIN = _signed_cls_to_min_value(i64)
 
 
 @_te.final
-class i128(_BaseSignedInteger):
+class i128(_CastableBaseSignedInteger):
     pass
 
 
@@ -83,7 +118,7 @@ i128.MIN = _signed_cls_to_min_value(i128)
 
 
 @_te.final
-class isize(_BaseSignedInteger):
+class isize(_CastableBaseSignedInteger):
     pass
 
 
@@ -93,7 +128,7 @@ isize.MIN = _signed_cls_to_min_value(isize)
 
 
 @_te.final
-class u8(_BaseUnsignedInteger):
+class u8(_CastableBaseUnsignedInteger):
     pass
 
 
@@ -103,7 +138,7 @@ u8.MIN = _unsigned_cls_to_min_value(u8)
 
 
 @_te.final
-class u16(_BaseUnsignedInteger):
+class u16(_CastableBaseUnsignedInteger):
     pass
 
 
@@ -113,7 +148,7 @@ u16.MIN = _unsigned_cls_to_min_value(u16)
 
 
 @_te.final
-class u64(_BaseUnsignedInteger):
+class u64(_CastableBaseUnsignedInteger):
     pass
 
 
@@ -123,7 +158,7 @@ u64.MIN = _unsigned_cls_to_min_value(u64)
 
 
 @_te.final
-class u128(_BaseUnsignedInteger):
+class u128(_CastableBaseUnsignedInteger):
     pass
 
 
@@ -133,7 +168,7 @@ u128.MIN = _unsigned_cls_to_min_value(u128)
 
 
 @_te.final
-class usize(_BaseUnsignedInteger):
+class usize(_CastableBaseUnsignedInteger):
     pass
 
 
@@ -258,8 +293,8 @@ f64.NEG_INFINITY = f64(-_math.inf)
 f64.RADIX = u32(2)
 
 _PrimitiveNumberT = _t.TypeVar(
-        '_PrimitiveNumberT', _BaseFloat, _BaseSignedInteger,
-        _BaseUnsignedInteger
+        '_PrimitiveNumberT', _BaseFloat, _CastableBaseSignedInteger,
+        _CastableBaseUnsignedInteger
 )
 
 
@@ -267,7 +302,8 @@ def _cast_float_as(value: float,
                    cls: _t.Type[_PrimitiveNumberT]) -> _PrimitiveNumberT:
     if issubclass(cls, _BaseFloat):
         return cls(value)
-    elif issubclass(cls, (_BaseSignedInteger, _BaseUnsignedInteger)):
+    elif issubclass(cls, (_CastableBaseSignedInteger,
+                          _CastableBaseUnsignedInteger)):
         try:
             return cls(int(value))
         except OverflowError:

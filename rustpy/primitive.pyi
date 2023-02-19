@@ -222,6 +222,9 @@ class _BaseInteger(_te.Protocol):
     def add(self, other: _te.Self) -> _te.Self:
         ...
 
+    def as_(self, cls: _t.Type[_PrimitiveNumberT]) -> _PrimitiveNumberT:
+        ...
+
     def checked_add(self, other: _te.Self) -> _Option[_te.Self]:
         ...
 

@@ -22,10 +22,6 @@ SIZE_BITS = (_sys.maxsize + 1).bit_length()
 assert ((1 << (SIZE_BITS - 1)) - 1) == _sys.maxsize
 
 
-def _u32_to_int(value: u32) -> int:
-    return value._value
-
-
 class _BaseInteger(_abc.ABC, _NumberWrapper[int]):
     BITS: _t.ClassVar[u32]
     MAX: _t.ClassVar[_te.Self]
@@ -151,7 +147,7 @@ class _BaseInteger(_abc.ABC, _NumberWrapper[int]):
         ...
 
     def __lshift__(self, other: _t.Any) -> _t.Any:
-        return (type(self)(self._value << _u32_to_int(other))
+        return (type(self)(self._value << u32_to_int(other))
                 if isinstance(other, type(self.BITS))
                 else NotImplemented)
 
@@ -181,7 +177,7 @@ class _BaseInteger(_abc.ABC, _NumberWrapper[int]):
         ...
 
     def __rshift__(self, other: _t.Any) -> _t.Any:
-        return (type(self)(self._value >> _u32_to_int(other))
+        return (type(self)(self._value >> u32_to_int(other))
                 if isinstance(other, type(self.BITS))
                 else NotImplemented)
 
@@ -205,21 +201,21 @@ class _BaseInteger(_abc.ABC, _NumberWrapper[int]):
 class BaseSignedInteger(_BaseInteger):
     @classmethod
     def from_be_bytes(cls, _bytes: bytes) -> _te.Self:
-        if len(_bytes) != _u32_to_int(cls.BITS) // 8:
+        if len(_bytes) != u32_to_int(cls.BITS) // 8:
             raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
         return cls(int.from_bytes(_bytes, 'big',
                                   signed=True))
 
     @classmethod
     def from_le_bytes(cls, _bytes: bytes) -> _te.Self:
-        if len(_bytes) != _u32_to_int(cls.BITS) // 8:
+        if len(_bytes) != u32_to_int(cls.BITS) // 8:
             raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
         return cls(int.from_bytes(_bytes, 'little',
                                   signed=True))
 
     @classmethod
     def from_ne_bytes(cls, _bytes: bytes) -> _te.Self:
-        if len(_bytes) != _u32_to_int(cls.BITS) // 8:
+        if len(_bytes) != u32_to_int(cls.BITS) // 8:
             raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
         return cls(int.from_bytes(_bytes, _sys.byteorder,
                                   signed=True))
@@ -249,16 +245,15 @@ class BaseSignedInteger(_BaseInteger):
                                                     divisor._value))
 
     def to_be_bytes(self) -> bytes:
-        return self._value.to_bytes(_u32_to_int(self.BITS) // 8, 'big',
+        return self._value.to_bytes(u32_to_int(self.BITS) // 8, 'big',
                                     signed=True)
 
     def to_le_bytes(self) -> bytes:
-        return self._value.to_bytes(_u32_to_int(self.BITS) // 8, 'little',
+        return self._value.to_bytes(u32_to_int(self.BITS) // 8, 'little',
                                     signed=True)
 
     def to_ne_bytes(self) -> bytes:
-        return self._value.to_bytes(_u32_to_int(self.BITS) // 8,
-                                    _sys.byteorder,
+        return self._value.to_bytes(u32_to_int(self.BITS) // 8, _sys.byteorder,
                                     signed=True)
 
     def __invert__(self) -> _te.Self:
@@ -271,19 +266,19 @@ class BaseSignedInteger(_BaseInteger):
 class BaseUnsignedInteger(_BaseInteger):
     @classmethod
     def from_be_bytes(cls, _bytes: bytes) -> _te.Self:
-        if len(_bytes) != _u32_to_int(cls.BITS) // 8:
+        if len(_bytes) != u32_to_int(cls.BITS) // 8:
             raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
         return cls(int.from_bytes(_bytes, 'big'))
 
     @classmethod
     def from_le_bytes(cls, _bytes: bytes) -> _te.Self:
-        if len(_bytes) != _u32_to_int(cls.BITS) // 8:
+        if len(_bytes) != u32_to_int(cls.BITS) // 8:
             raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
         return cls(int.from_bytes(_bytes, 'little'))
 
     @classmethod
     def from_ne_bytes(cls, _bytes: bytes) -> _te.Self:
-        if len(_bytes) != _u32_to_int(cls.BITS) // 8:
+        if len(_bytes) != u32_to_int(cls.BITS) // 8:
             raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
         return cls(int.from_bytes(_bytes, _sys.byteorder))
 
@@ -294,14 +289,13 @@ class BaseUnsignedInteger(_BaseInteger):
                                                     divisor._value))
 
     def to_be_bytes(self) -> bytes:
-        return self._value.to_bytes(_u32_to_int(self.BITS) // 8, 'big')
+        return self._value.to_bytes(u32_to_int(self.BITS) // 8, 'big')
 
     def to_le_bytes(self) -> bytes:
-        return self._value.to_bytes(_u32_to_int(self.BITS) // 8, 'little')
+        return self._value.to_bytes(u32_to_int(self.BITS) // 8, 'little')
 
     def to_ne_bytes(self) -> bytes:
-        return self._value.to_bytes(_u32_to_int(self.BITS) // 8,
-                                    _sys.byteorder)
+        return self._value.to_bytes(u32_to_int(self.BITS) // 8, _sys.byteorder)
 
     def __invert__(self) -> _te.Self:
         return type(self)(self.MAX - self._value)
@@ -312,11 +306,15 @@ _SignedInteger = _t.TypeVar('_SignedInteger',
 
 
 def signed_cls_to_max_value(cls: _t.Type[_SignedInteger]) -> _SignedInteger:
-    return cls((1 << (_u32_to_int(cls.BITS) - 1)) - 1)
+    return cls((1 << (u32_to_int(cls.BITS) - 1)) - 1)
 
 
 def signed_cls_to_min_value(cls: _t.Type[_SignedInteger]) -> _SignedInteger:
-    return cls(-(1 << (_u32_to_int(cls.BITS) - 1)))
+    return cls(-(1 << (u32_to_int(cls.BITS) - 1)))
+
+
+def u32_to_int(value: u32) -> int:
+    return value._value
 
 
 _UnsignedInteger = _t.TypeVar('_UnsignedInteger',
@@ -326,7 +324,7 @@ _UnsignedInteger = _t.TypeVar('_UnsignedInteger',
 def unsigned_cls_to_max_value(
         cls: _t.Type[_UnsignedInteger]
 ) -> _UnsignedInteger:
-    return cls((1 << _u32_to_int(cls.BITS)) - 1)
+    return cls((1 << u32_to_int(cls.BITS)) - 1)
 
 
 def unsigned_cls_to_min_value(

@@ -1032,6 +1032,10 @@ macro_rules! define_signed_integer_python_binding {
                 }
             }
 
+            fn as_(&self, cls: &PyAny) -> PyResult<PyObject> {
+                self.cast_as(cls)
+            }
+
             fn checked_abs(&self, py: Python) -> PyObject {
                 match self.0.checked_abs() {
                     Some(result) => Some_(Self(result).into_py(py)).into_py(py),
@@ -1389,6 +1393,10 @@ macro_rules! define_unsigned_integer_python_binding {
                         other.__repr__(),
                     ))),
                 }
+            }
+
+            fn as_(&self, cls: &PyAny) -> PyResult<PyObject> {
+                self.cast_as(cls)
             }
 
             fn checked_add(&self, other: &Self, py: Python) -> PyObject {
