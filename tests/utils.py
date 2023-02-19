@@ -13,6 +13,11 @@ Integer = _t.TypeVar('Integer', _primitive.i128, _primitive.i16,
                      _primitive.isize, _primitive.u128, _primitive.u16,
                      _primitive.u32, _primitive.u64, _primitive.u8,
                      _primitive.usize)
+Numeric = _t.TypeVar('Numeric', _primitive.f32, _primitive.f64,
+                     _primitive.i128, _primitive.i16, _primitive.i32,
+                     _primitive.i64, _primitive.i8, _primitive.isize,
+                     _primitive.u128, _primitive.u16, _primitive.u32,
+                     _primitive.u64, _primitive.u8, _primitive.usize)
 Primitive = _t.TypeVar('Primitive', _primitive.bool_, _primitive.f32,
                        _primitive.f64, _primitive.i128, _primitive.i16,
                        _primitive.i32, _primitive.i64, _primitive.i8,
