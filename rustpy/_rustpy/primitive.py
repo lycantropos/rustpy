@@ -147,23 +147,29 @@ class f32(BaseFloat):
     @classmethod
     def from_be_bytes(cls, _bytes: bytes) -> _te.Self:
         try:
-            return _struct.unpack('>f', _bytes)
+            value, = _struct.unpack('>f', _bytes)
         except _struct.error:
             raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
+        else:
+            return cls(value)
 
     @classmethod
     def from_le_bytes(cls, _bytes: bytes) -> _te.Self:
         try:
-            return _struct.unpack('<f', _bytes)
+            value, = _struct.unpack('<f', _bytes)
         except _struct.error:
             raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
+        else:
+            return cls(value)
 
     @classmethod
     def from_ne_bytes(cls, _bytes: bytes) -> _te.Self:
         try:
-            return _struct.unpack('=f', _bytes)
+            value, = _struct.unpack('=f', _bytes)
         except _struct.error:
             raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
+        else:
+            return cls(value)
 
     def to_be_bytes(self) -> bytes:
         return _struct.pack('>f', self._value)
@@ -199,21 +205,24 @@ class f64(BaseFloat):
     @classmethod
     def from_be_bytes(cls, _bytes: bytes) -> _te.Self:
         try:
-            return _struct.unpack('>d', _bytes)
+            value, = _struct.unpack('>d', _bytes)
+            return cls(value)
         except _struct.error:
             raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
 
     @classmethod
     def from_le_bytes(cls, _bytes: bytes) -> _te.Self:
         try:
-            return _struct.unpack('<d', _bytes)
+            value, = _struct.unpack('<d', _bytes)
+            return cls(value)
         except _struct.error:
             raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
 
     @classmethod
     def from_ne_bytes(cls, _bytes: bytes) -> _te.Self:
         try:
-            return _struct.unpack('=d', _bytes)
+            value, = _struct.unpack('=d', _bytes)
+            return cls(value)
         except _struct.error:
             raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
 
