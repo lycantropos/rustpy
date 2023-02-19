@@ -45,6 +45,9 @@ class _BaseFloat(_te.Protocol):
     def add(self, other: _te.Self) -> _te.Self:
         ...
 
+    def as_(self, cls: _t.Type[_PrimitiveNumberT]) -> _PrimitiveNumberT:
+        ...
+
     def ceil(self) -> _te.Self:
         ...
 
@@ -444,3 +447,6 @@ class u8(_BaseUnsignedInteger):
 @_te.final
 class usize(_BaseUnsignedInteger):
     pass
+
+
+_PrimitiveNumberT = _t.TypeVar('_PrimitiveNumberT', _BaseInteger, _BaseFloat)

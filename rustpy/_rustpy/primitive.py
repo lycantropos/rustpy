@@ -171,6 +171,9 @@ class f32(_BaseFloat):
         else:
             return cls(value)
 
+    def as_(self, cls: _t.Type[_PrimitiveNumberT]) -> _PrimitiveNumberT:
+        return _cast_float_as(self._value, cls)
+
     def to_be_bytes(self) -> bytes:
         return _struct.pack('>f', self._value)
 
@@ -226,6 +229,9 @@ class f64(_BaseFloat):
         except _struct.error:
             raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
 
+    def as_(self, cls: _t.Type[_PrimitiveNumberT]) -> _PrimitiveNumberT:
+        return _cast_float_as(self._value, cls)
+
     def to_be_bytes(self) -> bytes:
         return _struct.pack('>d', self._value)
 
@@ -250,3 +256,24 @@ f64.MIN_POSITIVE = f64(2.2250738585072014e-308)
 f64.NAN = f64(_math.nan)
 f64.NEG_INFINITY = f64(-_math.inf)
 f64.RADIX = u32(2)
+
+_PrimitiveNumberT = _t.TypeVar(
+        '_PrimitiveNumberT', _BaseFloat, _BaseSignedInteger,
+        _BaseUnsignedInteger
+)
+
+
+def _cast_float_as(value: float,
+                   cls: _t.Type[_PrimitiveNumberT]) -> _PrimitiveNumberT:
+    if issubclass(cls, _BaseFloat):
+        return cls(value)
+    elif issubclass(cls, (_BaseSignedInteger, _BaseUnsignedInteger)):
+        try:
+            return cls(int(value))
+        except OverflowError:
+            return cls.MIN if value < 0 else cls.MAX
+        except ValueError:
+            assert _math.isnan(value), value
+            return cls(0)
+    else:
+        raise TypeError(cls)

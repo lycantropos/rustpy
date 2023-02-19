@@ -652,6 +652,59 @@ fn check_result_value<'a>(value: &'a PyAny, py: Python) -> Option<&'a PyAny> {
     }
 }
 
+trait CastAs {
+    fn cast_as(&self, cls: &PyAny) -> PyResult<PyObject>;
+}
+
+macro_rules! cast_as_primitive_wrappers_impl {
+    ($($wrapper:ty)*) => ($(
+        impl CastAs for $wrapper {
+            fn cast_as(&self, cls: &PyAny) -> PyResult<PyObject> {
+                let py = cls.py();
+                if cls.is(F32::type_object(py)) {
+                    Ok(F32(self.0 as f32).into_py(py))
+                } else if cls.is(F64::type_object(py)) {
+                    Ok(F64(self.0 as f64).into_py(py))
+                } else if cls.is(I8::type_object(py)) {
+                    Ok(I8(self.0 as i8).into_py(py))
+                } else if cls.is(I16::type_object(py)) {
+                    Ok(I16(self.0 as i16).into_py(py))
+                } else if cls.is(I32::type_object(py)) {
+                    Ok(I32(self.0 as i32).into_py(py))
+                } else if cls.is(I64::type_object(py)) {
+                    Ok(I64(self.0 as i64).into_py(py))
+                } else if cls.is(I128::type_object(py)) {
+                    Ok(I128(self.0 as i128).into_py(py))
+                } else if cls.is(ISize::type_object(py)) {
+                    Ok(ISize(self.0 as isize).into_py(py))
+                } else if cls.is(U8::type_object(py)) {
+                    Ok(U8(self.0 as u8).into_py(py))
+                } else if cls.is(U16::type_object(py)) {
+                    Ok(U16(self.0 as u16).into_py(py))
+                } else if cls.is(U32::type_object(py)) {
+                    Ok(U32(self.0 as u32).into_py(py))
+                } else if cls.is(U64::type_object(py)) {
+                    Ok(U64(self.0 as u64).into_py(py))
+                } else if cls.is(U128::type_object(py)) {
+                    Ok(U128(self.0 as u128).into_py(py))
+                } else if cls.is(USize::type_object(py)) {
+                    Ok(USize(self.0 as usize).into_py(py))
+                } else {
+                    Err(PyTypeError::new_err(format!(
+                        "Can't cast {} as {}",
+                        self.clone().into_py(py).as_ref(py).repr()?,
+                        cls.repr()?
+                    )))
+                }
+            }
+        }
+    )*)
+}
+
+cast_as_primitive_wrappers_impl!(
+    F32 F64 I8 I16 I32 I64 I128 ISize U8 U16 U32 U64 U128 USize
+);
+
 macro_rules! define_floating_point_python_binding {
     ($float:ident => ($name:literal, $wrapper:ident)) => {
         const _: () = assert!(are_strings_equal($name, stringify!($float)));
@@ -744,6 +797,10 @@ macro_rules! define_floating_point_python_binding {
 
             fn add(&self, other: &Self) -> Self {
                 Self(self.0 + other.0)
+            }
+
+            fn as_(&self, cls: &PyAny) -> PyResult<PyObject> {
+                self.cast_as(cls)
             }
 
             fn ceil(&self) -> Self {
