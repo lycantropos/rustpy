@@ -27,7 +27,7 @@ def test_float_type(integer: Integer, float_type: Type[Float]) -> None:
 def test_integer_type(integer: Integer, integer_type: Type[Integer]) -> None:
     result = integer.as_(integer_type)
 
-    integer_bytes = integer.to_ne_bytes()
-    result_bytes = result.to_ne_bytes()
+    integer_bytes = integer.to_le_bytes()
+    result_bytes = result.to_le_bytes()
     assert (result_bytes[:min(len(integer_bytes), len(result_bytes))]
             == integer_bytes[:min(len(integer_bytes), len(result_bytes))])
