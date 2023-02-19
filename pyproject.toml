@@ -19,6 +19,9 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
+[tool.coverage.run]
+source = ["rustpy"]
+
 [tool.pytest.ini_options]
 addopts = "--verbose -s --hypothesis-profile=default"
 
