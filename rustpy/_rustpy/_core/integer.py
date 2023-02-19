@@ -18,8 +18,8 @@ from .utils import (floor_division_quotient as _floor_division_quotient,
 if _t.TYPE_CHECKING:
     from rustpy._rustpy.primitive import u32
 
-SIZE_BITS = (_sys.maxsize + 1).bit_length() - 1
-assert ((1 << SIZE_BITS) - 1) == _sys.maxsize
+SIZE_BITS = (_sys.maxsize + 1).bit_length()
+assert ((1 << (SIZE_BITS - 1)) - 1) == _sys.maxsize
 
 
 def _u32_to_int(value: u32) -> int:
