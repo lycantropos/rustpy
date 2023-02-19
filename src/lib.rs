@@ -969,6 +969,48 @@ macro_rules! define_signed_integer_python_binding {
                 Self(value)
             }
 
+            #[classmethod]
+            fn from_be_bytes(_cls: &PyType, _bytes: &PyBytes) -> PyResult<Self> {
+                let bytes = _bytes.as_bytes();
+                bytes
+                    .try_into()
+                    .map(|bytes| Self(<$integer>::from_be_bytes(bytes)))
+                    .map_err(|_| {
+                        PyTypeError::new_err(format!(
+                            "Invalid number of bytes, got {}.",
+                            bytes.len()
+                        ))
+                    })
+            }
+
+            #[classmethod]
+            fn from_le_bytes(_cls: &PyType, _bytes: &PyBytes) -> PyResult<Self> {
+                let bytes = _bytes.as_bytes();
+                bytes
+                    .try_into()
+                    .map(|bytes| Self(<$integer>::from_le_bytes(bytes)))
+                    .map_err(|_| {
+                        PyTypeError::new_err(format!(
+                            "Invalid number of bytes, got {}.",
+                            bytes.len()
+                        ))
+                    })
+            }
+
+            #[classmethod]
+            fn from_ne_bytes(_cls: &PyType, _bytes: &PyBytes) -> PyResult<Self> {
+                let bytes = _bytes.as_bytes();
+                bytes
+                    .try_into()
+                    .map(|bytes| Self(<$integer>::from_ne_bytes(bytes)))
+                    .map_err(|_| {
+                        PyTypeError::new_err(format!(
+                            "Invalid number of bytes, got {}.",
+                            bytes.len()
+                        ))
+                    })
+            }
+
             fn abs(&self) -> PyResult<Self> {
                 match self.0.checked_abs() {
                     Some(result) => Ok(Self(result)),
@@ -1294,6 +1336,48 @@ macro_rules! define_unsigned_integer_python_binding {
             #[new]
             fn new(value: $integer) -> Self {
                 Self(value)
+            }
+
+            #[classmethod]
+            fn from_be_bytes(_cls: &PyType, _bytes: &PyBytes) -> PyResult<Self> {
+                let bytes = _bytes.as_bytes();
+                bytes
+                    .try_into()
+                    .map(|bytes| Self(<$integer>::from_be_bytes(bytes)))
+                    .map_err(|_| {
+                        PyTypeError::new_err(format!(
+                            "Invalid number of bytes, got {}.",
+                            bytes.len()
+                        ))
+                    })
+            }
+
+            #[classmethod]
+            fn from_le_bytes(_cls: &PyType, _bytes: &PyBytes) -> PyResult<Self> {
+                let bytes = _bytes.as_bytes();
+                bytes
+                    .try_into()
+                    .map(|bytes| Self(<$integer>::from_le_bytes(bytes)))
+                    .map_err(|_| {
+                        PyTypeError::new_err(format!(
+                            "Invalid number of bytes, got {}.",
+                            bytes.len()
+                        ))
+                    })
+            }
+
+            #[classmethod]
+            fn from_ne_bytes(_cls: &PyType, _bytes: &PyBytes) -> PyResult<Self> {
+                let bytes = _bytes.as_bytes();
+                bytes
+                    .try_into()
+                    .map(|bytes| Self(<$integer>::from_ne_bytes(bytes)))
+                    .map_err(|_| {
+                        PyTypeError::new_err(format!(
+                            "Invalid number of bytes, got {}.",
+                            bytes.len()
+                        ))
+                    })
             }
 
             fn add(&self, other: &Self) -> PyResult<Self> {

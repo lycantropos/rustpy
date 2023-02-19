@@ -203,6 +203,27 @@ class _BaseInteger(_abc.ABC, _NumberWrapper[int]):
 
 
 class BaseSignedInteger(_BaseInteger):
+    @classmethod
+    def from_be_bytes(cls, _bytes: bytes) -> _te.Self:
+        if len(_bytes) != _u32_to_int(cls.BITS) // 8:
+            raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
+        return cls(int.from_bytes(_bytes, 'big',
+                                  signed=True))
+
+    @classmethod
+    def from_le_bytes(cls, _bytes: bytes) -> _te.Self:
+        if len(_bytes) != _u32_to_int(cls.BITS) // 8:
+            raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
+        return cls(int.from_bytes(_bytes, 'little',
+                                  signed=True))
+
+    @classmethod
+    def from_ne_bytes(cls, _bytes: bytes) -> _te.Self:
+        if len(_bytes) != _u32_to_int(cls.BITS) // 8:
+            raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
+        return cls(int.from_bytes(_bytes, _sys.byteorder,
+                                  signed=True))
+
     def abs(self) -> _te.Self:
         return type(self)(abs(self._value))
 
@@ -248,6 +269,24 @@ class BaseSignedInteger(_BaseInteger):
 
 
 class BaseUnsignedInteger(_BaseInteger):
+    @classmethod
+    def from_be_bytes(cls, _bytes: bytes) -> _te.Self:
+        if len(_bytes) != _u32_to_int(cls.BITS) // 8:
+            raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
+        return cls(int.from_bytes(_bytes, 'big'))
+
+    @classmethod
+    def from_le_bytes(cls, _bytes: bytes) -> _te.Self:
+        if len(_bytes) != _u32_to_int(cls.BITS) // 8:
+            raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
+        return cls(int.from_bytes(_bytes, 'little'))
+
+    @classmethod
+    def from_ne_bytes(cls, _bytes: bytes) -> _te.Self:
+        if len(_bytes) != _u32_to_int(cls.BITS) // 8:
+            raise TypeError(f'Invalid number of bytes, got {len(_bytes)}.')
+        return cls(int.from_bytes(_bytes, _sys.byteorder))
+
     def rem(self, divisor: _te.Self) -> _te.Self:
         if not isinstance(divisor, type(self)):
             raise TypeError(divisor)
