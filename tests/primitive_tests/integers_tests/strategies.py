@@ -24,12 +24,15 @@ def _to_zero_integers(cls: _t.Type[_Integer]) -> _SearchStrategy[_Integer]:
     return _st.builds(cls, _st.just(0))
 
 
+_float_types = _primitive.f32, _primitive.f64
 signed_integer_types = (_primitive.i8, _primitive.i16, _primitive.i32,
                         _primitive.i64, _primitive.i128, _primitive.isize)
 _unsigned_integer_types = (_primitive.u8, _primitive.u16, _primitive.u32,
                            _primitive.u64, _primitive.u128, _primitive.usize)
 _integer_types = (*signed_integer_types, *_unsigned_integer_types)
+float_types = _st.sampled_from(_float_types)
 integer_types = _st.sampled_from(_integer_types)
+numeric_types = _st.sampled_from([*_integer_types, *_float_types])
 
 divisible_integers_pairs = _st.one_of(
         [_st.tuples(_to_integers(integer_type),
