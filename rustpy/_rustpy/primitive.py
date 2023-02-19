@@ -28,11 +28,11 @@ class _CastableBaseSignedInteger(_BaseSignedInteger):
     def as_(self, cls: _t.Type[_PrimitiveNumberT]) -> _PrimitiveNumberT:
         if issubclass(cls, (_CastableBaseSignedInteger,
                             _CastableBaseUnsignedInteger)):
-            return cls.from_ne_bytes(
-                    self.to_ne_bytes()[:_u32_to_int(cls.BITS) // 8]
+            return cls.from_le_bytes(
+                    self.to_le_bytes()[:_u32_to_int(cls.BITS) // 8]
                     if self.BITS > cls.BITS
                     else self._value.to_bytes(_u32_to_int(cls.BITS) // 8,
-                                              _sys.byteorder,
+                                              'little',
                                               signed=True)
             )
         elif issubclass(cls, _BaseFloat):
@@ -45,11 +45,11 @@ class _CastableBaseUnsignedInteger(_BaseUnsignedInteger):
     def as_(self, cls: _t.Type[_PrimitiveNumberT]) -> _PrimitiveNumberT:
         if issubclass(cls, (_CastableBaseSignedInteger,
                             _CastableBaseUnsignedInteger)):
-            return cls.from_ne_bytes(
-                    self.to_ne_bytes()[:_u32_to_int(cls.BITS) // 8]
+            return cls.from_le_bytes(
+                    self.to_le_bytes()[:_u32_to_int(cls.BITS) // 8]
                     if self.BITS > cls.BITS
                     else self._value.to_bytes(_u32_to_int(cls.BITS) // 8,
-                                              _sys.byteorder)
+                                              'little')
             )
         elif issubclass(cls, _BaseFloat):
             return cls(float(self._value))
