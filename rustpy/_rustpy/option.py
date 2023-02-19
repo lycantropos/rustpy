@@ -49,11 +49,16 @@ class None_:
         return Err(_err())
 
     def or_(self, _other: Option[_T]) -> Option[_T]:
+        if not isinstance(_other, (None_, Some)):
+            raise TypeError(type(_other))
         return _other
 
     def or_else(self,
                 _function: _t.Callable[[], Option[_T]]) -> Option[_T]:
-        return _function()
+        result = _function()
+        if not isinstance(result, (None_, Some)):
+            raise TypeError(type(result))
+        return result
 
     def unwrap(self) -> _t.NoReturn:
         raise ValueError('Called `unwrap` on a `None` value.')
@@ -131,11 +136,16 @@ class None_:
 
 class Some(_t.Generic[_T]):
     def and_(self, _other: Option[_T]) -> Option[_T]:
+        if not isinstance(_other, (None_, Some)):
+            raise TypeError(type(_other))
         return _other
 
     def and_then(self,
                  _function: _t.Callable[[_T], Option[_T2]]) -> Option[_T2]:
-        return _function(self._value)
+        result = _function(self._value)
+        if not isinstance(result, (None_, Some)):
+            raise TypeError(type(result))
+        return result
 
     def is_none(self) -> _bool:
         return _bool(False)
