@@ -1,12 +1,23 @@
+from typing import Type
+
+import pytest
 from hypothesis import given
 
 from tests.utils import Float
 from . import strategies
 
 
-@given(strategies.finite_floats)
-def test_round_trip(float_: Float) -> None:
-    result = float_.from_le_bytes(float_.to_le_bytes())
+@given(strategies.float_types_with_finite_values)
+def test_round_trip(float_type_with_float: Float) -> None:
+    float_type, float_ = float_type_with_float
+
+    result = float_type.from_le_bytes(float_.to_le_bytes())
 
     assert result is not float_
     assert result == float_
+
+
+@given(strategies.float_types)
+def test_no_bytes(float_type: Type[Float]) -> None:
+    with pytest.raises(TypeError):
+        float_type.from_le_bytes(b'')
