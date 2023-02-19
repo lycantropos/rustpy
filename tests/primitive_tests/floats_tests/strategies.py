@@ -25,7 +25,6 @@ def _to_zero_floats(cls: _t.Type[_Float]) -> _SearchStrategy[_Float]:
 
 
 _float_types = _primitive.f32, _primitive.f64
-
 float_types = _st.sampled_from(_float_types)
 _integer_types = [
     _primitive.i8, _primitive.i16, _primitive.i32, _primitive.i64,
