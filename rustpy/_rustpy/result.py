@@ -55,12 +55,17 @@ class Err(_t.Generic[_E]):
         return _None()
 
     def or_(self, _other: Result[_T, _E]) -> Result[_T, _E]:
+        if not isinstance(_other, (Err, Ok)):
+            raise TypeError(type(_other))
         return _other
 
     def or_else(
             self, _function: _t.Callable[[_E], Result[_T, _E2]]
     ) -> Result[_T, _E2]:
-        return _function(self._value)
+        result = _function(self._value)
+        if not isinstance(result, (Err, Ok)):
+            raise TypeError(type(result))
+        return result
 
     def unwrap(self) -> _t.NoReturn:
         raise ValueError('Called `unwrap` on an `Err` value: '
@@ -150,12 +155,17 @@ class Err(_t.Generic[_E]):
 
 class Ok(_t.Generic[_T]):
     def and_(self, _other: Result[_T, _E]) -> Result[_T, _E]:
+        if not isinstance(_other, (Err, Ok)):
+            raise TypeError(type(_other))
         return _other
 
     def and_then(
             self, _function: _t.Callable[[_T], Result[_T2, _E]]
     ) -> Result[_T2, _E]:
-        return _function(self._value)
+        result = _function(self._value)
+        if not isinstance(result, (Err, Ok)):
+            raise TypeError(type(result))
+        return result
 
     def err(self) -> _None:
         return _None()
