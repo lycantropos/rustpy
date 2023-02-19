@@ -6,14 +6,14 @@ from tests.utils import Float
 from . import strategies
 
 
-@given(strategies.finite_floats)
+@given(strategies.floats)
 def test_basic(float_: Float) -> None:
     result = float_.to_ne_bytes()
 
     assert isinstance(result, bytes)
 
 
-@given(strategies.finite_floats)
+@given(strategies.floats)
 def test_alternatives(float_: Float) -> None:
     result = float_.to_ne_bytes()
 
