@@ -227,6 +227,19 @@ class BaseSignedInteger(_BaseInteger):
         return type(self)(_trunc_division_remainder(self._value,
                                                     divisor._value))
 
+    def to_be_bytes(self) -> bytes:
+        return self._value.to_bytes(_u32_to_int(self.BITS) // 8, 'big',
+                                    signed=True)
+
+    def to_le_bytes(self) -> bytes:
+        return self._value.to_bytes(_u32_to_int(self.BITS) // 8, 'little',
+                                    signed=True)
+
+    def to_ne_bytes(self) -> bytes:
+        return self._value.to_bytes(_u32_to_int(self.BITS) // 8,
+                                    _sys.byteorder,
+                                    signed=True)
+
     def __invert__(self) -> _te.Self:
         return type(self)(~self._value)
 
@@ -240,6 +253,16 @@ class BaseUnsignedInteger(_BaseInteger):
             raise TypeError(divisor)
         return type(self)(_floor_division_remainder(self._value,
                                                     divisor._value))
+
+    def to_be_bytes(self) -> bytes:
+        return self._value.to_bytes(_u32_to_int(self.BITS) // 8, 'big')
+
+    def to_le_bytes(self) -> bytes:
+        return self._value.to_bytes(_u32_to_int(self.BITS) // 8, 'little')
+
+    def to_ne_bytes(self) -> bytes:
+        return self._value.to_bytes(_u32_to_int(self.BITS) // 8,
+                                    _sys.byteorder)
 
     def __invert__(self) -> _te.Self:
         return type(self)(self.MAX - self._value)

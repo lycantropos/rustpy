@@ -1141,6 +1141,18 @@ macro_rules! define_signed_integer_python_binding {
                 }
             }
 
+            fn to_be_bytes<'a>(&self, py: Python<'a>) -> &'a PyBytes {
+                PyBytes::new(py, &self.0.to_be_bytes())
+            }
+
+            fn to_le_bytes<'a>(&self, py: Python<'a>) -> &'a PyBytes {
+                PyBytes::new(py, &self.0.to_le_bytes())
+            }
+
+            fn to_ne_bytes<'a>(&self, py: Python<'a>) -> &'a PyBytes {
+                PyBytes::new(py, &self.0.to_ne_bytes())
+            }
+
             fn __add__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
                 match other.extract::<Self>() {
                     Ok(other) => match self.0.checked_add(other.0) {
@@ -1424,6 +1436,18 @@ macro_rules! define_unsigned_integer_python_binding {
                         other.__repr__(),
                     ))),
                 }
+            }
+
+            fn to_be_bytes<'a>(&self, py: Python<'a>) -> &'a PyBytes {
+                PyBytes::new(py, &self.0.to_be_bytes())
+            }
+
+            fn to_le_bytes<'a>(&self, py: Python<'a>) -> &'a PyBytes {
+                PyBytes::new(py, &self.0.to_le_bytes())
+            }
+
+            fn to_ne_bytes<'a>(&self, py: Python<'a>) -> &'a PyBytes {
+                PyBytes::new(py, &self.0.to_ne_bytes())
             }
 
             fn __add__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
