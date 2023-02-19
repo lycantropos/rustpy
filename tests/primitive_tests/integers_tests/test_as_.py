@@ -21,3 +21,13 @@ def test_float_type(integer: Integer, float_type: Type[Float]) -> None:
 
     assert not result.is_nan()
     assert result.trunc() == result
+
+
+@given(strategies.integers, strategies.integer_types)
+def test_integer_type(integer: Integer, integer_type: Type[Integer]) -> None:
+    result = integer.as_(integer_type)
+
+    integer_bytes = integer.to_ne_bytes()
+    result_bytes = result.to_ne_bytes()
+    assert (result_bytes[:min(len(integer_bytes), len(result_bytes))]
+            == integer_bytes[:min(len(integer_bytes), len(result_bytes))])
