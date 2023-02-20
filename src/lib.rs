@@ -1236,6 +1236,13 @@ macro_rules! define_signed_integer_python_binding {
                 Self(!self.0)
             }
 
+            fn __lshift__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
+                match other.extract::<U32>() {
+                    Ok(other) => Ok(Self(self.0 << other.0).into_py(py)),
+                    Err(_) => Ok(py.NotImplemented()),
+                }
+            }
+
             fn __mod__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
                 match other.extract::<Self>() {
                     Ok(other) => match self.0.checked_rem(other.0) {
@@ -1272,6 +1279,13 @@ macro_rules! define_signed_integer_python_binding {
                 self.0.checked_neg().map(Self).ok_or_else(|| {
                     PyOverflowError::new_err(format!("Negation of {} overflows.", self.__repr__()))
                 })
+            }
+
+            fn __rshift__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
+                match other.extract::<U32>() {
+                    Ok(other) => Ok(Self(self.0 >> other.0).into_py(py)),
+                    Err(_) => Ok(py.NotImplemented()),
+                }
             }
 
             fn __sub__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
@@ -1593,6 +1607,13 @@ macro_rules! define_unsigned_integer_python_binding {
                 }
             }
 
+            fn __lshift__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
+                match other.extract::<U32>() {
+                    Ok(other) => Ok(Self(self.0 << other.0).into_py(py)),
+                    Err(_) => Ok(py.NotImplemented()),
+                }
+            }
+
             fn __mul__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
                 match other.extract::<Self>() {
                     Ok(other) => match self.0.checked_mul(other.0) {
@@ -1615,6 +1636,13 @@ macro_rules! define_unsigned_integer_python_binding {
                 let py = other.py();
                 match other.extract::<Self>() {
                     Ok(other) => Ok(Bool(compare(&self.0, &other.0, op)).into_py(py)),
+                    Err(_) => Ok(py.NotImplemented()),
+                }
+            }
+
+            fn __rshift__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
+                match other.extract::<U32>() {
+                    Ok(other) => Ok(Self(self.0 >> other.0).into_py(py)),
                     Err(_) => Ok(py.NotImplemented()),
                 }
             }

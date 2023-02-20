@@ -27,6 +27,21 @@ class _BaseInteger(_abc.ABC, _NumberWrapper[int]):
     MAX: _t.ClassVar[_te.Self]
     MIN: _t.ClassVar[_te.Self]
 
+    @classmethod
+    @_abc.abstractmethod
+    def from_be_bytes(cls, _bytes: bytes) -> _te.Self:
+        ...
+
+    @classmethod
+    @_abc.abstractmethod
+    def from_le_bytes(cls, _bytes: bytes) -> _te.Self:
+        ...
+
+    @classmethod
+    @_abc.abstractmethod
+    def from_ne_bytes(cls, _bytes: bytes) -> _te.Self:
+        ...
+
     def checked_add(self, other: _te.Self) -> _Option[_te.Self]:
         if not isinstance(other, type(self)):
             raise TypeError(type(other))
@@ -109,6 +124,18 @@ class _BaseInteger(_abc.ABC, _NumberWrapper[int]):
         return type(self)(_floor_division_remainder(self._value,
                                                     divisor._value))
 
+    @_abc.abstractmethod
+    def to_be_bytes(self) -> bytes:
+        ...
+
+    @_abc.abstractmethod
+    def to_le_bytes(self) -> bytes:
+        ...
+
+    @_abc.abstractmethod
+    def to_ne_bytes(self) -> bytes:
+        ...
+
     __module__ = 'rustpy.primitive'
 
     def __new__(cls, _value: int) -> _te.Self:
@@ -147,9 +174,16 @@ class _BaseInteger(_abc.ABC, _NumberWrapper[int]):
         ...
 
     def __lshift__(self, other: _t.Any) -> _t.Any:
-        return (type(self)(self._value << u32_to_int(other))
-                if isinstance(other, type(self.BITS))
-                else NotImplemented)
+        return (
+            type(self).from_le_bytes(
+                    (
+                        ((self._value << u32_to_int(other % self.BITS))
+                         & ((1 << u32_to_int(self.BITS)) - 1))
+                    ).to_bytes(u32_to_int(self.BITS) // 8, 'little')
+            )
+            if isinstance(other, type(self.BITS))
+            else NotImplemented
+        )
 
     @_t.overload
     def __mod__(self, other: _te.Self) -> _te.Self:
@@ -177,7 +211,7 @@ class _BaseInteger(_abc.ABC, _NumberWrapper[int]):
         ...
 
     def __rshift__(self, other: _t.Any) -> _t.Any:
-        return (type(self)(self._value >> u32_to_int(other))
+        return (type(self)(self._value >> u32_to_int(other % self.BITS))
                 if isinstance(other, type(self.BITS))
                 else NotImplemented)
 

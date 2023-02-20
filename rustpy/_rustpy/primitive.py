@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import math as _math
 import struct as _struct
-import sys as _sys
 import typing as _t
 from ctypes import c_float
 
