@@ -1,4 +1,4 @@
 include Cargo.toml
 include LICENSE
-include requirements-setup.txt
+include pyproject.toml
 recursive-include src *.rs
