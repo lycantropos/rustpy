@@ -29,6 +29,9 @@ class Err(_t.Generic[_E]):
     def expect(self, _message: str) -> _t.NoReturn:
         raise ValueError(f'{_message}: {self._value!r}')
 
+    def expect_err(self, _message: str) -> _E:
+        return self._value
+
     def is_err(self) -> _bool:
         return _bool(True)
 
@@ -172,6 +175,9 @@ class Ok(_t.Generic[_T]):
 
     def expect(self, _message: str) -> _T:
         return self._value
+
+    def expect_err(self, _message: str) -> _t.NoReturn:
+        raise ValueError(f'{_message}: {self._value!r}')
 
     def is_err(self) -> _bool:
         return _bool(False)

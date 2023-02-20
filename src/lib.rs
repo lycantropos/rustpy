@@ -97,6 +97,10 @@ impl Err_ {
         )))
     }
 
+    fn expect_err(&self, _message: String) -> PyObject {
+        self.0.clone()
+    }
+
     fn is_err(&self) -> Bool {
         TRUE
     }
@@ -263,6 +267,14 @@ impl Ok_ {
 
     fn expect(&self, _message: String) -> PyObject {
         self.0.clone()
+    }
+
+    fn expect_err(&self, message: String, py: Python) -> PyResult<PyObject> {
+        Err(PyValueError::new_err(format!(
+            "{}: {}",
+            message,
+            self.0.as_ref(py).repr()?
+        )))
     }
 
     fn is_err(&self) -> Bool {

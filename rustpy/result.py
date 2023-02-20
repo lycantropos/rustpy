@@ -35,6 +35,9 @@ class Result(_te.Protocol, _t.Generic[_T, _E]):
     def expect(self, _message: str) -> _T:
         ...
 
+    def expect_err(self, _message: str) -> _E:
+        ...
+
     def is_err(self) -> bool:
         ...
 
