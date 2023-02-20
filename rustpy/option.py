@@ -28,6 +28,9 @@ class Option(_te.Protocol, _t.Generic[_T]):
                  _function: _t.Callable[[_T], Option[_T2]]) -> Option[_T2]:
         ...
 
+    def expect(self, _message: str) -> _T:
+        ...
+
     def is_none(self) -> _bool:
         ...
 

@@ -23,6 +23,9 @@ class None_:
     def and_then(self, _function: _t.Callable[[_T], _T2]) -> _te.Self:
         return self
 
+    def expect(self, _message: str) -> _t.NoReturn:
+        raise ValueError(_message)
+
     def is_none(self) -> _bool:
         return _bool(True)
 
@@ -146,6 +149,9 @@ class Some(_t.Generic[_T]):
         if not isinstance(result, (None_, Some)):
             raise TypeError(type(result))
         return result
+
+    def expect(self, _message: str) -> _T:
+        return self._value
 
     def is_none(self) -> _bool:
         return _bool(False)
