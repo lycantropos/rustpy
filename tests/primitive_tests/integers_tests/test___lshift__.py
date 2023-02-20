@@ -10,10 +10,9 @@ from . import strategies
 
 @given(strategies.integers, strategies.u32s)
 def test_basic(base: Integer, shift: u32) -> None:
-    with suppress(OverflowError):
-        result = base << shift
+    result = base << shift
 
-        assert isinstance(result, type(base))
+    assert isinstance(result, type(base))
 
 
 @given(strategies.zero_integers, strategies.u32s)
@@ -38,16 +37,6 @@ def test___add___base(bases_pair: Tuple[Integer, Integer], shift: u32) -> None:
         result = (first_base + second_base) << shift
 
         assert result == (first_base << shift) + (second_base << shift)
-
-
-@given(strategies.integers, strategies.u32s, strategies.u32s)
-def test___add___shift(base: Integer,
-                       first_shift: u32,
-                       second_shift: u32) -> None:
-    with suppress(OverflowError):
-        result = base << (first_shift + second_shift)
-
-        assert result == (base << first_shift) << second_shift
 
 
 @given(strategies.integers_pairs, strategies.u32s)
