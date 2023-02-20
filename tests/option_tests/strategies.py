@@ -35,3 +35,4 @@ options_empty_factories = equatable_options.map(lambda value: (lambda: value))
 losslessly_representable_options = (
         nones | losslessly_representable_values.map(_Some)
 )
+messages = _st.text()
