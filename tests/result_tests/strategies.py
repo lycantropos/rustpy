@@ -10,7 +10,7 @@ from tests.strategies import (
 
 MAX_RECURSION_DEPTH = 3
 
-equatable_values  = _equatable_values
+equatable_values = _equatable_values
 equatable_pure_maps = (
         _st.sampled_from([lambda value: value, dir, id, repr, str])
         | _st.builds(lambda value: (lambda _: value), _equatable_values)
@@ -35,3 +35,4 @@ losslessly_representable_results = (
         _st.builds(_Err, _losslessly_representable_values)
         | _st.builds(_Ok, _losslessly_representable_values)
 )
+messages = _st.text()
