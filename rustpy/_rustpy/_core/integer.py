@@ -9,6 +9,7 @@ import typing_extensions as _te
 from rustpy.option import (None_ as _None,
                            Option as _Option,
                            Some as _Some)
+from .bool_ import bool_ as _bool
 from .number import NumberWrapper as _NumberWrapper
 from .utils import (floor_division_quotient as _floor_division_quotient,
                     floor_division_remainder as _floor_division_remainder,
@@ -268,6 +269,12 @@ class BaseSignedInteger(_BaseInteger):
             return _Some(type(self)(-self._value))
         except OverflowError:
             return _None()
+
+    def is_negative(self) -> _bool:
+        return _bool(self._value < 0)
+
+    def is_positive(self) -> _bool:
+        return _bool(self._value > 0)
 
     def neg(self) -> _te.Self:
         return type(self)(-self._value)

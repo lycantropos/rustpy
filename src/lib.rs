@@ -1141,6 +1141,14 @@ macro_rules! define_signed_integer_python_binding {
                 }
             }
 
+            fn is_negative(&self) -> Bool {
+                Bool(self.0.is_negative())
+            }
+
+            fn is_positive(&self) -> Bool {
+                Bool(self.0.is_positive())
+            }
+
             fn mul(&self, other: &Self) -> PyResult<Self> {
                 match self.0.checked_mul(other.0) {
                     Some(result) => Ok(Self(result)),
