@@ -1,4 +1,6 @@
 include Cargo.toml
 include LICENSE
 include pyproject.toml
+include rustpy/py.typed
+recursive-include rustpy *.pyi
 recursive-include src *.rs
