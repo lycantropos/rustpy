@@ -37,4 +37,4 @@ def test_associativity(triplet: Tuple[Integer, Integer, Integer]) -> None:
 def test_absorbing_element(integer_with_zero: Tuple[Integer, Integer]) -> None:
     integer, zero = integer_with_zero
 
-    assert integer & zero == integer == zero & integer
+    assert integer & zero == zero == zero & integer
