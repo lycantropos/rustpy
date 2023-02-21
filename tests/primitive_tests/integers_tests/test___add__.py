@@ -31,6 +31,16 @@ def test_commutativity(pair: Tuple[Integer, Integer]) -> None:
         assert result == second + first
 
 
+@given(strategies.integers_triplets)
+def test_associativity(triplet: Tuple[Integer, Integer, Integer]) -> None:
+    first, second, third = triplet
+
+    with suppress(OverflowError):
+        result = (first + second) + third
+
+        assert result == first + (second + third)
+
+
 @given(strategies.integers_with_zeros)
 def test_neutral_element(integer_with_zero: Tuple[Integer, Integer]) -> None:
     integer, zero = integer_with_zero
