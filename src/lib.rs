@@ -1225,6 +1225,13 @@ macro_rules! define_signed_integer_python_binding {
                 }
             }
 
+            fn __and__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
+                match other.extract::<Self>() {
+                    Ok(other) => Ok(Self(self.0 & other.0).into_py(py)),
+                    Err(_) => Ok(py.NotImplemented()),
+                }
+            }
+
             fn __bool__(&self) -> PyResult<()> {
                 Err(PyTypeError::new_err(format!(
                     "Expected `bool_`, found `{}`.",
@@ -1578,6 +1585,13 @@ macro_rules! define_unsigned_integer_python_binding {
                             other.__repr__(),
                         ))),
                     },
+                    Err(_) => Ok(py.NotImplemented()),
+                }
+            }
+
+            fn __and__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
+                match other.extract::<Self>() {
+                    Ok(other) => Ok(Self(self.0 & other.0).into_py(py)),
                     Err(_) => Ok(py.NotImplemented()),
                 }
             }
