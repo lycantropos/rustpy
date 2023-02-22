@@ -25,11 +25,11 @@ def _to_zero_integers(cls: _t.Type[_Integer]) -> _SearchStrategy[_Integer]:
 
 
 _float_types = _primitive.f32, _primitive.f64
-signed_integer_types = (_primitive.i8, _primitive.i16, _primitive.i32,
-                        _primitive.i64, _primitive.i128, _primitive.isize)
+_signed_integer_types = (_primitive.i8, _primitive.i16, _primitive.i32,
+                         _primitive.i64, _primitive.i128, _primitive.isize)
 _unsigned_integer_types = (_primitive.u8, _primitive.u16, _primitive.u32,
                            _primitive.u64, _primitive.u128, _primitive.usize)
-_integer_types = (*signed_integer_types, *_unsigned_integer_types)
+_integer_types = (*_signed_integer_types, *_unsigned_integer_types)
 float_types = _st.sampled_from(_float_types)
 integer_types = _st.sampled_from(_integer_types)
 numeric_types = _st.sampled_from([*_integer_types, *_float_types])
@@ -46,7 +46,7 @@ integers_with_ones = _st.one_of([_st.tuples(_to_integers(integer_type),
                                             _to_unit_integers(integer_type))
                                  for integer_type in _integer_types])
 _signed_integer_values = tuple(_to_integers(integer_type)
-                               for integer_type in signed_integer_types)
+                               for integer_type in _signed_integer_types)
 _unsigned_integer_values = tuple(_to_integers(integer_type)
                                  for integer_type in _unsigned_integer_types)
 _integer_values = (*_signed_integer_values, *_unsigned_integer_values)
@@ -68,10 +68,10 @@ signed_integers_pairs = _st.one_of([_st.tuples(values, values)
 divisible_signed_integers_pairs = _st.one_of(
         [_st.tuples(_to_integers(integer_type),
                     _to_non_zero_integers(integer_type))
-         for integer_type in signed_integer_types]
+         for integer_type in _signed_integer_types]
 )
 signed_integers_with_zeros = _st.one_of(
         [_st.tuples(_to_integers(integer_type),
                     _to_zero_integers(integer_type))
-         for integer_type in signed_integer_types]
+         for integer_type in _signed_integer_types]
 )
