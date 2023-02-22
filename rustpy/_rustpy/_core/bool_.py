@@ -22,7 +22,7 @@ class bool_:
         return self._value
 
     @_t.overload
-    def __eq__(self, other: _te.Self) -> bool:
+    def __eq__(self, other: _te.Self) -> _te.Self:
         ...
 
     @_t.overload
@@ -35,7 +35,7 @@ class bool_:
                 else NotImplemented)
 
     @_t.overload
-    def __ge__(self, other: _te.Self) -> bool:
+    def __ge__(self, other: _te.Self) -> _te.Self:
         ...
 
     @_t.overload
@@ -48,7 +48,7 @@ class bool_:
                 else NotImplemented)
 
     @_t.overload
-    def __gt__(self, other: _te.Self) -> bool:
+    def __gt__(self, other: _te.Self) -> _te.Self:
         ...
 
     @_t.overload
@@ -61,7 +61,7 @@ class bool_:
                 else NotImplemented)
 
     @_t.overload
-    def __le__(self, other: _te.Self) -> bool:
+    def __le__(self, other: _te.Self) -> _te.Self:
         ...
 
     @_t.overload
@@ -74,7 +74,7 @@ class bool_:
                 else NotImplemented)
 
     @_t.overload
-    def __lt__(self, other: _te.Self) -> bool:
+    def __lt__(self, other: _te.Self) -> _te.Self:
         ...
 
     @_t.overload

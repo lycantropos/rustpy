@@ -3,6 +3,7 @@ import typing as _t
 import typing_extensions as _te
 
 from rustpy.option import Option as _Option
+from rustpy.primitive import bool_ as _bool
 
 _E = _t.TypeVar('_E')
 _E2 = _t.TypeVar('_E2')
@@ -28,10 +29,10 @@ class Result(_te.Protocol, _t.Generic[_T, _E]):
     def expect_err(self, _message: str) -> _E:
         ...
 
-    def is_err(self) -> bool:
+    def is_err(self) -> _bool:
         ...
 
-    def is_ok(self) -> bool:
+    def is_ok(self) -> _bool:
         ...
 
     def map(self, _function: _t.Callable[[_T], _T2]) -> Result[_T2, _E]:
@@ -74,7 +75,7 @@ class Result(_te.Protocol, _t.Generic[_T, _E]):
         ...
 
     @_t.overload
-    def __eq__(self, other: _te.Self) -> bool:
+    def __eq__(self, other: _te.Self) -> _bool:
         ...
 
     @_t.overload
@@ -82,7 +83,7 @@ class Result(_te.Protocol, _t.Generic[_T, _E]):
         ...
 
     @_t.overload
-    def __ge__(self, other: _te.Self) -> bool:
+    def __ge__(self, other: _te.Self) -> _bool:
         ...
 
     @_t.overload
@@ -90,7 +91,7 @@ class Result(_te.Protocol, _t.Generic[_T, _E]):
         ...
 
     @_t.overload
-    def __gt__(self, other: _te.Self) -> bool:
+    def __gt__(self, other: _te.Self) -> _bool:
         ...
 
     @_t.overload
@@ -98,7 +99,7 @@ class Result(_te.Protocol, _t.Generic[_T, _E]):
         ...
 
     @_t.overload
-    def __le__(self, other: _te.Self) -> bool:
+    def __le__(self, other: _te.Self) -> _bool:
         ...
 
     @_t.overload
@@ -106,7 +107,7 @@ class Result(_te.Protocol, _t.Generic[_T, _E]):
         ...
 
     @_t.overload
-    def __lt__(self, other: _te.Self) -> bool:
+    def __lt__(self, other: _te.Self) -> _bool:
         ...
 
     @_t.overload
