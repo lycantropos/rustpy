@@ -901,6 +901,10 @@ macro_rules! define_floating_point_python_binding {
                 )))
             }
 
+            fn __float__(&self) -> $float {
+                self.0
+            }
+
             fn __mod__(&self, other: &PyAny, py: Python) -> PyObject {
                 match other.extract::<Self>() {
                     Ok(other) => Self(self.0 % other.0).into_py(py),

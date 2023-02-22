@@ -123,6 +123,9 @@ class BaseFloat(_NumberWrapper[float]):
         _, value = _math.modf(self._value)
         return type(self)(value)
 
+    def __float__(self) -> float:
+        return self._value
+
     @_t.overload
     def __mod__(self, other: _te.Self) -> _te.Self:
         ...

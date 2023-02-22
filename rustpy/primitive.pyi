@@ -121,6 +121,9 @@ class _BaseFloat(_te.Protocol):
     def __eq__(self, other: _t.Any) -> _t.Any:
         ...
 
+    def __float__(self) -> float:
+        ...
+
     @_t.overload
     def __ge__(self, other: _te.Self) -> bool_:
         ...
