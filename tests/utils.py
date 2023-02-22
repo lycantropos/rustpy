@@ -46,8 +46,8 @@ def not_raises(
         raise _pytest.fail('DID RAISE {}'.format(exceptions))
 
 
-def rust_int_to_python_int(value: _t.Any) -> int:
-    return int(str(value)[:-len(type(value).__qualname__)])
+def rust_int_to_python_int(value: Integer) -> int:
+    return int(value)
 
 
 _T = _t.TypeVar('_T')
