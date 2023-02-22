@@ -166,6 +166,9 @@ class _BaseInteger(_abc.ABC, _NumberWrapper[int]):
     def __invert__(self) -> _te.Self:
         ...
 
+    def __int__(self) -> int:
+        return self._value
+
     @_t.overload
     def __lshift__(self, other: u32) -> _te.Self:
         ...

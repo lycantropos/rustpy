@@ -322,6 +322,9 @@ class _BaseInteger(_te.Protocol):
     def __invert__(self) -> _te.Self:
         ...
 
+    def __int__(self) -> int:
+        ...
+
     @_t.overload
     def __le__(self, other: _te.Self) -> bool:
         ...

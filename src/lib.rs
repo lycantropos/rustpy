@@ -1247,6 +1247,10 @@ macro_rules! define_signed_integer_python_binding {
                 )))
             }
 
+            fn __int__(&self) -> $integer {
+                self.0
+            }
+
             fn __invert__(&self) -> Self {
                 Self(!self.0)
             }
@@ -1609,6 +1613,10 @@ macro_rules! define_unsigned_integer_python_binding {
                     "Expected `bool_`, found `{}`.",
                     $name
                 )))
+            }
+
+            fn __int__(&self) -> $integer {
+                self.0
             }
 
             fn __mod__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
