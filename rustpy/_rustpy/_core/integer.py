@@ -358,7 +358,7 @@ def signed_cls_to_min_value(cls: _t.Type[_SignedInteger]) -> _SignedInteger:
 
 
 def u32_to_int(value: u32) -> int:
-    return value._value
+    return int(value)
 
 
 _UnsignedInteger = _t.TypeVar('_UnsignedInteger',
