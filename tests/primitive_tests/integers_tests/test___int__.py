@@ -7,7 +7,7 @@ from tests.utils import Integer
 from . import strategies
 
 
-@given(strategies.signed_integers)
+@given(strategies.integers)
 def test_basic(integer: Integer) -> None:
     result = int(integer)
 
