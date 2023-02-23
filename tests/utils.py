@@ -9,6 +9,8 @@ from hypothesis.strategies import SearchStrategy as _SearchStrategy
 
 from rustpy import primitive as _primitive
 
+Bool = _t.TypeVar('Bool',
+                  bound=_primitive.bool_)
 Float = _t.TypeVar('Float', _primitive.f32, _primitive.f64)
 Integer = _t.TypeVar('Integer', _primitive.i128, _primitive.i16,
                      _primitive.i32, _primitive.i64, _primitive.i8,
