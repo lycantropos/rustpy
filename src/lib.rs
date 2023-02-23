@@ -8,6 +8,20 @@ use pyo3::{PyAny, PyRef, PyTypeInfo};
 
 #[pymodule]
 fn _crustpy(_py: Python, module: &PyModule) -> PyResult<()> {
+    unsafe {
+        let py = Python::assume_gil_acquired();
+        if py.version_info() < (3, 9) {
+            GENERIC_ALIAS = Some(
+                py.import("typing")?
+                    .getattr("List")?
+                    .get_item(py.import("builtins")?.getattr("int")?)?
+                    .get_type(),
+            );
+        } else {
+            GENERIC_ALIAS = Some(py.import("types")?.getattr("GenericAlias")?);
+        }
+    }
+
     module.setattr("__version__", env!("CARGO_PKG_VERSION"))?;
     module.setattr("__doc__", env!("CARGO_PKG_DESCRIPTION"))?;
     module.add_class::<Bool>()?;
@@ -32,9 +46,12 @@ fn _crustpy(_py: Python, module: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
+static mut GENERIC_ALIAS: Option<&PyAny> = None;
+
 #[pyclass(module = "rustpy.primitive", name = "bool_")]
 #[derive(Clone)]
 struct Bool(bool);
+
 const TRUE: Bool = Bool(true);
 const FALSE: Bool = Bool(false);
 
@@ -182,6 +199,17 @@ impl Err_ {
 
     fn unwrap_or_else<'a>(&self, function: &'a PyAny, py: Python) -> PyResult<&'a PyAny> {
         function.call1(PyTuple::new(py, [self.0.as_ref(py)]))
+    }
+
+    #[classmethod]
+    fn __class_getitem__<'a>(cls: &PyType, item: &PyAny, py: Python<'a>) -> PyResult<&'a PyAny> {
+        unsafe { GENERIC_ALIAS.unwrap_unchecked() }.call1(PyTuple::new(
+            py,
+            [
+                <&PyType as IntoPy<PyObject>>::into_py(cls, py),
+                PyTuple::new(py, [item]).into_py(py),
+            ],
+        ))
     }
 
     fn __bool__(&self) -> PyResult<()> {
@@ -342,6 +370,17 @@ impl Ok_ {
 
     fn unwrap_or_else(&self, _function: &PyAny) -> PyObject {
         self.0.clone()
+    }
+
+    #[classmethod]
+    fn __class_getitem__<'a>(cls: &PyType, item: &PyAny, py: Python<'a>) -> PyResult<&'a PyAny> {
+        unsafe { GENERIC_ALIAS.unwrap_unchecked() }.call1(PyTuple::new(
+            py,
+            [
+                <&PyType as IntoPy<PyObject>>::into_py(cls, py),
+                PyTuple::new(py, [item]).into_py(py),
+            ],
+        ))
     }
 
     fn __bool__(&self) -> PyResult<()> {
@@ -601,6 +640,17 @@ impl Some_ {
 
     fn __bool__(&self) -> PyResult<()> {
         Err(PyTypeError::new_err("Expected `bool_`, found `Some`."))
+    }
+
+    #[classmethod]
+    fn __class_getitem__<'a>(cls: &PyType, item: &PyAny, py: Python<'a>) -> PyResult<&'a PyAny> {
+        unsafe { GENERIC_ALIAS.unwrap_unchecked() }.call1(PyTuple::new(
+            py,
+            [
+                <&PyType as IntoPy<PyObject>>::into_py(cls, py),
+                PyTuple::new(py, [item]).into_py(py),
+            ],
+        ))
     }
 
     fn __repr__(&self, py: Python) -> PyResult<String> {
