@@ -72,6 +72,7 @@ class None_:
     def unwrap_or_else(self, _function: _t.Callable[[], _T]) -> _T:
         return _function()
 
+    __module__ = 'rustpy.option'
     __slots__ = ()
 
     @_t.overload
@@ -195,6 +196,7 @@ class Some(_t.Generic[_T]):
     def unwrap_or_else(self, _function: _t.Callable[[], _T]) -> _T:
         return self._value
 
+    __module__ = 'rustpy.option'
     __slots__ = '_value',
 
     def __init__(self, value: _T) -> None:
