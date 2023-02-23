@@ -5,11 +5,13 @@ from rustpy.result import (Err as _Err,
 from tests.strategies import (
     comparable_values_categories as _comparable_values_categories,
     equatable_values as _equatable_values,
-    losslessly_representable_values as _losslessly_representable_values
+    losslessly_representable_values as _losslessly_representable_values,
+    type_hints as _type_hints
 )
 
 MAX_RECURSION_DEPTH = 3
 
+type_hints = _type_hints
 results_types = _st.sampled_from([_Err, _Ok])
 equatable_values = _equatable_values
 equatable_pure_maps = (

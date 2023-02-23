@@ -1,3 +1,9 @@
+import sys as _sys
+import typing as _t
+from _operator import getitem as _getitem
+from functools import partial as _partial
+from itertools import repeat as _repeat
+
 from hypothesis import strategies as _st
 
 from rustpy import primitive as _primitive
@@ -8,7 +14,39 @@ from rustpy.result import (Err as _Err,
 from tests.utils import (to_homogeneous_tuples as _to_homogeneous_tuples,
                          to_integers as _to_integers)
 
+_Generic = type(_t.List)
+
+if _sys.version_info < (3, 9):
+    def _to_generic_parameters_count(value: _Generic) -> int:
+        return len(value.__args__)
+else:
+    def _to_generic_parameters_count(value: _Generic) -> int:
+        return value._nparams
+
+generics = _st.sampled_from([
+    content
+    for content in vars(_t).values()
+    if (isinstance(content, _Generic)
+        and _to_generic_parameters_count(content) != 0)
+])
+
 MAX_RECURSION_DEPTH = 3
+type_hints = _st.recursive(
+        _st.from_type(type),
+        lambda values: (
+                generics.flatmap(
+                        lambda value: _st.tuples(
+                                *_repeat(values,
+                                         _to_generic_parameters_count(value))
+                        ).map(_partial(_getitem, value))
+                )
+                | _st.lists(values).map(tuple).map(_partial(_getitem,
+                                                            _t.Tuple))
+                | _st.tuples(_st.just(Ellipsis) | _st.lists(values),
+                             values).map(_partial(_getitem, _t.Callable))
+        ),
+        max_leaves=MAX_RECURSION_DEPTH
+)
 hashable_equatable_values = _st.recursive(
         _st.none() | _st.sampled_from([Ellipsis, NotImplemented])
         | _st.booleans() | _st.integers() | _st.fractions()
