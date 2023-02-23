@@ -66,7 +66,7 @@ impl Bool {
     }
 }
 
-#[pyclass(module = "rustpy.result", name = "Err", subclass)]
+#[pyclass(module = "_crustpy", name = "Err", subclass)]
 #[derive(Clone)]
 struct Err_(PyObject);
 
@@ -221,7 +221,7 @@ impl Err_ {
     }
 }
 
-#[pyclass(module = "rustpy.result", name = "Ok", subclass)]
+#[pyclass(module = "_crustpy", name = "Ok", subclass)]
 #[derive(Clone)]
 struct Ok_(PyObject);
 
@@ -381,7 +381,7 @@ impl Ok_ {
     }
 }
 
-#[pyclass(module = "rustpy.option", name = "None_", subclass)]
+#[pyclass(module = "_crustpy", name = "None_", subclass)]
 #[derive(Clone)]
 struct None_();
 
@@ -495,7 +495,7 @@ impl None_ {
     }
 }
 
-#[pyclass(module = "rustpy.option", name = "Some", subclass)]
+#[pyclass(module = "_crustpy", name = "Some", subclass)]
 #[derive(Clone)]
 struct Some_(PyObject);
 
