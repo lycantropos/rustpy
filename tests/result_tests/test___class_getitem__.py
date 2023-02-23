@@ -4,7 +4,7 @@ from typing import (Any,
 from hypothesis import given
 
 from rustpy.result import Result
-from tests.utils import GenericAlias
+from tests.utils import Specialization
 from . import strategies
 
 
@@ -12,4 +12,4 @@ from . import strategies
 def test_basic(result_type: Type[Result], type_: Type[Any]) -> None:
     result = result_type[type_]
 
-    assert isinstance(result, GenericAlias)
+    assert isinstance(result, Specialization)
