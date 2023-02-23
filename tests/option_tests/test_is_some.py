@@ -17,3 +17,8 @@ def test_basic(option: Option) -> None:
 @given(strategies.equatable_options)
 def test_value(option: Option) -> None:
     assert equivalence(option.is_some(), isinstance(option, Some))
+
+
+@given(strategies.equatable_options)
+def test_connection_with_is_none(option: Option) -> None:
+    assert equivalence(bool(option.is_some()), not option.is_none())
