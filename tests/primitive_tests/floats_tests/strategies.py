@@ -31,7 +31,8 @@ _integer_types = [
     _primitive.i128, _primitive.isize, _primitive.u8, _primitive.u16,
     _primitive.u32, _primitive.u64, _primitive.u128, _primitive.usize
 ]
-numeric_types = _st.sampled_from([*_integer_types, *_float_types])
+integer_types = _st.sampled_from(_integer_types)
+numeric_types = integer_types | float_types
 integer_types_with_zeros = _st.one_of([
     _st.tuples(_st.just(integer_type), _st.just(0).map(integer_type))
     for integer_type in _integer_types

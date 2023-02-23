@@ -68,3 +68,18 @@ def to_integers(integer_type: _t.Type[Integer]) -> _SearchStrategy[Integer]:
     return (_st.integers(rust_int_to_python_int(integer_type.MIN),
                          rust_int_to_python_int(integer_type.MAX))
             .map(integer_type))
+
+
+def to_non_zero_integers(cls: _t.Type[Integer]) -> _SearchStrategy[Integer]:
+    min_value = rust_int_to_python_int(cls.MIN)
+    return (((_st.nothing() if min_value == 0 else _st.integers(min_value, -1))
+             | _st.integers(1, rust_int_to_python_int(cls.MAX)))
+            .map(cls))
+
+
+def to_unit_integers(cls: _t.Type[Integer]) -> _SearchStrategy[Integer]:
+    return _st.builds(cls, _st.just(1))
+
+
+def to_zero_integers(cls: _t.Type[Integer]) -> _SearchStrategy[Integer]:
+    return _st.builds(cls, _st.just(0))

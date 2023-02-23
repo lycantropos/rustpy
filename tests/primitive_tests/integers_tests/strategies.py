@@ -1,28 +1,10 @@
-import typing as _t
-
 from hypothesis import strategies as _st
-from hypothesis.strategies import SearchStrategy as _SearchStrategy
 
 from rustpy import primitive as _primitive
-from tests.utils import (Integer as _Integer,
-                         rust_int_to_python_int as _rust_int_to_python_int,
-                         to_integers as _to_integers)
-
-
-def _to_non_zero_integers(cls: _t.Type[_Integer]) -> _SearchStrategy[_Integer]:
-    min_value = _rust_int_to_python_int(cls.MIN)
-    return (((_st.nothing() if min_value == 0 else _st.integers(min_value, -1))
-             | _st.integers(1, _rust_int_to_python_int(cls.MAX)))
-            .map(cls))
-
-
-def _to_unit_integers(cls: _t.Type[_Integer]) -> _SearchStrategy[_Integer]:
-    return _st.builds(cls, _st.just(1))
-
-
-def _to_zero_integers(cls: _t.Type[_Integer]) -> _SearchStrategy[_Integer]:
-    return _st.builds(cls, _st.just(0))
-
+from tests.utils import (to_integers as _to_integers,
+                         to_non_zero_integers as _to_non_zero_integers,
+                         to_unit_integers as _to_unit_integers,
+                         to_zero_integers as _to_zero_integers)
 
 _float_types = _primitive.f32, _primitive.f64
 _signed_integer_types = (_primitive.i8, _primitive.i16, _primitive.i32,
