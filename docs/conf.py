@@ -12,8 +12,8 @@ sys.path.insert(0, os.path.abspath('..'))
 import rustpy
 
 project = rustpy.__name__
-copyright = f'{date.today().year}, Azat Ibrakov'
 author = 'Azat Ibrakov'
+copyright = f'{date.today().year}, {author}'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
