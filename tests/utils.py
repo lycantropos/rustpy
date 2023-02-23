@@ -1,3 +1,5 @@
+import sys
+import types
 import typing as _t
 from contextlib import contextmanager as _contextmanager
 
@@ -24,7 +26,10 @@ Primitive = _t.TypeVar('Primitive', _primitive.bool_, _primitive.f32,
                        _primitive.isize, _primitive.u128, _primitive.u16,
                        _primitive.u32, _primitive.u64, _primitive.u8,
                        _primitive.usize)
-Specialization = type(_t.List[int])
+if sys.version_info < (3, 9):
+    SpecializationTypes = (type(_t.List[int]),)
+else:
+    SpecializationTypes = (types.GenericAlias, type(_t.List[int]))
 _AnyBool = _t.Union[bool, _primitive.bool_]
 
 
