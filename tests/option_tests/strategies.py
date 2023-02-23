@@ -10,6 +10,7 @@ from tests.strategies import (
 )
 
 type_hints = _type_hints
+equatable_values = _equatable_values
 equatable_empty_factories = (
         _st.sampled_from([bool, type(None), int, float, complex, str, bytes,
                           bytearray, list, tuple, dict, set, frozenset])
