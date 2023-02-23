@@ -5,7 +5,6 @@ import typing as _t
 import typing_extensions as _te
 
 
-@_te.final
 class bool_:
     _value: bool
 

@@ -7,6 +7,9 @@ from rustpy.option import Option as _Option
 
 @_te.final
 class bool_:
+    def as_(self, cls: _t.Type[_CastableFromBool]) -> _CastableFromBool:
+        ...
+
     def __init__(self, _value: bool) -> None:
         ...
 
@@ -485,4 +488,5 @@ class usize(_BaseUnsignedInteger):
     pass
 
 
+_CastableFromBool = _t.TypeVar('_CastableFromBool', _BaseInteger, bool_)
 _PrimitiveNumberT = _t.TypeVar('_PrimitiveNumberT', _BaseInteger, _BaseFloat)
