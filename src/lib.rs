@@ -389,7 +389,7 @@ struct None_();
 impl None_ {
     #[new]
     fn new() -> Self {
-        None_()
+        Self()
     }
 
     fn and_<'a>(slf: PyRef<'a, Self>, _value: &PyAny) -> PyRef<'a, Self> {
