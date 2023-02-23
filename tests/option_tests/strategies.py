@@ -15,6 +15,7 @@ equatable_pure_maps = (
         _st.sampled_from([lambda value: value, dir, id, repr, str])
         | _st.builds(lambda value: (lambda _: value), equatable_values)
 )
+options_types = _st.sampled_from([_None, _Some])
 nones = _st.builds(_None)
 equatable_somes = equatable_values.map(_Some)
 equatable_options = nones | equatable_somes
