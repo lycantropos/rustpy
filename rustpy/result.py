@@ -5,11 +5,9 @@ import typing as _t
 import typing_extensions as _te
 
 try:
-    from ._crustpy import (Err,
-                           Ok)
+    from . import _crustpy as _impl
 except ImportError:
-    from ._rustpy.result import (Err,
-                                 Ok)
+    from ._rustpy import result as _impl
 
 if _t.TYPE_CHECKING:
     from .option import Option as _Option
@@ -19,6 +17,22 @@ _E = _t.TypeVar('_E')
 _E2 = _t.TypeVar('_E2')
 _T = _t.TypeVar('_T')
 _T2 = _t.TypeVar('_T2')
+
+
+class Err(_impl.Err, _t.Generic[_E]):
+    """Represents the error value."""
+
+    def __init_subclass__(cls, **kwargs: _t.Any) -> _t.NoReturn:
+        raise TypeError(f'type \'{cls.__module__}{cls.__qualname__}\' '
+                        f'is not an acceptable base type')
+
+
+class Ok(_impl.Ok, _t.Generic[_T]):
+    """Represents the success value."""
+
+    def __init_subclass__(cls, **kwargs: _t.Any) -> _t.NoReturn:
+        raise TypeError(f'type \'{cls.__module__}{cls.__qualname__}\' '
+                        f'is not an acceptable base type')
 
 
 class Result(_te.Protocol, _t.Generic[_T, _E]):
