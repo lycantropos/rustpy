@@ -10,6 +10,7 @@ from tests.strategies import (
 
 MAX_RECURSION_DEPTH = 3
 
+results_types = _st.sampled_from([_Err, _Ok])
 equatable_values = _equatable_values
 equatable_pure_maps = (
         _st.sampled_from([lambda value: value, dir, id, repr, str])
