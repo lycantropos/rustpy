@@ -5,9 +5,11 @@ import typing as _t
 import typing_extensions as _te
 
 try:
-    from . import _crustpy as _impl
+    from ._crustpy import (None_,
+                           Some)
 except ImportError:
-    from ._rustpy import option as _impl
+    from ._rustpy.option import (None_,
+                                 Some)
 
 if _t.TYPE_CHECKING:
     from .primitive import bool_ as _bool
@@ -16,22 +18,6 @@ if _t.TYPE_CHECKING:
 _E = _t.TypeVar('_E')
 _T = _t.TypeVar('_T')
 _T2 = _t.TypeVar('_T2')
-
-
-class None_(_impl.None_):
-    """Represents absense of value. Implements :class:`Option` protocol."""
-
-    def __init_subclass__(cls, **kwargs: _t.Any) -> _t.NoReturn:
-        raise TypeError(f'type \'{cls.__module__}{cls.__qualname__}\' '
-                        f'is not an acceptable base type')
-
-
-class Some(_impl.Some, _t.Generic[_T]):
-    """Contains a value. Implements :class:`Option` protocol."""
-
-    def __init_subclass__(cls, **kwargs: _t.Any) -> _t.NoReturn:
-        raise TypeError(f'type \'{cls.__module__}{cls.__qualname__}\' '
-                        f'is not an acceptable base type')
 
 
 class Option(_te.Protocol, _t.Generic[_T]):

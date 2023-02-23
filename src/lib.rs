@@ -381,7 +381,7 @@ impl Ok_ {
     }
 }
 
-#[pyclass(module = "rustpy.option", name = "None_", subclass)]
+#[pyclass(module = "rustpy.option", name = "None_")]
 #[derive(Clone)]
 struct None_();
 
@@ -495,7 +495,7 @@ impl None_ {
     }
 }
 
-#[pyclass(module = "rustpy.option", name = "Some", subclass)]
+#[pyclass(module = "rustpy.option", name = "Some")]
 #[derive(Clone)]
 struct Some_(PyObject);
 
