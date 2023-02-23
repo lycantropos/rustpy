@@ -75,6 +75,10 @@ class None_:
     __module__ = 'rustpy.option'
     __slots__ = ()
 
+    def __init_subclass__(cls, **kwargs: _t.Any) -> _t.NoReturn:
+        raise TypeError(f'type \'{cls.__module__}{cls.__qualname__}\' '
+                        f'is not an acceptable base type')
+
     @_t.overload
     def __eq__(self, other: Option[_T]) -> _bool:
         ...
@@ -201,6 +205,10 @@ class Some(_t.Generic[_T]):
 
     def __init__(self, value: _T) -> None:
         self._value = value
+
+    def __init_subclass__(cls, **kwargs: _t.Any) -> _t.NoReturn:
+        raise TypeError(f'type \'{cls.__module__}{cls.__qualname__}\' '
+                        f'is not an acceptable base type')
 
     @_t.overload
     def __eq__(self, other: Option[_T]) -> _bool:
