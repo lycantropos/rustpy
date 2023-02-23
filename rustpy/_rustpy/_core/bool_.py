@@ -5,7 +5,19 @@ import typing as _t
 import typing_extensions as _te
 
 
+@_te.final
 class bool_:
+    def as_(self, cls: _t.Type[_CastableFromBool]) -> _CastableFromBool:
+        from .integer import (BaseSignedInteger,
+                              BaseUnsignedInteger)
+
+        if issubclass(cls, type(self)):
+            return self
+        elif issubclass(cls, (BaseSignedInteger, BaseUnsignedInteger)):
+            return cls(int(self._value))
+        else:
+            raise TypeError(cls)
+
     _value: bool
 
     __slots__ = '_value',
@@ -92,6 +104,13 @@ class bool_:
         return 'true' if self._value else 'false'
 
 
+if _t.TYPE_CHECKING:
+    from .integer import (BaseSignedInteger as _BaseSignedInteger,
+                          BaseUnsignedInteger as _BaseUnsignedInteger)
+
+    _CastableFromBool = _t.TypeVar('_CastableFromBool', bool_,
+                                   _BaseSignedInteger,
+                                   _BaseUnsignedInteger)
 _T = _t.TypeVar('_T')
 
 

@@ -20,17 +20,7 @@ from ._core.integer import (
     unsigned_cls_to_min_value as _unsigned_cls_to_min_value
 )
 
-
-@_te.final
-class bool_(_bool):
-    def as_(self, cls: _t.Type[_CastableFromBool]) -> _CastableFromBool:
-        if issubclass(cls, type(self)):
-            return self
-        elif issubclass(cls, (_CastableBaseSignedInteger,
-                              _CastableBaseUnsignedInteger)):
-            return cls(int(self._value))
-        else:
-            raise TypeError(cls)
+bool_ = _bool
 
 
 class _CastableBaseSignedInteger(_BaseSignedInteger):
@@ -301,9 +291,6 @@ f64.NAN = f64(_math.nan)
 f64.NEG_INFINITY = f64(-_math.inf)
 f64.RADIX = u32(2)
 
-_CastableFromBool = _t.TypeVar('_CastableFromBool', bool_,
-                               _CastableBaseSignedInteger,
-                               _CastableBaseUnsignedInteger)
 _PrimitiveNumberT = _t.TypeVar(
         '_PrimitiveNumberT', _BaseFloat, _CastableBaseSignedInteger,
         _CastableBaseUnsignedInteger
