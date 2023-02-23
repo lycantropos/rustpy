@@ -66,7 +66,7 @@ impl Bool {
     }
 }
 
-#[pyclass(module = "rustpy.result", name = "Err", subclass)]
+#[pyclass(module = "rustpy.result", name = "Err")]
 #[derive(Clone)]
 struct Err_(PyObject);
 
@@ -221,7 +221,7 @@ impl Err_ {
     }
 }
 
-#[pyclass(module = "rustpy.result", name = "Ok", subclass)]
+#[pyclass(module = "rustpy.result", name = "Ok")]
 #[derive(Clone)]
 struct Ok_(PyObject);
 
