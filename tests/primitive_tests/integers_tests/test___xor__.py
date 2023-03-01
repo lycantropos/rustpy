@@ -38,3 +38,10 @@ def test_neutral_element(integer_with_zero: Tuple[Integer, Integer]) -> None:
     integer, zero = integer_with_zero
 
     assert integer ^ zero == integer == zero ^ integer
+
+
+@given(strategies.integers_triplets)
+def test_chained(triplet: Tuple[Integer, Integer, Integer]) -> None:
+    first, second, third = triplet
+
+    assert (first ^ second) ^ (second ^ third) == first ^ third
