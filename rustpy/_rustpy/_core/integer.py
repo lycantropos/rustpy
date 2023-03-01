@@ -203,6 +203,19 @@ class _BaseInteger(_abc.ABC, _NumberWrapper[int]):
                 if isinstance(other, type(self))
                 else NotImplemented)
 
+    @_t.overload
+    def __or__(self, other: _te.Self) -> _te.Self:
+        ...
+
+    @_t.overload
+    def __or__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    def __or__(self, other: _t.Any) -> _t.Any:
+        return (type(self)(self._value | other._value)
+                if isinstance(other, type(self))
+                else NotImplemented)
+
     def __repr__(self) -> str:
         return f'{type(self).__qualname__}({self._value})'
 

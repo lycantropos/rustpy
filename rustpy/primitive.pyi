@@ -372,6 +372,14 @@ class _BaseInteger(_te.Protocol):
         ...
 
     @_t.overload
+    def __or__(self, other: _te.Self) -> _te.Self:
+        ...
+
+    @_t.overload
+    def __or__(self, other: _t.Any) -> _t.Any:
+        ...
+
+    @_t.overload
     def __rshift__(self, other: u32) -> _te.Self:
         ...
 
