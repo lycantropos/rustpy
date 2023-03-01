@@ -7,7 +7,7 @@ services:
       args:
         - IMAGE_NAME=${CPYTHON_IMAGE_NAME}
         - IMAGE_VERSION=${CPYTHON_IMAGE_VERSION}
-    image: lycantropos/rustpy-cpython:0.3.0-alpha
+    image: lycantropos/rustpy-cpython:0.3.0
     volumes:
       - ./Cargo.toml:/opt/rustpy/Cargo.toml
       - ./pyproject.toml:/opt/rustpy/pyproject.toml

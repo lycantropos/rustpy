@@ -2,7 +2,7 @@
 name = "rustpy"
 description = "Bindings of Rust programming language primitives."
 license = "MIT"
-version = "0.3.0-alpha"
+version = "0.3.0"
 edition = "2021"
 
 [lib]
