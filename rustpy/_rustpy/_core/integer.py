@@ -368,7 +368,7 @@ class BaseUnsignedInteger(_BaseInteger):
         return self._value.to_bytes(u32_to_int(self.BITS) // 8, _sys.byteorder)
 
     def __invert__(self) -> _te.Self:
-        return type(self)(self.MAX - self._value)
+        return self.MAX - self
 
 
 _SignedInteger = _t.TypeVar('_SignedInteger',
