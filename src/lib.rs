@@ -1740,6 +1740,10 @@ macro_rules! define_unsigned_integer_python_binding {
                 self.0
             }
 
+            fn __invert__(&self) -> Self {
+                Self(!self.0)
+            }
+
             fn __lshift__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
                 other
                     .extract::<U32>()
