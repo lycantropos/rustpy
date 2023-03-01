@@ -403,6 +403,14 @@ class _BaseInteger(_te.Protocol):
     def __truediv__(self, other: _t.Any) -> _t.Any:
         ...
 
+    @_t.overload
+    def __xor__(self, other: _te.Self) -> _te.Self:
+        ...
+
+    @_t.overload
+    def __xor__(self, other: _t.Any) -> _t.Any:
+        ...
+
 
 class _BaseSignedInteger(_BaseInteger):
     def abs(self) -> _te.Self:

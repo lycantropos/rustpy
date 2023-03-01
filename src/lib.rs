@@ -1465,6 +1465,13 @@ macro_rules! define_signed_integer_python_binding {
                     Ok(py.NotImplemented())
                 }
             }
+
+            fn __xor__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
+                other
+                    .extract::<Self>()
+                    .map(|other| Self(self.0 ^ other.0).into_py(py))
+                    .or_else(|_| Ok(py.NotImplemented()))
+            }
         }
     };
 }
@@ -1844,6 +1851,13 @@ macro_rules! define_unsigned_integer_python_binding {
                 } else {
                     Ok(py.NotImplemented())
                 }
+            }
+
+            fn __xor__(&self, other: &PyAny, py: Python) -> PyResult<PyObject> {
+                other
+                    .extract::<Self>()
+                    .map(|other| Self(self.0 ^ other.0).into_py(py))
+                    .or_else(|_| Ok(py.NotImplemented()))
             }
         }
     };
