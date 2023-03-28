@@ -2,6 +2,7 @@
 name = "rustpy"
 description = "Bindings of Rust programming language primitives."
 license = "MIT"
+repository = "https://github.com/lycantropos/rustpy"
 version = "0.3.0"
 edition = "2021"
 
